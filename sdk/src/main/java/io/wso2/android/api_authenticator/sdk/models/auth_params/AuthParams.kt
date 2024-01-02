@@ -13,19 +13,20 @@ abstract class AuthParams(
      */
     open val password: String? = null,
     /**
-     * access token retrieved from the google authenticator - For Google Authenticator
+     * access token retrieved from the Google authenticator - For Google Authenticator
      */
     open val accessToken: String? = null,
     /**
-     * id token retrieved from the google authenticator - For Google Authenticator
+     * id token retrieved from the Google authenticator - For Google Authenticator
      */
     open val idToken: String? = null,
     /**
-     * Otp code retrieved from an authenticator application - For TOTP Authenticator
+     * Code retrieved from the authenticator application - For TOTP Authenticator
      */
     open val totp: String? = null,
     /**
      * Token response retrieved from the passkey authenticator - For Passkey Authenticator
+     * TODO: Improve the comment
      */
     open val tokenResponse: String? = null
 )
