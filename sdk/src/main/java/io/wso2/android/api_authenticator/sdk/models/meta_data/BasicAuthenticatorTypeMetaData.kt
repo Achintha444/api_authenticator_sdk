@@ -8,8 +8,8 @@ data class BasicAuthenticatorTypeMetaData (
     /**
      * Params
      */
-    override var params: ArrayList<Param>?,
-): MetaData(
+    override var params: ArrayList<AuthenticatorTypeParam>?,
+): AuthenticatorTypeMetaData(
     null,
     promptType,
     params

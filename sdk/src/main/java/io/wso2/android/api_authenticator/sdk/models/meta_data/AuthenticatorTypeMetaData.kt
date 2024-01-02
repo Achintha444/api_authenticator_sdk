@@ -1,6 +1,6 @@
 package io.wso2.android.api_authenticator.sdk.models.meta_data
 
-abstract class MetaData(
+abstract class AuthenticatorTypeMetaData(
     /**
      * I18n key related to the authenticator type
      */
@@ -12,9 +12,9 @@ abstract class MetaData(
     /**
      * Params related to the authenticator type
      */
-    open val params: ArrayList<Param>?
+    open val params: ArrayList<AuthenticatorTypeParam>?
 ) {
-    open class Param(
+    open class AuthenticatorTypeParam(
         open val param: String?,
         open val type: String?,
         open val order: Int?,

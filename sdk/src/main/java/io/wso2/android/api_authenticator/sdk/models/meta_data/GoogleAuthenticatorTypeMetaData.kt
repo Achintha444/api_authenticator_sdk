@@ -13,7 +13,7 @@ data class GoogleAuthenticatorTypeMetaData(
      * Additional data
      */
     val additionalData: GoogleAdditionalData
-) : MetaData(
+) : AuthenticatorTypeMetaData(
     i18nKey,
     promptType,
     null

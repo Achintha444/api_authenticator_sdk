@@ -13,7 +13,7 @@ data class PasskeyAuthenticatorTypeMetaData(
      * Additional data
      */
     val additionalData: PasskeyAdditionalData
-) : MetaData(
+) : AuthenticatorTypeMetaData(
     i18nKey,
     promptType,
     null
