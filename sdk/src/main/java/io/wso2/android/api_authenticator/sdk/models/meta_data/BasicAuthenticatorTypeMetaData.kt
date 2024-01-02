@@ -12,5 +12,6 @@ data class BasicAuthenticatorTypeMetaData (
 ): AuthenticatorTypeMetaData(
     null,
     promptType,
-    params
+    params,
+    null
 )

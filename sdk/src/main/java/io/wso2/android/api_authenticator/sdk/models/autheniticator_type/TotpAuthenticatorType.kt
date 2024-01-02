@@ -29,4 +29,8 @@ data class TotpAuthenticatorType(
     idp,
     metadata,
     requiredParams
-)
+) {
+    companion object {
+        const val AUTHENTICATOR_TYPE = "TOTP"
+    }
+}

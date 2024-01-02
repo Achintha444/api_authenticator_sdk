@@ -12,13 +12,17 @@ data class PasskeyAuthenticatorTypeMetaData(
     /**
      * Additional data
      */
-    val additionalData: PasskeyAdditionalData
+    override val additionalData: PasskeyAdditionalData
 ) : AuthenticatorTypeMetaData(
     i18nKey,
     promptType,
-    null
+    null,
+    additionalData
 ) {
     data class PasskeyAdditionalData(
+        /**
+         * Challenge data for passkey authentication
+         */
         val challengeData: String
-    )
+    ): AuthenticatorTypeAdditionalData()
 }

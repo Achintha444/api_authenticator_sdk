@@ -16,5 +16,6 @@ data class TotpAuthenticatorTypeMetaData(
 ): AuthenticatorTypeMetaData(
     i18nKey,
     promptType,
-    params
+    params,
+    null
 )

@@ -32,4 +32,8 @@ data class BasicAuthenticatorType(
     idp,
     metadata,
     requiredParams
-)
+) {
+    companion object {
+        const val AUTHENTICATOR_TYPE = "Username & Password"
+    }
+}
