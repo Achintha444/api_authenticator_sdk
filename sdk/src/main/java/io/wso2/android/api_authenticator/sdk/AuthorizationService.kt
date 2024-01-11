@@ -32,6 +32,7 @@ import kotlin.coroutines.suspendCoroutine
  * @property scope Scope of the application (ex: openid profile email)
  */
 class AuthorizationService private constructor(
+    // TODO: Move these to a seperate configuration class
     private val authorizeUri: String,
     private val authnUri: String,
     private val clientId: String,
@@ -94,6 +95,7 @@ class AuthorizationService private constructor(
     }
 
     /**
+     * TODO: Move this to a Util class as this not directly related as a function in the AuthorizationService
      * Handle the authorization flow and return the authenticator types in the next step.
      *
      * @param responseBodyString Response body string of the authorization request
