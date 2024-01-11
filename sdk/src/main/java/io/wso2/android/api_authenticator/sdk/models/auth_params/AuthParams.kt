@@ -1,5 +1,7 @@
 package io.wso2.android.api_authenticator.sdk.models.auth_params
 
+import io.wso2.android.api_authenticator.sdk.util.JsonUtil
+
 /**
  * Authenticator parameters class
  */
@@ -29,4 +31,8 @@ abstract class AuthParams(
      * TODO: Improve the comment
      */
     open val tokenResponse: String? = null
-)
+) {
+    override fun toString(): String {
+        return JsonUtil.getJsonString(this)
+    }
+}

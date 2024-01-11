@@ -5,21 +5,21 @@ package io.wso2.android.api_authenticator.sdk.exceptions
  *
  * @property message Message related to the exception
  */
-class AuthenticatorException(override val message: String?): Exception(message) {
+class AuthorizationServiceException(override val message: String?): Exception(message) {
     companion object {
         /**
          * Authenticator exception TAG
          */
-        const val AUTHENTICATOR_EXCEPTION = "Authenticator Exception"
+        const val AUTHORIZATION_SERVICE_EXCEPTION = "Authorization Service Exception"
 
         /**
          * Message to be shown when authenticator is not initialized
          */
-        const val AUTHENTICATOR_NOT_INITIALIZED = "Authenticator is not initialized"
+        const val AUTHORIZATION_SERVICE_NOT_INITIALIZED = "Authorization Service is not initialized"
     }
 
     override fun toString(): String {
-        return "${AUTHENTICATOR_EXCEPTION}: $message"
+        return "${AUTHORIZATION_SERVICE_EXCEPTION}: $message"
     }
 
     /**

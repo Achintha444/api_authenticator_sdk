@@ -1,6 +1,7 @@
 package io.wso2.android.api_authenticator.sdk.models.autheniticator_type
 
 import io.wso2.android.api_authenticator.sdk.models.meta_data.AuthenticatorTypeMetaData
+import io.wso2.android.api_authenticator.sdk.util.JsonUtil
 
 /**
  * AuthenticatorType model class
@@ -26,4 +27,8 @@ open class AuthenticatorType(
      * Required params that should be sent to the server for authentication in this authenticator type
      */
     open val requiredParams: List<String>?
-)
+) {
+    override fun toString(): String {
+        return JsonUtil.getJsonString(this)
+    }
+}

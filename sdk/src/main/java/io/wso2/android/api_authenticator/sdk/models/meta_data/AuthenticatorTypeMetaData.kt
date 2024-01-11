@@ -1,5 +1,7 @@
 package io.wso2.android.api_authenticator.sdk.models.meta_data
 
+import io.wso2.android.api_authenticator.sdk.util.JsonUtil
+
 /**
  * Meta data related to the authenticator type
  */
@@ -37,4 +39,8 @@ open class AuthenticatorTypeMetaData(
      * Additional data related to the authenticator type
      */
     open class AuthenticatorTypeAdditionalData
+
+    override fun toString(): String {
+        return JsonUtil.getJsonString(this)
+    }
 }
