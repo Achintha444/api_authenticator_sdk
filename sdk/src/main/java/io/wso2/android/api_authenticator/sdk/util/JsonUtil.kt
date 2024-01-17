@@ -11,12 +11,12 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 internal class JsonUtil {
     companion object {
         /**
-         * `ObjectMapper` instance to handle json related operations
+         * [ObjectMapper] instance to handle json related operations
          */
         private val mapper: ObjectMapper = jacksonObjectMapper()
 
         /**
-         * Convert an object of type `T` to a `String`
+         * Convert an object of type `T` to a [String]
          *
          * @param dataObject Object to be converted
          *
@@ -27,7 +27,7 @@ internal class JsonUtil {
         }
 
         /**
-         * Convert a `Map<String, Any>` to a `JsonNode`
+         * Convert a [Map<String, Any>] to a [JsonNode]
          *
          * @param jsonMap Map to be converted
          *
@@ -38,7 +38,7 @@ internal class JsonUtil {
         }
 
         /**
-         * Convert a `String` to a `JsonNode`
+         * Convert a [String] to a [JsonNode]
          *
          * @param jsonString String to be converted
          *
@@ -49,7 +49,7 @@ internal class JsonUtil {
         }
 
         /**
-         * Convert a `JsonNode` to an object of type `T`
+         * Convert a [JsonNode] to an object of type `T`
          *
          * @param jsonNode JsonNode to be converted
          * @param typeReference Type of the object to be converted to

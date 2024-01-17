@@ -31,18 +31,17 @@ import kotlin.coroutines.suspendCoroutine
 class AuthorizationService private constructor(
     private val authorizationServiceConfig: AuthorizationServiceConfig
 ) {
+
     /**
      * OkHttpClient instance to handle network calls
      */
     private val client: OkHttpClient = OkHttpClient()
+    /**
+     * Instance of the AuthenticatorBuilder that will be used throughout the application
+     */
+    private val authorizationServiceRequestBuilderInstance = AuthorizationServiceRequestBuilder()
 
     companion object {
-        /**
-         * Instance of the AuthenticatorBuilder that will be used throughout the application
-         */
-        private var authorizationServiceRequestBuilderInstance =
-            AuthorizationServiceRequestBuilder()
-
         /**
          * Instance of the Authenticator that will be used throughout the application
          */
