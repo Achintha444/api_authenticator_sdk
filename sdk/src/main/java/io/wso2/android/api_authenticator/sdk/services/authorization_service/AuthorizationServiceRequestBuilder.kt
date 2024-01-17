@@ -1,4 +1,4 @@
-package io.wso2.android.api_authenticator.sdk
+package io.wso2.android.api_authenticator.sdk.services.authorization_service
 
 import io.wso2.android.api_authenticator.sdk.util.JsonUtil
 import okhttp3.FormBody

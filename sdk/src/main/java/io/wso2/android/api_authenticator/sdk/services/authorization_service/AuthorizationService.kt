@@ -1,4 +1,4 @@
-package io.wso2.android.api_authenticator.sdk
+package io.wso2.android.api_authenticator.sdk.services.authorization_service
 
 import com.fasterxml.jackson.databind.JsonNode
 import io.wso2.android.api_authenticator.sdk.exceptions.AuthenticatorTypeException
@@ -26,19 +26,11 @@ import kotlin.coroutines.suspendCoroutine
 /**
  * Authenticator class to handle authentication.
  *
- * @property authorizeUri Authorization endpoint
- * @property authnUri Authentication next step endpoint
- * @property clientId Client id of the application
- * @property scope Scope of the application (ex: openid profile email)
+ * @property authorizationServiceConfig Configuration of the Authenticator `AuthorizationServiceConfig`
  */
 class AuthorizationService private constructor(
-    // TODO: Move these to a seperate configuration class
-    private val authorizeUri: String,
-    private val authnUri: String,
-    private val clientId: String,
-    private val scope: String
+    private val authorizationServiceConfig: AuthorizationServiceConfig
 ) {
-
     /**
      * OkHttpClient instance to handle network calls
      */
@@ -59,22 +51,16 @@ class AuthorizationService private constructor(
         /**
          * Initialize the Authenticator instance and return the instance.
          *
-         * @param authorizeUri Authorization endpoint
-         * @param authnUri Authentication next step endpoint
-         * @param clientId Client id of the application
-         * @param scope Scope of the application (ex: openid profile email)
+         * @param authorizationServiceConfig Configuration of the Authenticator `AuthorizationServiceConfig`
          *
          * @return Initialized Authenticator instance
          */
         fun getInstance(
-            authorizeUri: String,
-            authnUri: String,
-            clientId: String,
-            scope: String
+            authorizationServiceConfig: AuthorizationServiceConfig
         ): AuthorizationService {
             var authorizationService = authorizationServiceInstance.get()
             if (authorizationService == null) {
-                authorizationService = AuthorizationService(authorizeUri, authnUri, clientId, scope)
+                authorizationService = AuthorizationService(authorizationServiceConfig)
                 authorizationServiceInstance = WeakReference(authorizationService)
             }
             return authorizationService
@@ -95,10 +81,13 @@ class AuthorizationService private constructor(
     }
 
     /**
-     * TODO: Move this to a Util class as this not directly related as a function in the AuthorizationService
      * Handle the authorization flow and return the authenticator types in the next step.
      *
      * @param responseBodyString Response body string of the authorization request
+     *
+     * @return `AuthorizeFlow` with the authenticator types in the next step
+     *
+     * @throws AuthenticatorTypeException
      */
     private suspend fun handleAuthorizeFlow(
         responseBodyString: String
@@ -147,7 +136,7 @@ class AuthorizationService private constructor(
 
                 val request: Request = authorizationServiceRequestBuilderInstance
                     .getAuthenticatorTypeRequestBuilder(
-                        authnUri,
+                        authorizationServiceConfig.authnUri,
                         flowId,
                         authenticatorType.authenticatorId
                     )
@@ -187,6 +176,7 @@ class AuthorizationService private constructor(
                                     continuation.resumeWithException(exception)
                                 }
                             } else {
+                                // Throw an `AuthenticatorTypeException` if the request does not return 200
                                 val exception = AuthenticatorTypeException(
                                     response.message,
                                     authenticatorType.authenticator,
@@ -279,9 +269,9 @@ class AuthorizationService private constructor(
      */
     suspend fun authorize() {
         val request: Request = authorizationServiceRequestBuilderInstance.authorizeRequestBuilder(
-            authorizeUri,
-            clientId,
-            scope
+            authorizationServiceConfig.authorizeUri,
+            authorizationServiceConfig.clientId,
+            authorizationServiceConfig.scope
         )
 
         client.newCall(request).enqueue(object : Callback {
