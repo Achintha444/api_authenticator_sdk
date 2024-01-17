@@ -1,4 +1,4 @@
-package io.wso2.android.api_authenticator.sdk.http_client
+package io.wso2.android.api_authenticator.sdk.models.http_client
 
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
@@ -30,7 +30,7 @@ import javax.net.ssl.X509TrustManager
 class SecureHttpClient private constructor(
     private val trustedCertificates: InputStream
 ) {
-    private val client: OkHttpClient
+    val client: OkHttpClient
 
     companion object {
         private var secureHttpClientInstance = WeakReference<SecureHttpClient?>(null)

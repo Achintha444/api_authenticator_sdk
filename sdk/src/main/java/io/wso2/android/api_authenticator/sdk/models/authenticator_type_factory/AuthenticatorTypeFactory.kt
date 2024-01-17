@@ -17,7 +17,6 @@ import io.wso2.android.api_authenticator.sdk.models.meta_data.TotpAuthenticatorT
 internal class AuthenticatorTypeFactory {
 
     companion object {
-
         /**
          * Get authenticator type from authenticator id, authenticator name, identity provider, metadata and required parameters
          *

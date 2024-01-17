@@ -8,6 +8,7 @@ import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.Authenti
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.BasicAuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.authenticator_type_factory.AuthenticatorTypeFactory
 import io.wso2.android.api_authenticator.sdk.models.authorize_flow.AuthorizeFlow
+import io.wso2.android.api_authenticator.sdk.models.http_client.http_client_builder.HttpClientBuilder
 import io.wso2.android.api_authenticator.sdk.util.JsonUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope.coroutineContext
@@ -33,9 +34,14 @@ class AuthorizationService private constructor(
 ) {
 
     /**
-     * OkHttpClient instance to handle network calls
+     * OkHttpClient instance to handle network calls. If the trusted certificates are not provided,
+     * create a less secure [OkHttpClient] instance, which bypasses the certificate validation.
+     * `This is not recommended for production`.
      */
-    private val client: OkHttpClient = OkHttpClient()
+    private val client: OkHttpClient = HttpClientBuilder.getHttpClientInstance(
+        authorizationServiceConfig.trustedCertificates
+    )
+
     /**
      * Instance of the AuthenticatorBuilder that will be used throughout the application
      */

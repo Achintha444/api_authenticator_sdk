@@ -1,4 +1,4 @@
-package io.wso2.android.api_authenticator.sdk.http_client
+package io.wso2.android.api_authenticator.sdk.models.http_client
 
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
@@ -14,7 +14,7 @@ import javax.net.ssl.X509TrustManager
  * Use to create the [LessSecureHttpClient] for API calls in the SDK
  */
 internal class LessSecureHttpClient private constructor() {
-    private val client: OkHttpClient
+    val client: OkHttpClient
 
     companion object {
         private var lessSecureHttpClientInstance = WeakReference<LessSecureHttpClient?>(null)
