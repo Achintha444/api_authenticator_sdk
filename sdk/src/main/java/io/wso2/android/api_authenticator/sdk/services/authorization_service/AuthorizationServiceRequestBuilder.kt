@@ -19,7 +19,7 @@ internal class AuthorizationServiceRequestBuilder {
      * @param clientId Client id of the application
      * @param scope Scope of the application (ex: openid profile email)
      *
-     * @return `okhttp3.Request` to authorize the application
+     * @return [okhttp3.Request] to authorize the application
      */
     internal fun authorizeRequestBuilder(
         authorizeUri: String,
@@ -47,7 +47,7 @@ internal class AuthorizationServiceRequestBuilder {
      * @param flowId Flow id of the authentication flow
      * @param authenticatorTypeId Authenticator type id of the authenticator
      *
-     * @return `okhttp3.Request` to get details of the authenticator type
+     * @return [okhttp3.Request] to get details of the authenticator type
      */
     internal fun getAuthenticatorTypeRequestBuilder(
         authnUri: String,
@@ -61,7 +61,7 @@ internal class AuthorizationServiceRequestBuilder {
          * @param flowId Flow id of the authentication flow
          * @param authenticatorTypeId Authenticator type id of the authenticator
          *
-         * @return `okhttp3.RequestBody` to get details of the authenticator type
+         * @return [okhttp3.RequestBody]` to get details of the authenticator type
          */
         fun getRequestBodyForAuthenticatorType(
             flowId: String,

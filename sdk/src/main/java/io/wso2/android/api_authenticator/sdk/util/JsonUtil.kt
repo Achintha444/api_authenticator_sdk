@@ -20,7 +20,7 @@ internal class JsonUtil {
          *
          * @param dataObject Object to be converted
          *
-         * @return String converted from the object
+         * @return [String] converted from the object
          */
         internal fun getJsonString(dataObject: Any): String {
             return mapper.writeValueAsString(dataObject)
@@ -31,7 +31,7 @@ internal class JsonUtil {
          *
          * @param jsonMap Map to be converted
          *
-         * @return JsonNode converted from the map
+         * @return [JsonNode] converted from the map
          */
         internal fun getJsonObject(jsonMap: Map<String, Any>): JsonNode {
             return mapper.valueToTree(jsonMap)
@@ -42,7 +42,7 @@ internal class JsonUtil {
          *
          * @param jsonString String to be converted
          *
-         * @return JsonNode converted from the string
+         * @return [JsonNode] converted from the string
          */
         internal fun getJsonObject(jsonString: String): JsonNode {
             return mapper.readTree(jsonString)

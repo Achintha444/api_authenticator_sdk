@@ -58,7 +58,7 @@ class AuthorizationService private constructor(
          *
          * @param authorizationServiceConfig Configuration of the Authenticator `AuthorizationServiceConfig`
          *
-         * @return Initialized Authenticator instance
+         * @return Initialized [AuthorizationService] instance
          */
         fun getInstance(
             authorizationServiceConfig: AuthorizationServiceConfig
@@ -75,9 +75,9 @@ class AuthorizationService private constructor(
          * Get the Authenticator instance.
          * This method will return null if the Authenticator instance is not initialized.
          *
-         * @return Authenticator instance
+         * @return [AuthorizationService] instance
          *
-         * @throws AuthorizationServiceException If the Authenticator instance is not initialized
+         * @throws [AuthorizationServiceException] If the Authenticator instance is not initialized
          */
         fun getInstance(): AuthorizationService {
             return authorizationServiceInstance.get()
@@ -90,9 +90,9 @@ class AuthorizationService private constructor(
      *
      * @param responseBodyString Response body string of the authorization request
      *
-     * @return `AuthorizeFlow` with the authenticator types in the next step
+     * @return [AuthorizeFlow] with the authenticator types in the next step
      *
-     * @throws AuthenticatorTypeException
+     * @throws [AuthenticatorTypeException]
      */
     private suspend fun handleAuthorizeFlow(
         responseBodyString: String
@@ -270,7 +270,7 @@ class AuthorizationService private constructor(
      * This method will call the authorization endpoint and get the authenticators available for the
      * first step in the login flow.
      *
-     * @throws AuthorizeException If the authorization fails
+     * @throws [AuthorizeException] If the authorization fails
      */
     suspend fun authorize() {
         val request: Request = authorizationServiceRequestBuilderInstance.authorizeRequestBuilder(
