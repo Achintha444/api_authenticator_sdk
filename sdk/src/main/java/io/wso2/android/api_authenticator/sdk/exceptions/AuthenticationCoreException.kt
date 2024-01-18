@@ -5,7 +5,9 @@ package io.wso2.android.api_authenticator.sdk.exceptions
  *
  * @property message Message related to the exception
  */
-class AuthorizationServiceException(override val message: String?): Exception(message) {
+class AuthenticationCoreException(
+    override val message: String?
+): Exception(message) {
     companion object {
         /**
          * Authenticator exception TAG

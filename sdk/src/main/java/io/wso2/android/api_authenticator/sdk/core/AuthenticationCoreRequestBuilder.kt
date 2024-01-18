@@ -1,4 +1,4 @@
-package io.wso2.android.api_authenticator.sdk.services.authorization_service
+package io.wso2.android.api_authenticator.sdk.core
 
 import io.wso2.android.api_authenticator.sdk.util.JsonUtil
 import okhttp3.FormBody
@@ -10,7 +10,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 /**
  * Builder function related to the Authenticator.
  */
-internal class AuthorizationServiceRequestBuilder {
+internal class AuthenticationCoreRequestBuilder {
 
     /**
      * Build the request to authorize the application.
