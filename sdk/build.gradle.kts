@@ -42,4 +42,5 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation ("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
+    implementation ("net.openid:appauth:0.11.1")
 }

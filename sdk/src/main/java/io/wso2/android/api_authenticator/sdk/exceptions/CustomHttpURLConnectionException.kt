@@ -1,0 +1,22 @@
+package io.wso2.android.api_authenticator.sdk.exceptions
+
+class CustomHttpURLConnectionException(
+    override val message: String?
+): Exception(message) {
+    companion object {
+        /**
+         * Authenticator exception TAG
+         */
+        const val ONLY_HTTPS_CONNCTIONS = "Only HTTPS connections are supported"
+
+        /**
+         * Message to be shown when authenticator is not initialized
+         */
+        const val  FAILED_TO_INITIALIZE_SSL_CONTEXT = "Failed to initialize SSL context"
+
+        /**
+         * Message to be shown when authentication is not completed
+         */
+        const val FAILED_TO_OPEN_CONNECTION = "Failed to open connection"
+    }
+}

@@ -35,4 +35,9 @@ abstract class AuthParams(
     override fun toString(): String {
         return JsonUtil.getJsonString(this)
     }
+
+    /**
+     * Get the parameter body for the authenticator to be sent to the server
+     */
+    abstract fun getParameterBodyAuthenticator(): LinkedHashMap<String, String>
 }

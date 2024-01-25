@@ -1,5 +1,9 @@
 package io.wso2.android.api_authenticator.sdk.core
 
+import android.util.Log
+import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
+import io.wso2.android.api_authenticator.sdk.models.auth_params.BasicAuthenticatorAuthParams
+import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.util.JsonUtil
 import okhttp3.FormBody
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -18,13 +22,15 @@ internal class AuthenticationCoreRequestBuilder {
      * @param authorizeUri Authorization endpoint
      * @param clientId Client id of the application
      * @param scope Scope of the application (ex: openid profile email)
+     * @param integrityToken Client attestation integrity token
      *
      * @return [okhttp3.Request] to authorize the application
      */
     internal fun authorizeRequestBuilder(
         authorizeUri: String,
         clientId: String,
-        scope: String
+        scope: String,
+        integrityToken: String? = null
     ): Request {
         val formBody: RequestBody = FormBody.Builder()
             .add("client_id", clientId)
@@ -37,6 +43,44 @@ internal class AuthenticationCoreRequestBuilder {
         requestBuilder.addHeader("Accept", "application/json")
         requestBuilder.addHeader("Content-Type", "application/x-www-form-urlencoded")
 
+        // Pass the client attestation token if it is not null
+        if (integrityToken != null) {
+            requestBuilder.addHeader("x-client-attestation", integrityToken)
+        }
+
+        return requestBuilder.post(formBody).build()
+    }
+
+    /**
+     * Build the request for the authentication.
+     * This request will be used to get the next step of the authentication flow.
+     *
+     * @param authnUri Authentication next step endpoint
+     * @param flowId Flow id of the authentication flow
+     * @param authenticatorType Authenticator type of the selected authenticator
+     * @param authenticatorAuthParams Authenticator parameters of the selected authenticator
+     *
+     * @return [okhttp3.Request] to get the next step of the authentication flow
+     */
+    internal fun authenticateRequestBuilder(
+        authnUri: String,
+        flowId: String,
+        authenticatorType: AuthenticatorType,
+        authenticatorAuthParams: AuthParams,
+    ): Request {
+        val authBody = LinkedHashMap<String, Any>()
+        authBody["flowId"] = flowId
+
+        val selectedAuthenticator = LinkedHashMap<String, Any>()
+        selectedAuthenticator["authenticatorId"] = authenticatorType.authenticatorId
+        selectedAuthenticator["params"] = authenticatorAuthParams.getParameterBodyAuthenticator()
+
+        authBody["selectedAuthenticator"] = selectedAuthenticator
+
+        val formBody: RequestBody = JsonUtil.getJsonObject(authBody).toString()
+            .toRequestBody("application/json".toMediaTypeOrNull())
+
+        val requestBuilder: Request.Builder = Request.Builder().url(authnUri)
         return requestBuilder.post(formBody).build()
     }
 
@@ -54,39 +98,18 @@ internal class AuthenticationCoreRequestBuilder {
         flowId: String,
         authenticatorTypeId: String
     ): Request {
+        val authBody = LinkedHashMap<String, Any>()
+        authBody["flowId"] = flowId
 
-        /**
-         * Build request body to get details of the authenticator type
-         *
-         * @param flowId Flow id of the authentication flow
-         * @param authenticatorTypeId Authenticator type id of the authenticator
-         *
-         * @return [okhttp3.RequestBody]` to get details of the authenticator type
-         */
-        fun getRequestBodyForAuthenticatorType(
-            flowId: String,
-            authenticatorTypeId: String
-        ): RequestBody {
+        val selectedAuthenticator = LinkedHashMap<String, String>()
+        selectedAuthenticator["authenticatorId"] = authenticatorTypeId
 
-            val authBody = LinkedHashMap<String, Any>()
-            authBody["flowId"] = flowId
+        authBody["selectedAuthenticator"] = selectedAuthenticator;
 
-            val selectedAuthenticator = LinkedHashMap<String, String>()
-            selectedAuthenticator["authenticatorId"] = authenticatorTypeId
-
-            authBody["selectedAuthenticator"] = selectedAuthenticator;
-
-            return JsonUtil.getJsonObject(authBody).toString()
-                .toRequestBody("application/json".toMediaTypeOrNull())
-        }
-
-        val formBody: RequestBody =  getRequestBodyForAuthenticatorType(
-            flowId,
-            authenticatorTypeId
-        )
+        val formBody: RequestBody =  JsonUtil.getJsonObject(authBody).toString()
+            .toRequestBody("application/json".toMediaTypeOrNull())
 
         val requestBuilder: Request.Builder = Request.Builder().url(authnUri)
-
         return requestBuilder.post(formBody).build()
     }
 }

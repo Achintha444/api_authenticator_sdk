@@ -8,6 +8,7 @@ import java.io.InputStream
  * @property baseUrl Base url of the WSO2 identity server
  * @property clientId Client id of the application
  * @property scope Scope of the application (ex: openid profile email)
+ * @property integrityToken Client attestation integrity token - optional
  * @property trustedCertificates Trusted certificates of the WSO2 identity server(in the PEM format)
  * as a [InputStream] - optional. If not provided, a less secure http client will be used, which
  * bypasses the certificate validation. `This is not recommended for production`.
@@ -16,6 +17,7 @@ class AuthenticationCoreConfig (
     private val baseUrl: String,
     private val clientId: String,
     private val scope: String,
+    private val integrityToken: String? = null,
     private val trustedCertificates: InputStream? = null
 ) {
     /**
@@ -57,6 +59,13 @@ class AuthenticationCoreConfig (
      */
     fun getScope(): String {
         return scope
+    }
+
+    /**
+     * @return Client attestation integrity token.
+     */
+    fun getIntegrityToken(): String? {
+        return integrityToken
     }
 
     /**

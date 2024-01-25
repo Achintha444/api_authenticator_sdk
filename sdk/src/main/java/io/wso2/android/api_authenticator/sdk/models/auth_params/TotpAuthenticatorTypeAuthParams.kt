@@ -10,4 +10,17 @@ data class TotpAuthenticatorTypeAuthParams (
     override val totp: String
 ): AuthParams(
     totp = totp
-)
+) {
+    /**
+     * Get the parameter body for the authenticator to be sent to the server
+     *
+     * @return LinkedHashMap<String, String> - Parameter body for the authenticator
+     * ex: [<"totp", totp>]
+     */
+    override fun getParameterBodyAuthenticator(): LinkedHashMap<String, String> {
+        val paramBody = LinkedHashMap<String, String>()
+        paramBody["totp"] = totp
+
+        return paramBody
+    }
+}

@@ -15,4 +15,18 @@ data class BasicAuthenticatorAuthParams(
 ): AuthParams(
     username = username,
     password = password
-)
+) {
+    /**
+     * Get the parameter body for the authenticator to be sent to the server
+     *
+     * @return LinkedHashMap<String, String> - Parameter body for the authenticator
+     * ex: [<"username", username>, <"password", password>]
+     */
+    override fun getParameterBodyAuthenticator(): LinkedHashMap<String, String> {
+        val paramBody = LinkedHashMap<String, String>()
+        paramBody["username"] = username
+        paramBody["password"] = password
+
+        return paramBody
+    }
+}

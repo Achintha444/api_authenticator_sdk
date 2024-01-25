@@ -1,15 +1,23 @@
 package io.wso2.android.api_authenticator.sdk.core
 
+import android.content.Context
 import com.fasterxml.jackson.databind.JsonNode
-import io.wso2.android.api_authenticator.sdk.exceptions.AuthenticatorTypeException
 import io.wso2.android.api_authenticator.sdk.exceptions.AuthenticationCoreException
+import io.wso2.android.api_authenticator.sdk.exceptions.AuthenticatorTypeException
+import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.BasicAuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.authenticator_type_factory.AuthenticatorTypeFactory
 import io.wso2.android.api_authenticator.sdk.models.authorize_flow.AuthorizeFlow
+import io.wso2.android.api_authenticator.sdk.models.authorize_flow.AuthorizeFlowNotSuccess
+import io.wso2.android.api_authenticator.sdk.models.authorize_flow.AuthorizeFlowSuccess
+import io.wso2.android.api_authenticator.sdk.models.flow_status.FlowStatus
 import io.wso2.android.api_authenticator.sdk.models.http_client.http_client_builder.HttpClientBuilder
+import io.wso2.android.api_authenticator.sdk.util.AppAuthManager
 import io.wso2.android.api_authenticator.sdk.util.JsonUtil
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.GlobalScope.coroutineContext
 import kotlinx.coroutines.launch
 import okhttp3.Call
@@ -45,6 +53,17 @@ class AuthenticationCore private constructor(
      * Instance of the [AuthenticationCoreRequestBuilder] that will be used throughout the application
      */
     private val authenticationCoreRequestBuilderInstance = AuthenticationCoreRequestBuilder()
+
+    /**
+     * Instance of the [AppAuthManager] that will be used throughout the application
+     * to handle the AppAuth SDK.
+     */
+    private val appAuthManagerInstance = AppAuthManager.getInstance(
+        client,
+        authenticationCoreConfig.getClientId(),
+        authenticationCoreConfig.getTokenUrl(),
+        authenticationCoreConfig.getAuthorizeUrl()
+    )
 
     companion object {
         /**
@@ -95,12 +114,14 @@ class AuthenticationCore private constructor(
      */
     private suspend fun handleAuthorizeFlow(
         responseBodyString: String
-    ): AuthorizeFlow = suspendCoroutine { continuation ->
+    ): AuthorizeFlowNotSuccess = suspendCoroutine { continuation ->
 
         val coroutineScope = CoroutineScope(coroutineContext)
 
         coroutineScope.launch {
-            val authorizeFlow: AuthorizeFlow = AuthorizeFlow.fromJson(responseBodyString)
+            val authorizeFlow: AuthorizeFlowNotSuccess = AuthorizeFlowNotSuccess.fromJson(
+                responseBodyString
+            )
 
             try {
                 getDetailsOfAllAuthenticatorTypesGivenFlow(
@@ -164,8 +185,8 @@ class AuthenticationCore private constructor(
             override fun onResponse(call: Call, response: Response) {
                 try {
                     if (response.code == 200) {
-                        val authorizeFlow: AuthorizeFlow =
-                            AuthorizeFlow.fromJson(response.body!!.string())
+                        val authorizeFlow: AuthorizeFlowNotSuccess =
+                            AuthorizeFlowNotSuccess.fromJson(response.body!!.string())
 
                         if (authorizeFlow.nextStep.authenticatorTypes.size == 1) {
                             val detailedAuthenticatorType: AuthenticatorType =
@@ -268,44 +289,144 @@ class AuthenticationCore private constructor(
     /**
      * Authorize the application.
      * This method will call the authorization endpoint and get the authenticators available for the
-     * first step in the login flow.
+     * first step in the authentication flow.
      *
      * @throws [AuthenticationCoreException] If the authorization fails
+     * @throws [IOException] If the request fails due to a network error
      */
-    suspend fun authorize() {
+    suspend fun authorize(): AuthorizeFlow? = suspendCoroutine { continuation ->
         val request: Request = authenticationCoreRequestBuilderInstance.authorizeRequestBuilder(
             authenticationCoreConfig.getAuthorizeUrl(),
             authenticationCoreConfig.getClientId(),
-            authenticationCoreConfig.getScope()
+            authenticationCoreConfig.getScope(),
+            authenticationCoreConfig.getIntegrityToken()
         )
 
         client.newCall(request).enqueue(object : Callback {
-            // Throw an `AuthenticationCoreException` if the request fails
             override fun onFailure(call: Call, e: IOException) {
-                val exception = AuthenticationCoreException(e.message)
-                throw exception
+                continuation.resumeWithException(e)
             }
 
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
                 try {
-                    // reading the json from the response
-                    val responseObject: JsonNode = JsonUtil.getJsonObject(response.body!!.string())
+                    if (response.code == 200) {
+                        // reading the json from the response
+                        val responseObject: JsonNode =
+                            JsonUtil.getJsonObject(response.body!!.string())
 
-
-//                    handleAuthorizeFlow(context, model, AuthorizeFlowCallback(
-//                        onSuccess = {
-//                            onSuccessCallback(it)
-//                        },
-//                        onFailure = {
-//                            onFailureCallback()
-//                        }
-//                    ))
+                        GlobalScope.launch(Dispatchers.Default) {
+                            handleAuthorizeFlow(responseObject.toString())?.let {
+                                continuation.resume(it)
+                            }
+                        }
+                    } else {
+                        // throw an `AuthenticationCoreException` if the request does not return 200
+                        val exception = AuthenticationCoreException(response.message)
+                        continuation.resumeWithException(exception)
+                    }
                 } catch (e: Exception) {
                     val exception = AuthenticationCoreException(e.message)
-                    throw exception
+                    continuation.resumeWithException(exception)
                 }
             }
         })
     }
+
+    /**
+     * Send the authentication parameters to the authentication endpoint and get the next step of the
+     * authentication flow. If the authentication flow has only one step, this method will return
+     * the success response of the authentication flow if the authentication is successful.
+     *
+     * @param flowId Flow id of the authentication flow
+     * @param authenticatorType Authenticator type of the selected authenticator
+     * @param authenticatorParameters Authenticator parameters of the selected authenticator
+     *
+     * @throws [AuthenticationCoreException] If the authentication fails
+     * @throws [IOException] If the request fails due to a network error
+     *
+     * @return [AuthorizeFlow] with the next step of the authentication flow
+     */
+    suspend fun authenticate(
+        flowId: String,
+        authenticatorType: AuthenticatorType,
+        authenticatorParameters: AuthParams,
+    ): AuthorizeFlow? = suspendCoroutine { continuation ->
+        val request: Request = authenticationCoreRequestBuilderInstance.authenticateRequestBuilder(
+            authenticationCoreConfig.getAuthnUrl(),
+            flowId,
+            authenticatorType,
+            authenticatorParameters
+        )
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                continuation.resumeWithException(e)
+            }
+
+            @Throws(IOException::class)
+            override fun onResponse(call: Call, response: Response) {
+                try {
+                    if (response.code == 200) {
+                        // reading the json from the response
+                        val responseObject: JsonNode =
+                            JsonUtil.getJsonObject(response.body!!.string())
+
+                        // assessing the flow status
+                        when (responseObject["flowStatus"] as String) {
+                            FlowStatus.FAIL_INCOMPLETE.flowStatus -> {
+                                val exception = AuthenticationCoreException(
+                                    AuthenticationCoreException.AUTHENTICATION_NOT_COMPLETED
+                                )
+                                continuation.resumeWithException(exception)
+                            }
+
+                            FlowStatus.INCOMPLETE.flowStatus -> {
+                                GlobalScope.launch(Dispatchers.Default) {
+                                    handleAuthorizeFlow(responseObject.toString())?.let {
+                                        continuation.resume(it)
+                                    }
+                                }
+                            }
+
+                            FlowStatus.SUCCESS.flowStatus -> {
+                                continuation.resume(
+                                    AuthorizeFlowSuccess.fromJson(responseObject.toString())
+                                )
+                            }
+                        }
+                    } else {
+                        // Throw an `AuthenticationCoreException` if the request does not return 200
+                        val exception = AuthenticationCoreException(response.message)
+                        continuation.resumeWithException(exception)
+                    }
+                } catch (e: IOException) {
+                    continuation.resumeWithException(e)
+                }
+            }
+        })
+    }
+
+    /**
+     * Get the access token using the authorization code.
+     *
+     * @param context Context of the application
+     * @param authorizationCode Authorization code
+     *
+     * @return Access token [String]
+     */
+    suspend fun getAccessToken(
+        context: Context,
+        authorizationCode: String
+    ): String? = suspendCoroutine { continuation ->
+        GlobalScope.launch(Dispatchers.Default) {
+            appAuthManagerInstance.exchangeAuthorizationCodeForAccessToken(
+                authorizationCode,
+                context
+            )?.let {
+                continuation.resume(it)
+            }
+        }
+    }
+
 }

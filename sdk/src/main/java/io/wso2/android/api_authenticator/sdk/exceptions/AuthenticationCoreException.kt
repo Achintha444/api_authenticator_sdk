@@ -18,6 +18,11 @@ class AuthenticationCoreException(
          * Message to be shown when authenticator is not initialized
          */
         const val AUTHORIZATION_SERVICE_NOT_INITIALIZED = "Authorization Service is not initialized"
+
+        /**
+         * Message to be shown when authentication is not completed
+         */
+        const val AUTHENTICATION_NOT_COMPLETED = "Authentication is not completed. Response returned FAIL_INCOMPLETE"
     }
 
     override fun toString(): String {
