@@ -428,5 +428,4 @@ class AuthenticationCore private constructor(
             }
         }
     }
-
 }
