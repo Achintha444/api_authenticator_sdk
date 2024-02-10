@@ -23,7 +23,7 @@ import kotlin.coroutines.suspendCoroutine
  * @property tokenEndpoint The token endpoint.
  * @property authorizeEndpoint The authorize endpoint.
  */
-class AppAuthManager private constructor(
+internal class AppAuthManager private constructor(
     private val httpBuilderClient: OkHttpClient,
     private val clientId: String,
     private val tokenEndpoint: String,
@@ -84,7 +84,7 @@ class AppAuthManager private constructor(
      *
      * @return The access token [String]
      */
-    suspend fun exchangeAuthorizationCodeForAccessToken(
+    internal suspend fun exchangeAuthorizationCodeForAccessToken(
         authorizationCode: String,
         context: Context
     ): String? = suspendCoroutine { continuation ->

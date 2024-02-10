@@ -1,4 +1,4 @@
-package io.wso2.android.api_authenticator.sdk.models.authenticator_type_factory
+package io.wso2.android.api_authenticator.sdk.models.autheniticator_type.authenticator_type_factory
 
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.BasicAuthenticatorType
