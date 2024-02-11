@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "io.wso2.android.api_authenticator.sdk.sample"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "io.wso2.android.api_authenticator.sdk.sample"
         minSdk = 26
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -18,6 +18,7 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        manifestPlaceholders.putIfAbsent("appAuthRedirectScheme", "https://example-app.com/redirect")
     }
 
     buildTypes {

@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">api_authenticator_sdk</string>
+
+    <!--  Common  -->
+    <string name="common.login">Login</string>
+    <string name="common.logo_placeholder">WSO2 Identity Server Logo</string>
+
+    <!--  Main Activity  -->
+    <string name="activity_main.subtitle">API Based Authentication SDK Sample</string>
 </resources>
