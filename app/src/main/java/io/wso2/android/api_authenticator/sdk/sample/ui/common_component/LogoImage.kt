@@ -12,7 +12,7 @@ fun LogoImage() {
     Column {
         Image(
             painter = painterResource(R.drawable.is_logo),
-            contentDescription = stringResource(R.string.common_logo_placeholder)
+            contentDescription = stringResource(R.string.common_common_components_logo_logo_placeholder)
         )
     }
 }

@@ -1,4 +1,4 @@
-package io.wso2.android.api_authenticator.sdk.sample.activity.main
+package io.wso2.android.api_authenticator.sdk.sample
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -48,63 +48,10 @@ class MainActivity : ComponentActivity() {
                         ),
                     color = Color.Transparent
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(24.dp),
-                        verticalArrangement = Arrangement.SpaceAround,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Logo()
-                        LoginButton(Modifier)
-                    }
+
                 }
 
             }
-        }
-    }
-}
-
-@Composable
-fun SubTitle(modifier: Modifier = Modifier) {
-    Text(
-        text = R.string.activity_main_subtitle.toString(),
-        modifier = modifier
-    )
-}
-
-@Composable
-fun LoginButton(modifier: Modifier = Modifier) {
-    Button(
-        modifier = modifier,
-        onClick = { /*TODO*/ }
-    ) {
-        Text(text = R.string.common_login.toString())
-    }
-}
-
-@Composable
-fun Logo() {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        LogoImage()
-        SubTitle()
-    }
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
-@Composable
-fun LogoPreview() {
-    Api_authenticator_sdkTheme {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            LogoImage()
-            SubTitle()
-            LoginButton()
         }
     }
 }

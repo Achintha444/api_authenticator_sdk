@@ -2,9 +2,20 @@
     <string name="app_name">api_authenticator_sdk</string>
 
     <!--  Common  -->
-    <string name="common.login">Login</string>
-    <string name="common.logo_placeholder">WSO2 Identity Server Logo</string>
+    <string name="common_login">Login</string>
+    <string name="common_logout">Logout</string>
+    <!--  Common_Components  -->
+    <!--  Logo  -->
+    <string name="common_common_components_logo_logo_placeholder">WSO2 Identity Server io.wso2.android.api_authenticator.sdk.sample.activity.home_screen.screen.Logo</string>
+    <string name="common_common_components_logo_subtitle">API Based Authentication SDK Sample</string>
 
-    <!--  Main Activity  -->
-    <string name="activity_main.subtitle">API Based Authentication SDK Sample</string>
+    <!--  Screens  -->
+    <!--  Landing Screen  -->
+    <string name="screens_landing_screen_subtitle">API Based Authentication SDK Sample</string>
+
+    <!--  Home Screen  -->
+    <string name="screens_home_screen_login_success">Login Successful</string>
+
+    <string name="title_activity_home">Home</string>
+    <string name="title_activity_landing">Landing</string>
 </resources>
