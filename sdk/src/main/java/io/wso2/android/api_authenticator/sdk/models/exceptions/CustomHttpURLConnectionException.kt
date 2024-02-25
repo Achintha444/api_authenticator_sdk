@@ -1,6 +1,11 @@
-package io.wso2.android.api_authenticator.sdk.exceptions
+package io.wso2.android.api_authenticator.sdk.models.exceptions
 
-class CustomHttpURLConnectionException(
+/**
+ * Exception to be thrown to the exception related to the [CustomHttpURLConnection]
+ *
+ * @property message Message related to the exception
+ */
+internal class CustomHttpURLConnectionException(
     override val message: String?
 ): Exception(message) {
     companion object {

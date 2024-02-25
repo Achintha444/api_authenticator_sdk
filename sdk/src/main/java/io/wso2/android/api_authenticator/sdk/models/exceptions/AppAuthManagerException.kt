@@ -1,12 +1,14 @@
-package io.wso2.android.api_authenticator.sdk.exceptions
+package io.wso2.android.api_authenticator.sdk.models.exceptions
 
 /**
  * Exception to be thrown to the exception related to the [AppAuthManager]
  *
  * @property message Message related to the exception
  * @property exceptionMessage Message related to the exception
+ *
+ * TODO: Make a mapper function to map the exceptions to the error types, and these need to be SEALED classes
  */
-class AppAuthManagerException(
+internal class AppAuthManagerException(
     override val message: String?,
     private val exceptionMessage: String? = null
 ): Exception(message) {
@@ -23,7 +25,7 @@ class AppAuthManagerException(
     }
 
     override fun toString(): String {
-        return "${APP_AUTH_MANAGER_EXCEPTION}: $message $exceptionMessage"
+        return "$APP_AUTH_MANAGER_EXCEPTION: $message $exceptionMessage"
     }
 
     /**

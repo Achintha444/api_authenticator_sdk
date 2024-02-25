@@ -1,4 +1,4 @@
-package io.wso2.android.api_authenticator.sdk.models.meta_data
+package io.wso2.android.api_authenticator.sdk.models.autheniticator_type.meta_data
 
 import io.wso2.android.api_authenticator.sdk.util.JsonUtil
 

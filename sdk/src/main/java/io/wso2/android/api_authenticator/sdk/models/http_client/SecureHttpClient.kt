@@ -30,7 +30,7 @@ import javax.net.ssl.X509TrustManager
 class SecureHttpClient private constructor(
     private val trustedCertificates: InputStream
 ) {
-    val client: OkHttpClient
+    private val client: OkHttpClient
 
     companion object {
         private var secureHttpClientInstance = WeakReference<SecureHttpClient?>(null)
@@ -122,5 +122,14 @@ class SecureHttpClient private constructor(
         } catch (e: IOException) {
             throw AssertionError(e)
         }
+    }
+
+    /**
+     * Returns the [OkHttpClient] instance.
+     *
+     * @return [OkHttpClient] instance.
+     */
+    fun getClient(): OkHttpClient {
+        return this.client
     }
 }

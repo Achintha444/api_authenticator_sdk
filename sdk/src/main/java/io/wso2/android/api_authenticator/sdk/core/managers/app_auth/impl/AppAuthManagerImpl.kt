@@ -1,8 +1,8 @@
-package io.wso2.android.api_authenticator.sdk.util
+package io.wso2.android.api_authenticator.sdk.core.managers.app_auth.impl
 
 import android.content.Context
-import android.net.Uri
-import io.wso2.android.api_authenticator.sdk.exceptions.AppAuthManagerException
+import io.wso2.android.api_authenticator.sdk.core.managers.app_auth.AppAuthManager
+import io.wso2.android.api_authenticator.sdk.models.exceptions.AppAuthManagerException
 import io.wso2.android.api_authenticator.sdk.models.http_client.CustomHttpURLConnection
 import net.openid.appauth.AppAuthConfiguration
 import net.openid.appauth.AuthorizationService
@@ -18,60 +18,45 @@ import kotlin.coroutines.suspendCoroutine
 /**
  * Use to manage the AppAuth SDK.
  *
- * @property httpBuilderClient The [OkHttpClient] instance.
+ * @property customTrustClient The [OkHttpClient] instance.
  * @property clientId The client ID.
- * @property tokenEndpoint The token endpoint.
- * @property authorizeEndpoint The authorize endpoint.
+ * @property serviceConfig The [AuthorizationServiceConfiguration] instance.
  */
-internal class AppAuthManager private constructor(
-    private val httpBuilderClient: OkHttpClient,
+internal class AppAuthManagerImpl private constructor(
+    private val customTrustClient: OkHttpClient,
     private val clientId: String,
-    private val tokenEndpoint: String,
-    private val authorizeEndpoint: String
-) {
-    // Set the authorization service configuration
-    private var serviceConfig: AuthorizationServiceConfiguration =
-        AuthorizationServiceConfiguration(
-            Uri.parse(authorizeEndpoint),  // Authorization endpoint
-            Uri.parse(tokenEndpoint) // Token endpoint
-        )
-
-    // Set the custom trust client
-    private val customTrustClient: OkHttpClient = httpBuilderClient
-
+    private val serviceConfig: AuthorizationServiceConfiguration
+): AppAuthManager {
     companion object {
         /**
-         * Instance of the [AppAuthManager] class.
+         * Instance of the [AppAuthManagerImpl] class.
          */
-        private var appAuthManagerInstance = WeakReference<AppAuthManager?>(null)
+        private var appAuthManagerImplInstance = WeakReference<AppAuthManagerImpl?>(null)
 
         /**
-         * Initialize the [AppAuthManager] class.
+         * Initialize the [AppAuthManagerImpl] class.
          *
          * @property httpBuilderClient The [OkHttpClient] instance.
          * @property clientId The client ID.
-         * @property tokenEndpoint The token endpoint.
-         * @property authorizeEndpoint The authorize endpoint.
          *
-         * @return The [AppAuthManager] instance.
+         *
+         * @return The [AppAuthManagerImpl] instance.
          */
         fun getInstance(
             httpBuilderClient: OkHttpClient,
             clientId: String,
-            tokenEndpoint: String,
-            authorizeEndpoint: String
-        ): AppAuthManager {
-            var appAuthManager = appAuthManagerInstance.get()
-            if (appAuthManager == null) {
-                appAuthManager = AppAuthManager(
+            serviceConfig: AuthorizationServiceConfiguration
+        ): AppAuthManagerImpl {
+            var appAuthManagerImpl = appAuthManagerImplInstance.get()
+            if (appAuthManagerImpl == null) {
+                appAuthManagerImpl = AppAuthManagerImpl(
                     httpBuilderClient,
                     clientId,
-                    tokenEndpoint,
-                    authorizeEndpoint
+                    serviceConfig
                 )
-                appAuthManagerInstance = WeakReference(appAuthManager)
+                appAuthManagerImplInstance = WeakReference(appAuthManagerImpl)
             }
-            return appAuthManager
+            return appAuthManagerImpl
         }
     }
 
@@ -84,7 +69,7 @@ internal class AppAuthManager private constructor(
      *
      * @return The access token [String]
      */
-    internal suspend fun exchangeAuthorizationCodeForAccessToken(
+    override suspend fun getAccessToken(
         authorizationCode: String,
         context: Context
     ): String? = suspendCoroutine { continuation ->

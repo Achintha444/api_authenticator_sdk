@@ -1,6 +1,6 @@
 package io.wso2.android.api_authenticator.sdk.models.autheniticator_type
 
-import io.wso2.android.api_authenticator.sdk.models.meta_data.GoogleAuthenticatorTypeMetaData
+import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.meta_data.GoogleAuthenticatorTypeMetaData
 
 data class GoogleAuthenticatorType(
     /**

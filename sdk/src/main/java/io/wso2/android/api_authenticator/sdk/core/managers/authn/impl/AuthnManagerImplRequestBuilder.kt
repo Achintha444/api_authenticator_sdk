@@ -1,8 +1,6 @@
-package io.wso2.android.api_authenticator.sdk.core
+package io.wso2.android.api_authenticator.sdk.core.managers.authn.impl
 
-import android.util.Log
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
-import io.wso2.android.api_authenticator.sdk.models.auth_params.BasicAuthenticatorAuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.util.JsonUtil
 import okhttp3.FormBody
@@ -14,7 +12,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 /**
  * Builder function related to the Authenticator.
  */
-internal class AuthenticationCoreRequestBuilder {
+internal object AuthnManagerImplRequestBuilder {
 
     /**
      * Build the request to authorize the application.

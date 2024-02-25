@@ -1,7 +1,7 @@
 package io.wso2.android.api_authenticator.sdk.models.http_client
 
 import android.net.Uri
-import io.wso2.android.api_authenticator.sdk.exceptions.CustomHttpURLConnectionException
+import io.wso2.android.api_authenticator.sdk.models.exceptions.CustomHttpURLConnectionException
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL

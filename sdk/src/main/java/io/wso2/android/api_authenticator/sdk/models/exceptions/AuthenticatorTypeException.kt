@@ -1,4 +1,4 @@
-package io.wso2.android.api_authenticator.sdk.exceptions
+package io.wso2.android.api_authenticator.sdk.models.exceptions
 
 /**
  * Exception to be thrown to the exception related to an `AuthenticatorType`
@@ -7,7 +7,7 @@ package io.wso2.android.api_authenticator.sdk.exceptions
  * @property authenticator Authenticator type
  * @property code Code of the exception
  */
-class AuthenticatorTypeException(
+internal class AuthenticatorTypeException(
     override val message: String?,
     private val authenticator: String,
     private val code: String? = null
@@ -28,7 +28,7 @@ class AuthenticatorTypeException(
     override fun toString(): String {
         val codeString: String = if (code != null) "$code " else ""
 
-        return "${AUTHENTICATOR_EXCEPTION}: $authenticator $codeString $message"
+        return "$AUTHENTICATOR_EXCEPTION: $authenticator $codeString $message"
     }
 
     /**

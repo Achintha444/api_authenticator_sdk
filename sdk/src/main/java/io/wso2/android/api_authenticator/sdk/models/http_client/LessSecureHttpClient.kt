@@ -14,7 +14,7 @@ import javax.net.ssl.X509TrustManager
  * Use to create the [LessSecureHttpClient] for API calls in the SDK
  */
 internal class LessSecureHttpClient private constructor() {
-    val client: OkHttpClient
+    private val client: OkHttpClient
 
     companion object {
         private var lessSecureHttpClientInstance = WeakReference<LessSecureHttpClient?>(null)
@@ -76,5 +76,14 @@ internal class LessSecureHttpClient private constructor() {
                 return emptyArray()
             }
         }
+    }
+
+    /**
+     * Returns the [OkHttpClient] instance.
+     *
+     * @return [OkHttpClient] instance.
+     */
+    fun getClient(): OkHttpClient {
+        return client
     }
 }

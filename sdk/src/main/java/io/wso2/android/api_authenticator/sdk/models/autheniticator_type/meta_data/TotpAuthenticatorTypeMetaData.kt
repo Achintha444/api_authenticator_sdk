@@ -1,6 +1,10 @@
-package io.wso2.android.api_authenticator.sdk.models.meta_data
+package io.wso2.android.api_authenticator.sdk.models.autheniticator_type.meta_data
 
-data class BasicAuthenticatorTypeMetaData (
+data class TotpAuthenticatorTypeMetaData(
+    /**
+     * I18n key of the param
+     */
+    override val i18nKey: String,
     /**
      * Prompt type
      */
@@ -10,7 +14,7 @@ data class BasicAuthenticatorTypeMetaData (
      */
     override var params: ArrayList<AuthenticatorTypeParam>?,
 ): AuthenticatorTypeMetaData(
-    null,
+    i18nKey,
     promptType,
     params,
     null

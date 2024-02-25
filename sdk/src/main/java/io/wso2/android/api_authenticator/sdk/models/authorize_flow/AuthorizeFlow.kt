@@ -10,7 +10,6 @@ import io.wso2.android.api_authenticator.sdk.util.JsonUtil
  *
  * @property flowStatus Status of the authentication flow
  */
-
 abstract class AuthorizeFlow(open val flowStatus: String) {
     /**
      * Convert the object to a json string

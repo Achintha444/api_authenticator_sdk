@@ -1,11 +1,11 @@
-package io.wso2.android.api_authenticator.sdk.exceptions
+package io.wso2.android.api_authenticator.sdk.models.exceptions
 
 /**
  * Exception to be thrown to the exception related to the Authenticator
  *
  * @property message Message related to the exception
  */
-class AuthenticationCoreException(
+internal class AuthenticationCoreException(
     override val message: String?
 ): Exception(message) {
     companion object {
@@ -18,15 +18,10 @@ class AuthenticationCoreException(
          * Message to be shown when authenticator is not initialized
          */
         const val AUTHORIZATION_SERVICE_NOT_INITIALIZED = "Authorization Service is not initialized"
-
-        /**
-         * Message to be shown when authentication is not completed
-         */
-        const val AUTHENTICATION_NOT_COMPLETED = "Authentication is not completed. Response returned FAIL_INCOMPLETE"
     }
 
     override fun toString(): String {
-        return "${AUTHORIZATION_SERVICE_EXCEPTION}: $message"
+        return "$AUTHORIZATION_SERVICE_EXCEPTION: $message"
     }
 
     /**
