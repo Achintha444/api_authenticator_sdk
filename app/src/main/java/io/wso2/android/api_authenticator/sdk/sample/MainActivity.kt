@@ -24,7 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.wso2.android.api_authenticator.sdk.sample.R
-import io.wso2.android.api_authenticator.sdk.sample.ui.common_component.LogoImage
+import io.wso2.android.api_authenticator.sdk.sample.presentation.util.common_component.LogoImage
 import io.wso2.android.api_authenticator.sdk.sample.ui.theme.Api_authenticator_sdkTheme
 
 class MainActivity : ComponentActivity() {

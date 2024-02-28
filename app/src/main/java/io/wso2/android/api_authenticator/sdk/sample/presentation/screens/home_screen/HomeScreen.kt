@@ -1,3 +1,5 @@
+package io.wso2.android.api_authenticator.sdk.sample.presentation.screens.home_screen
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,11 +13,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.wso2.android.api_authenticator.sdk.sample.R
-import io.wso2.android.api_authenticator.sdk.sample.ui.common_component.LogoLarge
+import io.wso2.android.api_authenticator.sdk.sample.presentation.util.common_component.LogoSmall
 import io.wso2.android.api_authenticator.sdk.sample.ui.theme.Api_authenticator_sdkTheme
 
 @Composable
-fun LandingScreen() {
+fun HomeScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -23,25 +25,33 @@ fun LandingScreen() {
         verticalArrangement = Arrangement.SpaceAround,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        LogoLarge()
-        LoginButton(Modifier)
+        LogoSmall()
+        LoginSuccessMessage()
+        LogoutButton(Modifier)
     }
 }
 
 @Composable
-private fun LoginButton(modifier: Modifier = Modifier) {
+private fun LoginSuccessMessage() {
+    Text(
+        text = stringResource(R.string.screens_home_screen_login_success)
+    )
+}
+
+@Composable
+private fun LogoutButton(modifier: Modifier = Modifier) {
     Button(
         modifier = modifier,
         onClick = { /*TODO*/ }
     ) {
-        Text(text = stringResource(R.string.common_login))
+        Text(text = stringResource(R.string.common_logout))
     }
 }
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
-fun LandingScreenPreview() {
+fun HomeScreenPreview() {
     Api_authenticator_sdkTheme {
-        LandingScreen()
+        HomeScreen()
     }
 }

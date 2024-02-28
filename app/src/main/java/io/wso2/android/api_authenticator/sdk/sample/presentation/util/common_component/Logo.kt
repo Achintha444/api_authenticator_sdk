@@ -1,4 +1,4 @@
-package io.wso2.android.api_authenticator.sdk.sample.ui.common_component
+package io.wso2.android.api_authenticator.sdk.sample.presentation.util.common_component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
