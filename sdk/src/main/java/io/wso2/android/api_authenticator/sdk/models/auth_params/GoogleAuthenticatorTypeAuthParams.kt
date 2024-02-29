@@ -11,7 +11,7 @@ data class GoogleAuthenticatorTypeAuthParams(
     /**
      * id token retrieved from the Google authenticator
      */
-    override val idToken: String,
+    override val idToken: String
 ): AuthParams(
     accessToken = accessToken,
     idToken = idToken
