@@ -14,8 +14,7 @@ data class TotpAuthenticatorTypeMetaData(
      */
     override var params: ArrayList<AuthenticatorTypeParam>?,
 ): AuthenticatorTypeMetaData(
-    i18nKey,
-    promptType,
-    params,
-    null
+    i18nKey = i18nKey,
+    promptType = promptType,
+    params = params
 )

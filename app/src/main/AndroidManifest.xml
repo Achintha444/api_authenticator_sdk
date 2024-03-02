@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
+        android:name=".SDKSampleApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -12,16 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Api_authenticator_sdk"
         tools:targetApi="31">
-        <activity
-            android:name=".activity.landing_screen.Landing"
-            android:exported="false"
-            android:label="@string/title_activity_landing"
-            android:theme="@style/Theme.Api_authenticator_sdk" />
-        <activity
-            android:name=".activity.home_screen.screen.Home"
-            android:exported="false"
-            android:label="@string/title_activity_home"
-            android:theme="@style/Theme.Api_authenticator_sdk" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

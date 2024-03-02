@@ -122,14 +122,14 @@ internal class AuthenticatorManagerImpl(
                             val authorizeFlow: AuthorizeFlowNotSuccess =
                                 AuthorizeFlowNotSuccess.fromJson(response.body!!.string())
 
-                            if (authorizeFlow.nextStep.authenticatorTypes.size == 1) {
+                            if (authorizeFlow.nextStep.authenticators.size == 1) {
                                 val detailedAuthenticatorType: AuthenticatorType =
                                     authenticatorTypeFactory.getAuthenticatorType(
-                                        authorizeFlow.nextStep.authenticatorTypes[0].authenticatorId,
-                                        authorizeFlow.nextStep.authenticatorTypes[0].authenticator,
-                                        authorizeFlow.nextStep.authenticatorTypes[0].idp,
-                                        authorizeFlow.nextStep.authenticatorTypes[0].metadata,
-                                        authorizeFlow.nextStep.authenticatorTypes[0].requiredParams
+                                        authorizeFlow.nextStep.authenticators[0].authenticatorId,
+                                        authorizeFlow.nextStep.authenticators[0].authenticator,
+                                        authorizeFlow.nextStep.authenticators[0].idp,
+                                        authorizeFlow.nextStep.authenticators[0].metadata,
+                                        authorizeFlow.nextStep.authenticators[0].requiredParams
                                     )
 
                                 continuation.resume(detailedAuthenticatorType)

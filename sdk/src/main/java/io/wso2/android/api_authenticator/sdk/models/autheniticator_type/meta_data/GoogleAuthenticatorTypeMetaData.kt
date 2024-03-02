@@ -14,19 +14,26 @@ data class GoogleAuthenticatorTypeMetaData(
      */
     override val additionalData: GoogleAdditionalData
 ) : AuthenticatorTypeMetaData(
-    i18nKey,
-    promptType,
-    null,
-    additionalData
+    i18nKey = i18nKey,
+    promptType = promptType,
+    additionalData = additionalData
 ) {
     data class GoogleAdditionalData(
         /**
          * Nonce for google authentication
          */
-        val nonce: String?,
+        override val nonce: String,
         /**
          * Client id for google authentication
          */
-        val clientId: String?
-    ): AuthenticatorTypeAdditionalData()
+        override val clientId: String,
+        /**
+         * Scope for google authentication
+         */
+        override val scope: String
+    ): AuthenticatorTypeAdditionalData(
+        nonce,
+        clientId,
+        scope
+    )
 }

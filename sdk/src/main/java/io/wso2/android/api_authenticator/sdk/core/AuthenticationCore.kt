@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 import java.lang.ref.WeakReference
 import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 /**
@@ -98,16 +99,7 @@ class AuthenticationCore private constructor(
      * @throws [AuthenticationCoreException] If the authorization fails
      * @throws [IOException] If the request fails due to a network error
      */
-    suspend fun authorize(): AuthorizeFlow? = suspendCoroutine { continuation ->
-        GlobalScope.launch(Dispatchers.Default) {
-            runCatching { authnMangerInstance.authorize() }
-                .onSuccess { continuation.resume(it) }
-                .onFailure {
-                    it.printStackTrace()
-                    throw it
-                }
-        }
-    }
+    suspend fun authorize(): AuthorizeFlow? = authnMangerInstance.authorize()
 
     /**
      * Send the authentication parameters to the authentication endpoint and get the next step of the
@@ -127,21 +119,10 @@ class AuthenticationCore private constructor(
     suspend fun authenticate(
         authenticatorType: AuthenticatorType,
         authenticatorParameters: AuthParams,
-    ): AuthorizeFlow? = suspendCoroutine { continuation ->
-        GlobalScope.launch(Dispatchers.Default) {
-            runCatching {
-                authnMangerInstance.authenticate(
-                    authenticatorType,
-                    authenticatorParameters
-                )
-            }
-                .onSuccess { continuation.resume(it) }
-                .onFailure {
-                    it.printStackTrace()
-                    throw it
-                }
-        }
-    }
+    ): AuthorizeFlow? = authnMangerInstance.authenticate(
+        authenticatorType,
+        authenticatorParameters
+    )
 
     /**
      * Get the access token using the authorization code.
@@ -155,14 +136,5 @@ class AuthenticationCore private constructor(
     suspend fun getAccessToken(
         context: Context,
         authorizationCode: String
-    ): String? = suspendCoroutine { continuation ->
-        GlobalScope.launch(Dispatchers.Default) {
-            runCatching { appAuthManagerInstance.getAccessToken(authorizationCode, context) }
-                .onSuccess { continuation.resume(it) }
-                .onFailure {
-                    it.printStackTrace()
-                    throw it
-                }
-        }
-    }
+    ): String? = appAuthManagerInstance.getAccessToken(authorizationCode, context)
 }

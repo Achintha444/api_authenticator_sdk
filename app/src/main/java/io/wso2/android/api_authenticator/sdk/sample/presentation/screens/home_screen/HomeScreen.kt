@@ -12,12 +12,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.wso2.android.api_authenticator.sdk.sample.R
+import io.wso2.android.api_authenticator.sdk.sample.presentation.util.common_component.LoadingDialog
 import io.wso2.android.api_authenticator.sdk.sample.presentation.util.common_component.LogoSmall
 import io.wso2.android.api_authenticator.sdk.sample.ui.theme.Api_authenticator_sdkTheme
 
 @Composable
-fun HomeScreen() {
+internal fun HomeScreen(
+    viewModel: HomeScreenViewModel = hiltViewModel()
+) {
+    val state = viewModel.state.collectAsStateWithLifecycle()
+    HomeScreenContent(state.value)
+}
+
+@Composable
+fun HomeScreenContent(
+    state: HomeScreenState
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -25,6 +38,7 @@ fun HomeScreen() {
         verticalArrangement = Arrangement.SpaceAround,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        LoadingDialog(isLoading = state.isLoading)
         LogoSmall()
         LoginSuccessMessage()
         LogoutButton(Modifier)
@@ -52,6 +66,10 @@ private fun LogoutButton(modifier: Modifier = Modifier) {
 @Composable
 fun HomeScreenPreview() {
     Api_authenticator_sdkTheme {
-        HomeScreen()
+        HomeScreenContent(
+            HomeScreenState(
+                isLoading = false
+            )
+        )
     }
 }

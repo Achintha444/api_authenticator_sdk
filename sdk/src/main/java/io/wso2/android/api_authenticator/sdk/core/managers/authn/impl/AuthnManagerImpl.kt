@@ -86,6 +86,7 @@ internal class AuthnManagerImpl private constructor(
         val request: Request = authenticationCoreRequestBuilder.authorizeRequestBuilder(
             authenticationCoreConfig.getAuthorizeUrl(),
             authenticationCoreConfig.getClientId(),
+            authenticationCoreConfig.getRedirectUri(),
             authenticationCoreConfig.getScope(),
             authenticationCoreConfig.getIntegrityToken()
         )
@@ -95,7 +96,7 @@ internal class AuthnManagerImpl private constructor(
                 continuation.resumeWithException(e)
             }
 
-            @Throws(IOException::class)
+            @Throws(IOException::class, AuthnManagerException::class)
             override fun onResponse(call: Call, response: Response) {
                 try {
                     if (response.code == 200) {
@@ -107,9 +108,11 @@ internal class AuthnManagerImpl private constructor(
                         flowManager.setFlowId(responseObject.get("flowId").asText())
 
                         GlobalScope.launch(Dispatchers.Default) {
-                            runCatching { flowManager.manageStateOfAuthorizeFlow(responseObject) }
-                                .onSuccess { continuation.resume(it) }
-                                .onFailure { continuation.resumeWithException(it) }
+                            flowManager.manageStateOfAuthorizeFlow(responseObject).runCatching {
+                                continuation.resume(this)
+                            }.onFailure {
+                                continuation.resumeWithException(it)
+                            }
                         }
                     } else {
                         // throw an `AuthnManagerException` if the request does not return 200
@@ -157,7 +160,11 @@ internal class AuthnManagerImpl private constructor(
                 continuation.resumeWithException(e)
             }
 
-            @Throws(IOException::class)
+            @Throws(
+                IOException::class,
+                AuthnManagerException::class,
+                AuthenticatorTypeException::class
+            )
             override fun onResponse(call: Call, response: Response) {
                 try {
                     if (response.code == 200) {

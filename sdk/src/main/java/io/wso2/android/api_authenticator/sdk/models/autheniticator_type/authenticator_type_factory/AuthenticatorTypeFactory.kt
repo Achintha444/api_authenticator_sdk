@@ -50,9 +50,13 @@ internal object AuthenticatorTypeFactory {
 
             GoogleAuthenticatorType.AUTHENTICATOR_TYPE -> {
                 val authenticatorTypeMetaData = GoogleAuthenticatorTypeMetaData(
-                    metadata!!.i18nKey,
-                    metadata!!.promptType,
-                    metadata!!.additionalData as GoogleAuthenticatorTypeMetaData.GoogleAdditionalData
+                    metadata?.i18nKey,
+                    metadata?.promptType,
+                    GoogleAuthenticatorTypeMetaData.GoogleAdditionalData(
+                        metadata?.additionalData?.nonce!!,
+                        metadata?.additionalData?.clientId!!,
+                        metadata?.additionalData?.scope!!
+                    )
                 )
                 GoogleAuthenticatorType(
                     authenticatorId,
@@ -67,7 +71,9 @@ internal object AuthenticatorTypeFactory {
                 val authenticatorTypeMetaData = PasskeyAuthenticatorTypeMetaData(
                     metadata!!.i18nKey,
                     metadata!!.promptType,
-                    metadata!!.additionalData as PasskeyAuthenticatorTypeMetaData.PasskeyAdditionalData
+                    PasskeyAuthenticatorTypeMetaData.PasskeyAdditionalData(
+                        challengeData = metadata.additionalData?.challengeData!!
+                    )
                 )
                 PasskeyAuthenticatorType(
                     authenticatorId,

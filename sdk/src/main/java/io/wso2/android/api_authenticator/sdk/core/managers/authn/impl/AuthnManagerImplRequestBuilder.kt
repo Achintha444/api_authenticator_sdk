@@ -27,11 +27,13 @@ internal object AuthnManagerImplRequestBuilder {
     internal fun authorizeRequestBuilder(
         authorizeUri: String,
         clientId: String,
+        redirectUri: String,
         scope: String,
         integrityToken: String? = null
     ): Request {
         val formBody: RequestBody = FormBody.Builder()
             .add("client_id", clientId)
+            .add("redirect_uri", redirectUri)
             .add("scope", scope)
             .add("response_type", "code")
             .add("response_mode", "direct")

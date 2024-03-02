@@ -1,4 +1,4 @@
-package io.wso2.android.api_authenticator.sdk.sample.presentation.screens.home_screen
+package io.wso2.android.api_authenticator.sdk.sample.presentation.screens.landing_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,15 +12,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeScreenViewModel @Inject constructor(
+class LandingScreenViewModel @Inject constructor(
     private val authenticationRepository: AuthenticationRepository
 ): ViewModel() {
-
     companion object {
-        const val TAG = "HomeScreen"
+        const val TAG = "LandingScreen"
     }
 
-    private val _state = MutableStateFlow(HomeScreenState())
+    private val _state = MutableStateFlow(LandingScreenState())
     val state = _state
 
     fun authorize() {

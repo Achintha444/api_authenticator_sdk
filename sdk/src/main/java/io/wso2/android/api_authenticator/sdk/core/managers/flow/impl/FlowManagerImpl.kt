@@ -21,6 +21,9 @@ import kotlin.coroutines.suspendCoroutine
 internal class FlowManagerImpl(
     private val authenticatorManager: AuthenticatorManager
 ): FlowManager {
+
+    private val coroutineScope = CoroutineScope(GlobalScope.coroutineContext)
+
     companion object {
         /**
          * Instance of the [FlowManagerImpl] that will be used throughout the application
@@ -80,9 +83,6 @@ internal class FlowManagerImpl(
     private suspend fun handleAuthorizeFlow(
         responseBodyString: String
     ): AuthorizeFlowNotSuccess = suspendCoroutine { continuation ->
-
-        val coroutineScope = CoroutineScope(GlobalScope.coroutineContext)
-
         coroutineScope.launch {
             val authorizeFlow: AuthorizeFlowNotSuccess = AuthorizeFlowNotSuccess.fromJson(
                 responseBodyString
@@ -91,9 +91,9 @@ internal class FlowManagerImpl(
             try {
                 authenticatorManager.getDetailsOfAllAuthenticatorTypesGivenFlow(
                     authorizeFlow.flowId,
-                    authorizeFlow.nextStep.authenticatorTypes
+                    authorizeFlow.nextStep.authenticators
                 )?.let {
-                    authorizeFlow.nextStep.authenticatorTypes = it
+                    authorizeFlow.nextStep.authenticators = it
 
                     continuation.resume(authorizeFlow)
                 }
@@ -118,7 +118,7 @@ internal class FlowManagerImpl(
     override suspend fun manageStateOfAuthorizeFlow(
         responseObject: JsonNode
     ): AuthorizeFlow? = suspendCoroutine { continuation ->
-        when (responseObject["flowStatus"] as String) {
+        when (responseObject.get("flowStatus").asText()) {
             FlowStatus.FAIL_INCOMPLETE.flowStatus -> {
                 val exception = FlowManagerException(
                     FlowManagerException.AUTHENTICATION_NOT_COMPLETED
@@ -127,7 +127,7 @@ internal class FlowManagerImpl(
             }
 
             FlowStatus.INCOMPLETE.flowStatus -> {
-                GlobalScope.launch(Dispatchers.Default) {
+                coroutineScope.launch {
                     handleAuthorizeFlow(responseObject.toString())?.let {
                         continuation.resume(it)
                     }

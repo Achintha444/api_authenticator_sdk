@@ -25,11 +25,11 @@ data class AuthorizeFlowNotSuccess(
      * Authorize flow next step data class.
      *
      * @property stepType Type of the next step
-     * @property authenticatorTypes List of authenticator types of the next step
+     * @property authenticators List of authenticator types of the next step
      */
     data class AuthorizeFlowNotSuccessNextStep(
         val stepType: String,
-        var authenticatorTypes: ArrayList<AuthenticatorType>
+        var authenticators: ArrayList<AuthenticatorType>
     ) {
         /**
          * Convert the object to a json string
@@ -51,7 +51,7 @@ data class AuthorizeFlowNotSuccess(
             val stepTypeReference = object : TypeReference<AuthorizeFlowNotSuccess>() {}
             val jsonNodeAuthorizeFlow: JsonNode = JsonUtil.getJsonObject(jsonString)
 
-            return JsonUtil.jsonNodeToObject(jsonNodeAuthorizeFlow, stepTypeReference);
+            return JsonUtil.jsonNodeToObject(jsonNodeAuthorizeFlow, stepTypeReference)
         }
     }
 }

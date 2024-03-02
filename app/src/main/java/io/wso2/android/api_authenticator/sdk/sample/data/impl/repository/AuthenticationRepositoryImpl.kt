@@ -18,6 +18,7 @@ class AuthenticationRepositoryImpl @Inject constructor() : AuthenticationReposit
     private val authenticationCore = AuthenticationCore.getInstance(
         AuthenticationCoreConfig(
             Config.getBaseUrl(),
+            Config.getRedirectUri(),
             Config.getClientId(),
             Config.getScope()
         )

@@ -15,6 +15,7 @@ import java.io.InputStream
  */
 class AuthenticationCoreConfig (
     private val baseUrl: String,
+    private val redirectUri: String,
     private val clientId: String,
     private val scope: String,
     private val integrityToken: String? = null,
@@ -45,6 +46,15 @@ class AuthenticationCoreConfig (
      */
     fun getTokenUrl(): String {
         return "$baseUrl/oauth2/token"
+    }
+
+    /**
+     * @example https://example-app.com/redirect
+     *
+     * @return Redirect uri of the application.
+     */
+    fun getRedirectUri(): String {
+        return redirectUri
     }
 
     /**

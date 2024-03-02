@@ -13,11 +13,6 @@ internal class AuthnManagerException (
          * Authenticator exception TAG
          */
         const val AUTHN_MANAGER_EXCEPTION = "AuthnManager Exception"
-
-        /**
-         * Message to be shown when authentication is not completed
-         */
-        const val AUTHENTICATION_NOT_COMPLETED = "Authentication is not completed. Response returned FAIL_INCOMPLETE"
     }
 
     override fun toString(): String {

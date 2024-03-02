@@ -14,15 +14,16 @@ data class PasskeyAuthenticatorTypeMetaData(
      */
     override val additionalData: PasskeyAdditionalData
 ) : AuthenticatorTypeMetaData(
-    i18nKey,
-    promptType,
-    null,
-    additionalData
+    i18nKey = i18nKey,
+    promptType = promptType,
+    additionalData = additionalData
 ) {
     data class PasskeyAdditionalData(
         /**
          * Challenge data for passkey authentication
          */
-        val challengeData: String
-    ): AuthenticatorTypeAdditionalData()
+        override val challengeData: String
+    ): AuthenticatorTypeAdditionalData(
+        challengeData = challengeData
+    )
 }
