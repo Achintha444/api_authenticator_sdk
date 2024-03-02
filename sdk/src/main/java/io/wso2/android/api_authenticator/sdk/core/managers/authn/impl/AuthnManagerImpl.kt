@@ -173,9 +173,11 @@ internal class AuthnManagerImpl private constructor(
                             JsonUtil.getJsonObject(response.body!!.string())
 
                         GlobalScope.launch(Dispatchers.Default) {
-                            runCatching { flowManager.manageStateOfAuthorizeFlow(responseObject) }
-                                .onSuccess { continuation.resume(it) }
-                                .onFailure { continuation.resumeWithException(it) }
+                            flowManager.manageStateOfAuthorizeFlow(responseObject).runCatching {
+                                continuation.resume(this)
+                            }.onFailure {
+                                continuation.resumeWithException(it)
+                            }
                         }
                     } else {
                         // Throw an [AuthnManagerException] if the request does not return 200
