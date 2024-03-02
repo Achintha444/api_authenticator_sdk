@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.wso2.android.api_authenticator.sdk.sample.domain.repository.AuthenticationRepository
+import io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen.AuthScreenState
 import io.wso2.android.api_authenticator.sdk.sample.presentation.util.sendEvent
 import io.wso2.android.api_authenticator.sdk.sample.util.Event
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +21,7 @@ class HomeScreenViewModel @Inject constructor(
         const val TAG = "HomeScreen"
     }
 
-    private val _state = MutableStateFlow(HomeScreenState())
+    private val _state = MutableStateFlow(AuthScreenState())
     val state = _state
 
     fun authorize() {

@@ -1,46 +1,37 @@
-package io.wso2.android.api_authenticator.sdk.sample.presentation.screens.landing_screen
+package io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.wso2.android.api_authenticator.sdk.models.authorize_flow.AuthorizeFlow
 import io.wso2.android.api_authenticator.sdk.sample.domain.repository.AuthenticationRepository
 import io.wso2.android.api_authenticator.sdk.sample.presentation.util.sendEvent
 import io.wso2.android.api_authenticator.sdk.sample.util.Event
-import io.wso2.android.api_authenticator.sdk.sample.util.JsonUtil
-import io.wso2.android.api_authenticator.sdk.sample.util.navigation.NavigationViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LandingScreenViewModel @Inject constructor(
+class AuthScreenViewModel @Inject constructor(
     private val authenticationRepository: AuthenticationRepository
-) : ViewModel() {
+): ViewModel() {
+
     companion object {
-        const val TAG = "LandingScreen"
+        const val TAG = "HomeScreen"
     }
 
-    private val _state = MutableStateFlow(LandingScreenState())
+    private val _state = MutableStateFlow(AuthScreenState())
     val state = _state
 
-    fun authorize(): AuthorizeFlow? {
+    fun authorize() {
         viewModelScope.launch {
             _state.update {
                 it.copy(isLoading = true)
             }
             authenticationRepository.authorize()
-                .onRight { authorizeFlow ->
+                .onRight {
                     // Handle success
-                    _state.update {
-                        it.copy(authorizeFlow = authorizeFlow)
-                    }
-                    NavigationViewModel.navigationEvents.emit(
-                        NavigationViewModel.Companion.NavigationEvent.NavigateToAuthWithData(
-                            JsonUtil.getJsonString(authorizeFlow)
-                        )
-                    )
+                    println(it)
                 }
                 .onLeft { authenticationError ->
                     // Handle error
@@ -53,7 +44,5 @@ class LandingScreenViewModel @Inject constructor(
                 it.copy(isLoading = false)
             }
         }
-
-        return state.value.authorizeFlow
     }
 }

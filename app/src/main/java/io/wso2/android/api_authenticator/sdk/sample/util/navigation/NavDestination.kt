@@ -1,4 +1,4 @@
-package io.wso2.android.api_authenticator.sdk.sample.util
+package io.wso2.android.api_authenticator.sdk.sample.util.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
