@@ -2,7 +2,9 @@ package io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_s
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -17,6 +19,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.wso2.android.api_authenticator.sdk.models.authorize_flow.AuthorizeFlow
 import io.wso2.android.api_authenticator.sdk.sample.R
+import io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen.components.AuthUI
+import io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen.components.BasicAuth
 import io.wso2.android.api_authenticator.sdk.sample.presentation.screens.home_screen.HomeScreenContent
 import io.wso2.android.api_authenticator.sdk.sample.presentation.util.common_component.LoadingDialog
 import io.wso2.android.api_authenticator.sdk.sample.presentation.util.common_component.LogoSmall
@@ -42,41 +46,32 @@ fun AuthScreenContent(
         modifier = Modifier
             .fillMaxSize()
             .padding(24.dp),
-        verticalArrangement = Arrangement.SpaceAround,
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         LoadingDialog(isLoading = state.isLoading)
         LogoSmall()
-        LoginSuccessMessage()
-        LogoutButton(Modifier)
-    }
-}
-
-@Composable
-private fun LoginSuccessMessage() {
-    Text(
-        text = stringResource(R.string.screens_home_screen_login_success)
-    )
-}
-
-@Composable
-private fun LogoutButton(modifier: Modifier = Modifier) {
-    Button(
-        modifier = modifier,
-        onClick = { /*TODO*/ }
-    ) {
-        Text(text = stringResource(R.string.common_logout))
+        Spacer(modifier = Modifier.height(32.dp))
+        state.authorizeFlow?.let { authorizeFlow ->
+            AuthUI(authorizeFlow)
+        }
     }
 }
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
-fun HomeScreenPreview() {
+fun AuthScreenPreview() {
     Api_authenticator_sdkTheme {
-        HomeScreenContent(
-            AuthScreenState(
-                isLoading = false
-            )
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            LogoSmall()
+            Spacer(modifier = Modifier.height(32.dp))
+            BasicAuth()
+        }
     }
 }

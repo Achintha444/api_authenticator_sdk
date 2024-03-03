@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.wso2.android.api_authenticator.sdk.models.authorize_flow.AuthorizeFlow
+import io.wso2.android.api_authenticator.sdk.models.authorize_flow.AuthorizeFlowNotSuccess
 import io.wso2.android.api_authenticator.sdk.sample.domain.repository.AuthenticationRepository
 import io.wso2.android.api_authenticator.sdk.sample.presentation.util.sendEvent
 import io.wso2.android.api_authenticator.sdk.sample.util.Event
@@ -26,30 +27,10 @@ class AuthScreenViewModel @Inject constructor(
 
     fun setAuthorizeFlow(authorizeFlow: AuthorizeFlow) {
         _state.update {
-            it.copy(authorizeFlow = authorizeFlow)
-        }
-    }
-
-    fun authorize() {
-        viewModelScope.launch {
-            _state.update {
-                it.copy(isLoading = true)
-            }
-            authenticationRepository.authorize()
-                .onRight {
-                    // Handle success
-                    println(it)
-                }
-                .onLeft { authenticationError ->
-                    // Handle error
-                    _state.update {
-                        it.copy(error = authenticationError.toString())
-                    }
-                    sendEvent(Event.Toast(authenticationError.toString()))
-                }
-            _state.update {
-                it.copy(isLoading = false)
-            }
+            it.copy(
+                authorizeFlow = authorizeFlow as AuthorizeFlowNotSuccess,
+                isLoading = false
+            )
         }
     }
 }

@@ -1,9 +1,9 @@
 package io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen
 
-import io.wso2.android.api_authenticator.sdk.models.authorize_flow.AuthorizeFlow
+import io.wso2.android.api_authenticator.sdk.models.authorize_flow.AuthorizeFlowNotSuccess
 
 data class AuthScreenState(
     val isLoading: Boolean = false,
-    val authorizeFlow: AuthorizeFlow? = null,
+    val authorizeFlow: AuthorizeFlowNotSuccess? = null,
     val error: String = ""
 )
