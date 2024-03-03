@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -15,12 +14,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.compose.rememberNavController
 import io.wso2.android.api_authenticator.sdk.sample.R
 import io.wso2.android.api_authenticator.sdk.sample.presentation.util.common_component.LoadingDialog
 import io.wso2.android.api_authenticator.sdk.sample.presentation.util.common_component.LogoLarge
 import io.wso2.android.api_authenticator.sdk.sample.ui.theme.Api_authenticator_sdkTheme
-import io.wso2.android.api_authenticator.sdk.sample.util.navigation.NavigationViewModel
 
 @Composable
 internal fun LandingScreen(
@@ -50,7 +47,7 @@ fun LandingScreenContent(
 }
 
 @Composable
-private fun LoginButton(modifier: Modifier = Modifier, onClcik: () -> Unit ) {
+private fun LoginButton(modifier: Modifier = Modifier, onClcik: () -> Unit) {
     Button(
         modifier = modifier,
         onClick = onClcik

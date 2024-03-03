@@ -8,7 +8,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -58,14 +57,19 @@ class MainActivity : ComponentActivity() {
                             is NavigationViewModel.Companion.NavigationEvent.NavigateBack -> {
                                 navigationController.popBackStack()
                             }
+
                             is NavigationViewModel.Companion.NavigationEvent.NavigateToHome -> {
                                 navigationController.navigate(NavDestination.HomeScreen)
                             }
-                            is  NavigationViewModel.Companion.NavigationEvent.NavigateToAuth  -> {
-                                navigationController.navigate("auth")
-                            }
+
                             is NavigationViewModel.Companion.NavigationEvent.NavigateToAuthWithData -> {
-                                navigationController.navigate("auth/${it.data}")
+                                navigationController.navigate(
+                                    "${NavDestination.AuthScreen}?authorizeFlow={authorizeFlow}"
+                                        .replace(
+                                            "{authorizeFlow}",
+                                            newValue = it.data
+                                        )
+                                )
                             }
                         }
                     }
@@ -85,7 +89,7 @@ class MainActivity : ComponentActivity() {
                         ),
                     color = Color.Transparent
                 ) {
-                    NavGraph(navController = rememberNavController())
+                    NavGraph(navController = navigationController)
                 }
             }
         }

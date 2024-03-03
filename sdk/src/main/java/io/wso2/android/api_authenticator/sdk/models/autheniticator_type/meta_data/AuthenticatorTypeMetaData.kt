@@ -45,7 +45,7 @@ open class AuthenticatorTypeMetaData(
         open val challengeData: String? = null,
     )
 
-    override fun toString(): String {
+    fun toJsonString(): String {
         return JsonUtil.getJsonString(this)
     }
 }

@@ -12,6 +12,7 @@ import io.wso2.android.api_authenticator.sdk.sample.util.navigation.NavigationVi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.net.URLEncoder
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,20 +26,16 @@ class LandingScreenViewModel @Inject constructor(
     private val _state = MutableStateFlow(LandingScreenState())
     val state = _state
 
-    fun authorize(): AuthorizeFlow? {
+    fun authorize() {
         viewModelScope.launch {
             _state.update {
                 it.copy(isLoading = true)
             }
             authenticationRepository.authorize()
                 .onRight { authorizeFlow ->
-                    // Handle success
-                    _state.update {
-                        it.copy(authorizeFlow = authorizeFlow)
-                    }
                     NavigationViewModel.navigationEvents.emit(
                         NavigationViewModel.Companion.NavigationEvent.NavigateToAuthWithData(
-                            JsonUtil.getJsonString(authorizeFlow)
+                            URLEncoder.encode(authorizeFlow.toJsonString(), "utf-8")
                         )
                     )
                 }
@@ -53,7 +50,5 @@ class LandingScreenViewModel @Inject constructor(
                 it.copy(isLoading = false)
             }
         }
-
-        return state.value.authorizeFlow
     }
 }

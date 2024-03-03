@@ -28,7 +28,7 @@ open class AuthenticatorType(
      */
     open val requiredParams: List<String>?
 ) {
-    override fun toString(): String {
+    fun toJsonString(): String {
         return JsonUtil.getJsonString(this)
     }
 }

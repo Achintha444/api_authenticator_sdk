@@ -4,6 +4,5 @@ import io.wso2.android.api_authenticator.sdk.models.authorize_flow.AuthorizeFlow
 
 data class LandingScreenState(
     val isLoading: Boolean = false,
-    val authorizeFlow: AuthorizeFlow? = null,
     val error: String = ""
 )

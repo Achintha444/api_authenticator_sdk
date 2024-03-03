@@ -13,6 +13,14 @@
     <!--  Landing Screen  -->
     <string name="screens_landing_screen_subtitle">API Based Authentication SDK Sample</string>
 
+    <!--  Auth Screen  -->
+    <string name="screens_auth_screen_title">Login</string>
+    <string name="screens_auth_screen_subtitle">Please login to continue</string>
+    <!--  Basic Auth  -->
+    <string name="screens_auth_screen_basic_auth_username">Username</string>
+    <string name="screens_auth_screen_basic_auth_password">Password</string>
+    <string name="screens_auth_screen_basic_auth_login">Login</string>
+
     <!--  Home Screen  -->
     <string name="screens_home_screen_login_success">Login Successful</string>
 

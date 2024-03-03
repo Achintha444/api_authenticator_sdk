@@ -32,7 +32,7 @@ abstract class AuthParams(
      */
     open val tokenResponse: String? = null
 ) {
-    override fun toString(): String {
+    fun toJsonString(): String {
         return JsonUtil.getJsonString(this)
     }
 
