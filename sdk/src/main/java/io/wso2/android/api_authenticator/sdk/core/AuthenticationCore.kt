@@ -3,20 +3,13 @@ package io.wso2.android.api_authenticator.sdk.core
 import android.content.Context
 import io.wso2.android.api_authenticator.sdk.core.di.AuthenticationCoreContainer
 import io.wso2.android.api_authenticator.sdk.core.managers.app_auth.AppAuthManager
-import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.AuthenticatorManager
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.AuthnManager
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.authorize_flow.AuthorizeFlow
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticationCoreException
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.io.IOException
 import java.lang.ref.WeakReference
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 /**
  * Authentication core class which has the core functionality of the Authenticator SDK.
@@ -27,20 +20,11 @@ class AuthenticationCore private constructor(
     private val authenticationCoreConfig: AuthenticationCoreConfig
 ) {
     /**
-     * Instance of the [AuthenticatorManager] that will be used throughout the application
-     */
-    private var authenticatorManager: AuthenticatorManager =
-        AuthenticationCoreContainer.getAuthenticatorManagerInstance(
-            authenticationCoreConfig
-        )
-
-    /**
      * Instance of the [AuthnManager] that will be used throughout the application
      */
     private var authnMangerInstance: AuthnManager =
         AuthenticationCoreContainer.getAuthMangerInstance(
-            authenticationCoreConfig,
-            authenticatorManager
+            authenticationCoreConfig
         )
 
     /**

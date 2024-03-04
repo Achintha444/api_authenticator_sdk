@@ -4,7 +4,6 @@ import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.managers.app_auth.AppAuthManager
 import io.wso2.android.api_authenticator.sdk.core.managers.app_auth.impl.AppAuthManagerImpl
 import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.AuthenticatorManager
-import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.impl.AuthenticatorManagerImpl
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.AuthnManager
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.impl.AuthnManagerImpl
 
@@ -17,13 +16,11 @@ internal object AuthenticationCoreContainer {
      * Returns an instance of the [AuthnManager] object, based on the given parameters.
      *
      * @property authenticationCoreConfig The [AuthenticationCoreConfig] instance.
-     * @property authenticatorManager The [AuthenticatorManager] instance.
      *
      * @return [AuthnManager] instance.
      */
     internal fun getAuthMangerInstance(
-        authenticationCoreConfig: AuthenticationCoreConfig,
-        authenticatorManager: AuthenticatorManager
+        authenticationCoreConfig: AuthenticationCoreConfig
     ): AuthnManager {
         return AuthnManagerImpl.getInstance(
             authenticationCoreConfig,
@@ -31,7 +28,7 @@ internal object AuthenticationCoreContainer {
                 authenticationCoreConfig.getTrustedCertificates()
             ),
             AuthnManagerImplContainer.getAuthenticationCoreRequestBuilder(),
-            AuthnManagerImplContainer.getFlowManager(authenticatorManager)
+            AuthnManagerImplContainer.getFlowManager(authenticationCoreConfig)
         )
     }
 
@@ -56,24 +53,6 @@ internal object AuthenticationCoreContainer {
                 authenticationCoreConfig.getAuthorizeUrl(),
                 authenticationCoreConfig.getTokenUrl()
             )
-        )
-    }
-
-    /**
-     * Returns an instance of the [AuthenticatorManager] object, based on the given parameters.
-     *
-     * @property authenticationCoreConfig The [AuthenticationCoreConfig] instance.
-     *
-     * @return [AuthenticatorManager] instance.
-     */
-    internal fun getAuthenticatorManagerInstance(
-        authenticationCoreConfig: AuthenticationCoreConfig
-    ): AuthenticatorManager {
-        return AuthenticatorManagerImpl.getInstance(
-            AuthenticatorManagerImplContainer.getClient(),
-            AuthenticatorManagerImplContainer.getAuthenticatorTypeFactory(),
-            AuthenticatorManagerImplContainer.getAuthenticatorManagerImplRequestBuilder(),
-            AuthenticatorManagerImplContainer.getAuthnUrl(authenticationCoreConfig.getAuthnUrl())
         )
     }
 }

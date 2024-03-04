@@ -1,10 +1,10 @@
 package io.wso2.android.api_authenticator.sdk.core.di
 
+import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.AuthenticatorManager
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.impl.AuthnManagerImplRequestBuilder
 import io.wso2.android.api_authenticator.sdk.core.managers.flow.FlowManager
 import io.wso2.android.api_authenticator.sdk.core.managers.flow.impl.FlowManagerImpl
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.authenticator_type_factory.AuthenticatorTypeFactory
 import io.wso2.android.api_authenticator.sdk.models.http_client.http_client_builder.HttpClientBuilder
 import okhttp3.OkHttpClient
 import java.io.InputStream
@@ -28,15 +28,6 @@ internal object AuthnManagerImplContainer {
     }
 
     /**
-     * Returns an instance of the [AuthenticatorTypeFactory] class.
-     *
-     * @return [AuthenticatorTypeFactory] instance.
-     */
-    internal fun getAuthenticatorTypeFactory(): AuthenticatorTypeFactory {
-        return AuthenticatorTypeFactory
-    }
-
-    /**
      * Returns an instance of the [AuthnManagerImplRequestBuilder] class.
      *
      * @return [AuthnManagerImplRequestBuilder] instance.
@@ -51,10 +42,15 @@ internal object AuthnManagerImplContainer {
      * @property authenticatorManager The [AuthenticatorManager] instance.
      *
      * @return [FlowManager] instance.
+     *
      */
     internal fun getFlowManager(
-        authenticatorManager: AuthenticatorManager
+        authenticationCoreConfig: AuthenticationCoreConfig
     ): FlowManager {
-        return FlowManagerImpl.getInstance(authenticatorManager)
+        return FlowManagerImpl.getInstance(
+            FlowManagerImplContainer.getAuthenticatorManagerInstance(
+                authenticationCoreConfig
+            )
+        )
     }
 }

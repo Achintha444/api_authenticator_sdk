@@ -107,13 +107,14 @@ internal class FlowManagerImpl(
      * Manage the state of the authorization flow.
      * This function will return the [AuthorizeFlowNotSuccess] if the flow is incomplete.
      * This function will return the [AuthorizeFlowSuccess] if the flow is completed.
-     * This function will throw an [AuthenticatorTypeException] if the flow is failed.
      *
      * @param responseObject Response object of the authorization request
      *
      * @return [AuthorizeFlow] with the authenticator types in the next step
      * @throws [AuthenticatorTypeException] If the flow is failed
      * @throws [FlowManagerException] If the flow is failed incomplete
+     *
+     * TODO: Need to check additional check to flowid to check if the flow is the same as the current flow
      */
     override suspend fun manageStateOfAuthorizeFlow(
         responseObject: JsonNode
