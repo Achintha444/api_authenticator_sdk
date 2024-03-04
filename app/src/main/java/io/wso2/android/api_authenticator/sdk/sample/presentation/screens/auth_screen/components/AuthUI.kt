@@ -12,7 +12,7 @@ internal fun AuthUI(
     authorizeFlow.nextStep.authenticators.forEach {
         when (it.authenticator) {
             BasicAuthenticatorType.AUTHENTICATOR_TYPE -> {
-                BasicAuth()
+                BasicAuth(authenticatorType = it)
             }
 
             TotpAuthenticatorType.AUTHENTICATOR_TYPE -> {

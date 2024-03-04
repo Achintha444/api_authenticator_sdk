@@ -25,16 +25,35 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import io.wso2.android.api_authenticator.sdk.models.auth_params.BasicAuthenticatorAuthParams
+import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.sample.R
+import io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen.AuthScreenViewModel
 import io.wso2.android.api_authenticator.sdk.sample.ui.theme.Api_authenticator_sdkTheme
 
 @Composable
-internal fun BasicAuth() {
-    BasicAuthComponent()
+internal fun BasicAuth(
+    viewModel: AuthScreenViewModel = hiltViewModel(),
+    authenticatorType: AuthenticatorType
+) {
+    BasicAuthComponent(
+        onLoginClick = { username, password ->
+            viewModel.authenticate(
+                authenticatorType,
+                BasicAuthenticatorAuthParams(
+                    username = username,
+                    password = password
+                )
+            )
+        }
+    )
 }
 
 @Composable
-fun BasicAuthComponent() {
+fun BasicAuthComponent(
+    onLoginClick: (username: String, password: String) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth(),
@@ -43,6 +62,7 @@ fun BasicAuthComponent() {
     ) {
         var username by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
+
         Text(
             text = "Welcome to WSO2 IS API Based Authentication SDK",
             style = MaterialTheme.typography.titleLarge,
@@ -82,7 +102,7 @@ fun BasicAuthComponent() {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
-            onClick = {},
+            onClick = { onLoginClick(username, password) },
             modifier = Modifier.fillMaxWidth(0.9f)
         ) {
             Text(text = stringResource(R.string.screens_auth_screen_basic_auth_login))
@@ -90,10 +110,10 @@ fun BasicAuthComponent() {
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
-@Composable
-fun BasicAuthPreview() {
-    Api_authenticator_sdkTheme {
-        BasicAuthComponent()
-    }
-}
+//@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
+//@Composable
+//fun BasicAuthPreview() {
+//    Api_authenticator_sdkTheme {
+//        BasicAuthComponent(Authe)
+//    }
+//}

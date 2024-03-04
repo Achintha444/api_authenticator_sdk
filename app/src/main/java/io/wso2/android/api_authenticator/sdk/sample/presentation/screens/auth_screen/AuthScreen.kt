@@ -21,6 +21,7 @@ import io.wso2.android.api_authenticator.sdk.models.authorize_flow.AuthorizeFlow
 import io.wso2.android.api_authenticator.sdk.sample.R
 import io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen.components.AuthUI
 import io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen.components.BasicAuth
+import io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen.components.BasicAuthComponent
 import io.wso2.android.api_authenticator.sdk.sample.presentation.screens.home_screen.HomeScreenContent
 import io.wso2.android.api_authenticator.sdk.sample.presentation.util.common_component.LoadingDialog
 import io.wso2.android.api_authenticator.sdk.sample.presentation.util.common_component.LogoSmall
@@ -71,7 +72,7 @@ fun AuthScreenPreview() {
         ) {
             LogoSmall()
             Spacer(modifier = Modifier.height(32.dp))
-            BasicAuth()
+            BasicAuthComponent(onLoginClick = { _, _ -> })
         }
     }
 }
