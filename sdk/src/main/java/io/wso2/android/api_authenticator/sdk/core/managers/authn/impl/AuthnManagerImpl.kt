@@ -12,7 +12,9 @@ import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthnManagerExcep
 import io.wso2.android.api_authenticator.sdk.util.JsonUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
@@ -107,9 +109,11 @@ internal class AuthnManagerImpl private constructor(
                         // set the flow id of the authorization flow
                         flowManager.setFlowId(responseObject.get("flowId").asText())
 
-                        GlobalScope.launch(Dispatchers.Default) {
-                            flowManager.manageStateOfAuthorizeFlow(responseObject).runCatching {
-                                continuation.resume(this)
+                        runBlocking {
+                            runCatching {
+                                flowManager.manageStateOfAuthorizeFlow(responseObject)
+                            }.onSuccess {
+                                continuation.resume(it)
                             }.onFailure {
                                 continuation.resumeWithException(it)
                             }
@@ -172,9 +176,11 @@ internal class AuthnManagerImpl private constructor(
                         val responseObject: JsonNode =
                             JsonUtil.getJsonObject(response.body!!.string())
 
-                        GlobalScope.launch(Dispatchers.Default) {
-                            flowManager.manageStateOfAuthorizeFlow(responseObject).runCatching {
-                                continuation.resume(this)
+                        runBlocking {
+                            runCatching {
+                                flowManager.manageStateOfAuthorizeFlow(responseObject)
+                            }.onSuccess {
+                                continuation.resume(it)
                             }.onFailure {
                                 continuation.resumeWithException(it)
                             }

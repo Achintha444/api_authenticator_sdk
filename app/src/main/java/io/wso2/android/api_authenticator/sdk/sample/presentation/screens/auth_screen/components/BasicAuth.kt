@@ -64,14 +64,14 @@ fun BasicAuthComponent(
         var password by remember { mutableStateOf("") }
 
         Text(
-            text = "Welcome to WSO2 IS API Based Authentication SDK",
+            text = stringResource(id = R.string.screens_auth_screen_basic_auth_title),
             style = MaterialTheme.typography.titleLarge,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.SemiBold
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "Please enter your credentials to continue",
+            text = stringResource(id = R.string.screens_auth_screen_basic_auth_subtitle),
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center
         )
@@ -110,10 +110,12 @@ fun BasicAuthComponent(
     }
 }
 
-//@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
-//@Composable
-//fun BasicAuthPreview() {
-//    Api_authenticator_sdkTheme {
-//        BasicAuthComponent(Authe)
-//    }
-//}
+@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
+@Composable
+fun BasicAuthPreview() {
+    Api_authenticator_sdkTheme {
+        BasicAuthComponent(
+            onLoginClick = { _, _ -> }
+        )
+    }
+}

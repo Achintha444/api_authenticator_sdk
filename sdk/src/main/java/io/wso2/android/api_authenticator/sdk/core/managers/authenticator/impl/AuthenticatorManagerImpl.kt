@@ -10,6 +10,7 @@ import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
@@ -35,7 +36,7 @@ internal class AuthenticatorManagerImpl(
     private val authenticatorTypeFactory: AuthenticatorTypeFactory,
     private val authenticatorManagerImplRequestBuilder: AuthenticatorManagerImplRequestBuilder,
     private val authnUrl: String
-): AuthenticatorManager {
+) : AuthenticatorManager {
     companion object {
         /**
          * Instance of the [AuthenticatorManagerImpl] class.
@@ -175,12 +176,6 @@ internal class AuthenticatorManagerImpl(
         flowId: String,
         authenticatorTypes: ArrayList<AuthenticatorType>
     ): ArrayList<AuthenticatorType> = suspendCoroutine { outerContinuation ->
-
-        /**
-         * If there is only one authenticator type, do not call the endpoint to get the details.
-         * Because the details are already available, just calling the AuthenticatorTypeFactory to
-         * set the correct authenticator type.
-         */
         /**
          * If there is only one authenticator type, do not call the endpoint to get the details.
          * Because the details are already available, just calling the AuthenticatorTypeFactory to
@@ -199,9 +194,7 @@ internal class AuthenticatorManagerImpl(
 
             outerContinuation.resume(authenticatorTypes)
         } else {
-            val coroutineScope = CoroutineScope(GlobalScope.coroutineContext)
-            coroutineScope.launch {
-
+            runBlocking {
                 // Authenticator types with full details
                 val detailedAuthenticatorTypes: ArrayList<AuthenticatorType> = ArrayList()
 
@@ -212,17 +205,15 @@ internal class AuthenticatorManagerImpl(
                                 flowId,
                                 authenticatorType
                             )
-                        }
-                            .onSuccess {
-                                detailedAuthenticatorTypes.add(it)
+                        }.onSuccess {
+                            detailedAuthenticatorTypes.add(it)
 
-                                if (detailedAuthenticatorTypes.size == authenticatorTypes.size) {
-                                    outerContinuation.resume(detailedAuthenticatorTypes)
-                                }
+                            if (detailedAuthenticatorTypes.size == authenticatorTypes.size) {
+                                outerContinuation.resume(detailedAuthenticatorTypes)
                             }
-                            .onFailure {
-                                outerContinuation.resumeWithException(it)
-                            }
+                        }.onFailure {
+                            outerContinuation.resumeWithException(it)
+                        }
                     } catch (e: AuthenticatorTypeException) {
                         outerContinuation.resumeWithException(e)
                         break

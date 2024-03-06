@@ -20,6 +20,14 @@
     <string name="screens_auth_screen_basic_auth_username">Username</string>
     <string name="screens_auth_screen_basic_auth_password">Password</string>
     <string name="screens_auth_screen_basic_auth_login">Login</string>
+    <string name="screens_auth_screen_basic_auth_title">Welcome to WSO2 IS API Based Authentication SDK</string>
+    <string name="screens_auth_screen_basic_auth_subtitle">Please login to continue</string>
+    <!-- TOTP  -->
+    <string name="screens_auth_screen_totp_title">Enter TOTP Code</string>
+    <string name="screens_auth_screen_totp_subtitle">Enter the verification code from your authenticator application</string>
+    <string name="screens_auth_screen_totp_code">TOTP Code</string>
+    <string name="screens_auth_screen_totp_submit">Submit</string>
+    <string name="screens_auth_screen_totp_login">Sign in with TOTP</string>
 
     <!--  Home Screen  -->
     <string name="screens_home_screen_login_success">Login Successful</string>

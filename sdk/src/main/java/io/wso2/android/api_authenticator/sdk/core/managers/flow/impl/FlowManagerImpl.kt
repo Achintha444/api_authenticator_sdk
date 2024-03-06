@@ -13,6 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.lang.ref.WeakReference
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -83,22 +84,21 @@ internal class FlowManagerImpl(
     private suspend fun handleAuthorizeFlow(
         responseBodyString: String
     ): AuthorizeFlowNotSuccess = suspendCoroutine { continuation ->
-        coroutineScope.launch {
+        runBlocking {
             val authorizeFlow: AuthorizeFlowNotSuccess = AuthorizeFlowNotSuccess.fromJson(
                 responseBodyString
             )
 
-            try {
+            runCatching {
                 authenticatorManager.getDetailsOfAllAuthenticatorTypesGivenFlow(
                     authorizeFlow.flowId,
                     authorizeFlow.nextStep.authenticators
-                )?.let {
-                    authorizeFlow.nextStep.authenticators = it
-
-                    continuation.resume(authorizeFlow)
-                }
-            } catch (e: AuthenticatorTypeException) {
-                continuation.resumeWithException(e)
+                )
+            }.onSuccess {
+                authorizeFlow.nextStep.authenticators = it
+                continuation.resume(authorizeFlow)
+            }.onFailure {
+                continuation.resumeWithException(it)
             }
         }
     }
@@ -128,9 +128,13 @@ internal class FlowManagerImpl(
             }
 
             FlowStatus.INCOMPLETE.flowStatus -> {
-                coroutineScope.launch {
-                    handleAuthorizeFlow(responseObject.toString())?.let {
+                runBlocking {
+                    runCatching {
+                        handleAuthorizeFlow(responseObject.toString())
+                    }.onSuccess {
                         continuation.resume(it)
+                    }.onFailure {
+                        continuation.resumeWithException(it)
                     }
                 }
             }

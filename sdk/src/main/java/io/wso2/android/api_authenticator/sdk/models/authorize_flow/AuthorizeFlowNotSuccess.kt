@@ -29,7 +29,8 @@ data class AuthorizeFlowNotSuccess(
      */
     data class AuthorizeFlowNotSuccessNextStep(
         val stepType: String,
-        var authenticators: ArrayList<AuthenticatorType>
+        var authenticators: ArrayList<AuthenticatorType>,
+        val messages: ArrayList<Any>?
     ) {
         /**
          * Convert the object to a json string
