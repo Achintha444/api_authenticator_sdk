@@ -9,7 +9,7 @@ data class PasskeyAuthenticatorTypeAuthParams(
      * TODO: Improve the comment
      */
     override val tokenResponse: String
-): AuthParams(
+) : AuthParams(
     tokenResponse = tokenResponse
 ) {
     /**
@@ -18,9 +18,10 @@ data class PasskeyAuthenticatorTypeAuthParams(
      * @return LinkedHashMap<String, String> - Parameter body for the authenticator
      * ex: [<"tokenResponse", tokenResponse>]
      */
-    override fun getParameterBodyAuthenticator(): LinkedHashMap<String, String> {
+    override fun getParameterBodyAuthenticator(requiredParams: List<String>)
+            : LinkedHashMap<String, String> {
         val paramBody = LinkedHashMap<String, String>()
-        paramBody["tokenResponse"] = tokenResponse
+        paramBody[requiredParams[0]] = tokenResponse
 
         return paramBody
     }

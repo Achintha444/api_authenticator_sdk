@@ -93,4 +93,5 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
     implementation ("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+    implementation ("com.google.android.gms:play-services-auth:20.7.0")
 }

@@ -9,10 +9,6 @@ import io.wso2.android.api_authenticator.sdk.models.authorize_flow.AuthorizeFlow
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorTypeException
 import io.wso2.android.api_authenticator.sdk.models.exceptions.FlowManagerException
 import io.wso2.android.api_authenticator.sdk.models.flow_status.FlowStatus
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.lang.ref.WeakReference
 import kotlin.coroutines.resume
@@ -21,10 +17,7 @@ import kotlin.coroutines.suspendCoroutine
 
 internal class FlowManagerImpl(
     private val authenticatorManager: AuthenticatorManager
-): FlowManager {
-
-    private val coroutineScope = CoroutineScope(GlobalScope.coroutineContext)
-
+) : FlowManager {
     companion object {
         /**
          * Instance of the [FlowManagerImpl] that will be used throughout the application

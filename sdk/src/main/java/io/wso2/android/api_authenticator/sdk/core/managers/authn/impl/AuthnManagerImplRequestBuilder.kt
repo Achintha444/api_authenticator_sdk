@@ -73,7 +73,9 @@ internal object AuthnManagerImplRequestBuilder {
 
         val selectedAuthenticator = LinkedHashMap<String, Any>()
         selectedAuthenticator["authenticatorId"] = authenticatorType.authenticatorId
-        selectedAuthenticator["params"] = authenticatorAuthParams.getParameterBodyAuthenticator()
+        selectedAuthenticator["params"] = authenticatorAuthParams.getParameterBodyAuthenticator(
+            authenticatorType.requiredParams!!
+        )
 
         authBody["selectedAuthenticator"] = selectedAuthenticator
 

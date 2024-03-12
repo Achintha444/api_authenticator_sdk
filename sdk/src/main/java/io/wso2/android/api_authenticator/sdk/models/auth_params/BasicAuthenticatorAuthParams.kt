@@ -12,7 +12,7 @@ data class BasicAuthenticatorAuthParams(
      * Password of the user
      */
     override val password: String
-): AuthParams(
+) : AuthParams(
     username = username,
     password = password
 ) {
@@ -22,10 +22,11 @@ data class BasicAuthenticatorAuthParams(
      * @return LinkedHashMap<String, String> - Parameter body for the authenticator
      * ex: [<"username", username>, <"password", password>]
      */
-    override fun getParameterBodyAuthenticator(): LinkedHashMap<String, String> {
+    override fun getParameterBodyAuthenticator(requiredParams: List<String>)
+            : LinkedHashMap<String, String> {
         val paramBody = LinkedHashMap<String, String>()
-        paramBody["username"] = username
-        paramBody["password"] = password
+        paramBody[requiredParams[0]] = username
+        paramBody[requiredParams[1]] = password
 
         return paramBody
     }

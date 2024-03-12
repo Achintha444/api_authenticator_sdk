@@ -12,7 +12,7 @@ data class GoogleAuthenticatorTypeAuthParams(
      * id token retrieved from the Google authenticator
      */
     override val idToken: String
-): AuthParams(
+) : AuthParams(
     accessToken = accessToken,
     idToken = idToken
 ) {
@@ -22,10 +22,11 @@ data class GoogleAuthenticatorTypeAuthParams(
      * @return LinkedHashMap<String, String> - Parameter body for the authenticator
      * ex: [<"accessToken", accessToken>, <"idToken", idToken>]
      */
-    override fun getParameterBodyAuthenticator(): LinkedHashMap<String, String> {
+    override fun getParameterBodyAuthenticator(requiredParams: List<String>)
+            : LinkedHashMap<String, String> {
         val paramBody = LinkedHashMap<String, String>()
-        paramBody["accessToken"] = accessToken
-        paramBody["idToken"] = idToken
+        paramBody[requiredParams[0]] = accessToken
+        paramBody[requiredParams[1]] = idToken
 
         return paramBody
     }

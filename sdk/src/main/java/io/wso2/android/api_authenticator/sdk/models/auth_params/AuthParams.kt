@@ -25,7 +25,7 @@ abstract class AuthParams(
     /**
      * Code retrieved from the authenticator application - For TOTP Authenticator
      */
-    open val totp: String? = null,
+    open val token: String? = null,
     /**
      * Token response retrieved from the passkey authenticator - For Passkey Authenticator
      * TODO: Improve the comment
@@ -39,5 +39,6 @@ abstract class AuthParams(
     /**
      * Get the parameter body for the authenticator to be sent to the server
      */
-    abstract fun getParameterBodyAuthenticator(): LinkedHashMap<String, String>
+    abstract fun getParameterBodyAuthenticator(requiredParams: List<String>)
+            : LinkedHashMap<String, String>
 }
