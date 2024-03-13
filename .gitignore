@@ -28,3 +28,6 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# Certificates
+app/src/main/res/raw/wso2carbon.pem
