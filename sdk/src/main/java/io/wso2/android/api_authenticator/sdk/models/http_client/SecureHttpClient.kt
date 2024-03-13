@@ -26,6 +26,8 @@ import javax.net.ssl.X509TrustManager
  *
  * @property trustedCertificates The certificate(in the PEM format) of the WSO2 identity server as
  * a [InputStream].
+ *
+ * @deprecated This class is deprecated. Use [OkHttpClient] client directly instead.
  */
 class SecureHttpClient private constructor(
     private val trustedCertificates: InputStream

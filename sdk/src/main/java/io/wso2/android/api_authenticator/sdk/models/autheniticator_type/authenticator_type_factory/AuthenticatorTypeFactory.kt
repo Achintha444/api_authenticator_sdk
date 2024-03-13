@@ -69,10 +69,10 @@ internal object AuthenticatorTypeFactory {
 
             PasskeyAuthenticatorType.AUTHENTICATOR_TYPE -> {
                 val authenticatorTypeMetaData = PasskeyAuthenticatorTypeMetaData(
-                    metadata!!.i18nKey,
-                    metadata!!.promptType,
+                    metadata?.i18nKey,
+                    metadata?.promptType,
                     PasskeyAuthenticatorTypeMetaData.PasskeyAdditionalData(
-                        challengeData = metadata.additionalData?.challengeData!!
+                        challengeData = metadata?.additionalData?.challengeData!!
                     )
                 )
                 PasskeyAuthenticatorType(

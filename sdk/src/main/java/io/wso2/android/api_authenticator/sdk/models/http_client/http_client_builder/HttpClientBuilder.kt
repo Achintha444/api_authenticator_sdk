@@ -12,15 +12,18 @@ object HttpClientBuilder {
     /**
      * Returns an instance of the [OkHttpClient] class, based on the given parameters.
      *
-     * @property trustedCertificates The certificate(in the PEM format) of the WSO2 identity
-     * server as a [InputStream] - optional. If not provided, a less secure http client will be
-     * used, which bypasses the certificate validation. `This is not recommended for production`.
+     * @property isDevelopment The flag to check whether the app is in development mode or not.
+     * If true, the [LessSecureHttpClient] instance will be returned. Otherwise, the default
+     * [OkHttpClient] instance will be returned. Default value is true. It is not recommended to
+     * keep this value as `true` in production environment.
+     *
+     * @return [OkHttpClient] instance.
      */
-    internal fun getHttpClientInstance(trustedCertificates: InputStream?): OkHttpClient {
-        return if (trustedCertificates != null) {
-            SecureHttpClient.getInstance(trustedCertificates).getClient()
-        } else {
+    internal fun getHttpClientInstance(isDevelopment: Boolean?): OkHttpClient {
+        return if (isDevelopment == true) {
             LessSecureHttpClient.getInstance().getClient()
+        } else {
+            OkHttpClient()
         }
     }
 }

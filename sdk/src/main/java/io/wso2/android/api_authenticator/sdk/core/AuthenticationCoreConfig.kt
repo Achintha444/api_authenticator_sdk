@@ -1,6 +1,7 @@
 package io.wso2.android.api_authenticator.sdk.core
 
-import java.io.InputStream
+import io.wso2.android.api_authenticator.sdk.models.http_client.LessSecureHttpClient
+import okhttp3.OkHttpClient
 
 /**
  * Holds the configuration related to the [AuthenticationCore].
@@ -9,17 +10,18 @@ import java.io.InputStream
  * @property clientId Client id of the application
  * @property scope Scope of the application (ex: openid profile email)
  * @property integrityToken Client attestation integrity token - optional
- * @property trustedCertificates Trusted certificates of the WSO2 identity server(in the PEM format)
- * as a [InputStream] - optional. If not provided, a less secure http client will be used, which
- * bypasses the certificate validation. `This is not recommended for production`.
+ * @property isDevelopment The flag to check whether the app is in development mode or not.
+ * If true, the [LessSecureHttpClient] instance will be returned. Otherwise, the default
+ * [OkHttpClient] instance will be returned. Default value is true. It is not recommended to
+ * keep this value as `true` in production environment.
  */
-class AuthenticationCoreConfig (
+class AuthenticationCoreConfig(
     private val baseUrl: String,
     private val redirectUri: String,
     private val clientId: String,
     private val scope: String,
     private val integrityToken: String? = null,
-    private val trustedCertificates: InputStream? = null
+    private val isDevelopment: Boolean? = true
 ) {
     /**
      * @example https://localhost:9443/oauth2/authorize
@@ -79,9 +81,9 @@ class AuthenticationCoreConfig (
     }
 
     /**
-     * @return Trusted certificates of the WSO2 identity server(in the PEM format) as a [InputStream].
+     * @return The flag to check whether the app is in development mode or not [Boolean].
      */
-    fun getTrustedCertificates(): InputStream? {
-        return trustedCertificates
+    fun getIsDevelopment(): Boolean? {
+        return isDevelopment
     }
 }

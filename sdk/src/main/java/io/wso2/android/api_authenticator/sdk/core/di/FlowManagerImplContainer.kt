@@ -16,7 +16,9 @@ object FlowManagerImplContainer {
         authenticationCoreConfig: AuthenticationCoreConfig
     ): AuthenticatorManager {
         return AuthenticatorManagerImpl.getInstance(
-            AuthenticatorManagerImplContainer.getClient(),
+            AuthenticatorManagerImplContainer.getClient(
+                authenticationCoreConfig.getIsDevelopment()
+            ),
             AuthenticatorManagerImplContainer.getAuthenticatorTypeFactory(),
             AuthenticatorManagerImplContainer.getAuthenticatorManagerImplRequestBuilder(),
             AuthenticatorManagerImplContainer.getAuthnUrl(authenticationCoreConfig.getAuthnUrl())

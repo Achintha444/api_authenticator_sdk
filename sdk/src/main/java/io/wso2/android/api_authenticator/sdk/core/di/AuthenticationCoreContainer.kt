@@ -25,7 +25,7 @@ internal object AuthenticationCoreContainer {
         return AuthnManagerImpl.getInstance(
             authenticationCoreConfig,
             AuthnManagerImplContainer.getClient(
-                authenticationCoreConfig.getTrustedCertificates()
+                authenticationCoreConfig.getIsDevelopment()
             ),
             AuthnManagerImplContainer.getAuthenticationCoreRequestBuilder(),
             AuthnManagerImplContainer.getFlowManager(authenticationCoreConfig)
@@ -43,8 +43,8 @@ internal object AuthenticationCoreContainer {
         authenticationCoreConfig: AuthenticationCoreConfig
     ): AppAuthManager {
         return AppAuthManagerImpl.getInstance(
-            AppAuthManagerImplContainer.getCustomeTrustClient(
-                authenticationCoreConfig.getTrustedCertificates()
+            AppAuthManagerImplContainer.getCustomTrustClient(
+                authenticationCoreConfig.getIsDevelopment()
             ),
             AppAuthManagerImplContainer.getClientId(
                 authenticationCoreConfig.getClientId()

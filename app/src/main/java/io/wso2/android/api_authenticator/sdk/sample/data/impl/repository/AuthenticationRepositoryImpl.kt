@@ -3,7 +3,7 @@ package io.wso2.android.api_authenticator.sdk.sample.data.impl.repository
 import io.wso2.android.api_authenticator.sdk.sample.domain.model.error.AuthenticationError
 import android.content.Context
 import arrow.core.Either
-import io.wso2.android.api_authenticator.sdk.core.AuthenticationCore
+import io.wso2.android.api_authenticator.sdk.core.impl.AuthenticationCore
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType

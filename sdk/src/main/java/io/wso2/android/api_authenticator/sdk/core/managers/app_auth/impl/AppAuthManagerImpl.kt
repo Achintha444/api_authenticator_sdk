@@ -94,7 +94,7 @@ internal class AppAuthManagerImpl private constructor(
         )
 
         try {
-            authService.performTokenRequest(tokenRequest) { response, ex ->
+            authService.performTokenRequest(tokenRequest) { response, _ ->
                 if (response != null) {
                     // Access token obtained successfully
                     val accessToken: String = response.accessToken!!

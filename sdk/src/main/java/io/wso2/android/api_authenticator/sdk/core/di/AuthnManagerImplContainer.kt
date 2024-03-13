@@ -5,6 +5,7 @@ import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.Authent
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.impl.AuthnManagerImplRequestBuilder
 import io.wso2.android.api_authenticator.sdk.core.managers.flow.FlowManager
 import io.wso2.android.api_authenticator.sdk.core.managers.flow.impl.FlowManagerImpl
+import io.wso2.android.api_authenticator.sdk.models.http_client.LessSecureHttpClient
 import io.wso2.android.api_authenticator.sdk.models.http_client.http_client_builder.HttpClientBuilder
 import okhttp3.OkHttpClient
 import java.io.InputStream
@@ -17,14 +18,15 @@ internal object AuthnManagerImplContainer {
     /**
      * Returns an instance of the [OkHttpClient] class, based on the given parameters.
      *
-     * @property trustedCertificates The certificate(in the PEM format) of the WSO2 identity
-     * server as a [InputStream] - optional. If not provided, a less secure http client will be
-     * used, which bypasses the certificate validation. `This is not recommended for production`.
+     * @property isDevelopment The flag to check whether the app is in development mode or not.
+     * If true, the [LessSecureHttpClient] instance will be returned. Otherwise, the default
+     * [OkHttpClient] instance will be returned. Default value is true. It is not recommended to
+     * keep this value as `true` in production environment.
      *
      * @return [OkHttpClient] instance.
      */
-    internal fun getClient(trustedCertificates: InputStream? = null): OkHttpClient {
-        return HttpClientBuilder.getHttpClientInstance(trustedCertificates)
+    internal fun getClient(isDevelopment: Boolean?): OkHttpClient {
+        return HttpClientBuilder.getHttpClientInstance(isDevelopment)
     }
 
     /**

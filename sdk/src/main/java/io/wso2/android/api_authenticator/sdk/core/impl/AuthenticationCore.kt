@@ -1,6 +1,8 @@
-package io.wso2.android.api_authenticator.sdk.core
+package io.wso2.android.api_authenticator.sdk.core.impl
 
 import android.content.Context
+import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
+import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.core.di.AuthenticationCoreContainer
 import io.wso2.android.api_authenticator.sdk.core.managers.app_auth.AppAuthManager
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.AuthnManager
@@ -18,7 +20,7 @@ import java.lang.ref.WeakReference
  */
 class AuthenticationCore private constructor(
     private val authenticationCoreConfig: AuthenticationCoreConfig
-) {
+): AuthenticationCoreDef {
     /**
      * Instance of the [AuthnManager] that will be used throughout the application
      */
@@ -83,7 +85,7 @@ class AuthenticationCore private constructor(
      * @throws [AuthenticationCoreException] If the authorization fails
      * @throws [IOException] If the request fails due to a network error
      */
-    suspend fun authorize(): AuthorizeFlow? = authnMangerInstance.authorize()
+    override suspend fun authorize(): AuthorizeFlow? = authnMangerInstance.authorize()
 
     /**
      * Send the authentication parameters to the authentication endpoint and get the next step of the
@@ -97,10 +99,8 @@ class AuthenticationCore private constructor(
      * @throws [IOException] If the request fails due to a network error
      *
      * @return [AuthorizeFlow] with the next step of the authentication flow
-     *
-     * TODO: In the AuthnManager class we can use retrofit to make the network calls.
      */
-    suspend fun authenticate(
+    override suspend fun authenticate(
         authenticatorType: AuthenticatorType,
         authenticatorParameters: AuthParams,
     ): AuthorizeFlow? = authnMangerInstance.authenticate(
@@ -114,10 +114,11 @@ class AuthenticationCore private constructor(
      * @param context Context of the application
      * @param authorizationCode Authorization code
      *
-     * @return Access token [String]
      * @throws [AppAuthManagerException] If the token request fails.
+     *
+     * @return Access token [String]
      */
-    suspend fun getAccessToken(
+    override suspend fun getAccessToken(
         context: Context,
         authorizationCode: String
     ): String? = appAuthManagerInstance.getAccessToken(authorizationCode, context)

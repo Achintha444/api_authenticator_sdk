@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "io.wso2.android.api_authenticator.sdk"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 26
