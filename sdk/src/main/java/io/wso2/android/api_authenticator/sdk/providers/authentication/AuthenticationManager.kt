@@ -20,7 +20,7 @@ import java.lang.ref.WeakReference
  *
  * @property authenticationCoreConfig [AuthenticationCoreConfig] object
  */
-internal class AuthenticationManager private constructor(
+class AuthenticationManager private constructor(
     private val authenticationCoreConfig: AuthenticationCoreConfig
 ) {
     /**
@@ -31,14 +31,12 @@ internal class AuthenticationManager private constructor(
             authenticationCoreConfig
         )
 
-    private val _authStateFlow = MutableStateFlow<AuthenticationState>(
-        AuthenticationState.Unauthorized(null)
-    )
+    private val _authStateFlow = MutableStateFlow<AuthenticationState>(AuthenticationState.Initial)
 
     /**
      * Flow of the authentication state which is exposed to the outside.
      */
-    val authStateFlow: SharedFlow<AuthenticationState> = _authStateFlow.asSharedFlow()
+    val authenticationStateFlow: SharedFlow<AuthenticationState> = _authStateFlow.asSharedFlow()
 
     companion object {
         /**

@@ -28,9 +28,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import io.wso2.android.api_authenticator.sdk.models.auth_params.BasicAuthenticatorAuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+import io.wso2.android.api_authenticator.sdk.providers.authentication.AuthenticationState
 import io.wso2.android.api_authenticator.sdk.sample.R
 import io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen.AuthScreenViewModel
+import io.wso2.android.api_authenticator.sdk.sample.presentation.util.sendEvent
 import io.wso2.android.api_authenticator.sdk.sample.ui.theme.Api_authenticator_sdkTheme
+import io.wso2.android.api_authenticator.sdk.sample.util.Event
+import io.wso2.android.api_authenticator.sdk.sample.util.navigation.NavigationViewModel
+import kotlinx.coroutines.flow.update
 
 @Composable
 internal fun BasicAuth(
@@ -39,12 +44,10 @@ internal fun BasicAuth(
 ) {
     BasicAuthComponent(
         onLoginClick = { username, password ->
-            viewModel.authenticate(
+            viewModel.authenticateWithUsernamePassword(
                 authenticatorType,
-                BasicAuthenticatorAuthParams(
-                    username = username,
-                    password = password
-                )
+                username,
+                password
             )
         }
     )

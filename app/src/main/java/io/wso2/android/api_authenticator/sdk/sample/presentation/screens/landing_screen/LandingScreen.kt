@@ -25,8 +25,8 @@ internal fun LandingScreen(
     viewModel: LandingScreenViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
-    viewModel.authorize()
-    LandingScreenContent(state.value, loginOnClick = viewModel::authorize)
+    viewModel.initializeAuthentication()
+    LandingScreenContent(state.value, loginOnClick = viewModel::initializeAuthentication)
 }
 
 

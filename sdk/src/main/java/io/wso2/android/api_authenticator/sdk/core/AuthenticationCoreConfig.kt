@@ -12,8 +12,8 @@ import okhttp3.OkHttpClient
  * @property integrityToken Client attestation integrity token - optional
  * @property isDevelopment The flag to check whether the app is in development mode or not.
  * If true, the [LessSecureHttpClient] instance will be returned. Otherwise, the default
- * [OkHttpClient] instance will be returned. Default value is true. It is not recommended to
- * keep this value as `true` in production environment.
+ * [OkHttpClient] instance will be returned. Default value is `false`. It is not recommended to
+ * keep this value as `false` in production environment.
  */
 class AuthenticationCoreConfig(
     private val baseUrl: String,
@@ -21,7 +21,7 @@ class AuthenticationCoreConfig(
     private val clientId: String,
     private val scope: String,
     private val integrityToken: String? = null,
-    private val isDevelopment: Boolean? = true
+    private val isDevelopment: Boolean? = false
 ) {
     /**
      * @example https://localhost:9443/oauth2/authorize

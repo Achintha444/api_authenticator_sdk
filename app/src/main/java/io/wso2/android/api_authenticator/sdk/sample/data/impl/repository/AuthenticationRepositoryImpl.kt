@@ -13,6 +13,9 @@ import io.wso2.android.api_authenticator.sdk.sample.data.impl.mapper.toAuthentic
 import io.wso2.android.api_authenticator.sdk.sample.util.Config
 import javax.inject.Inject
 
+/**
+ * [AuthenticationRepositoryImpl] is the implementation of the [AuthenticationRepository]
+ */
 class AuthenticationRepositoryImpl @Inject constructor() : AuthenticationRepository {
 
     private val authenticationCore = AuthenticationCore.getInstance(
@@ -20,7 +23,8 @@ class AuthenticationRepositoryImpl @Inject constructor() : AuthenticationReposit
             Config.getBaseUrl(),
             Config.getRedirectUri(),
             Config.getClientId(),
-            Config.getScope()
+            Config.getScope(),
+            isDevelopment = true
         )
     )
 

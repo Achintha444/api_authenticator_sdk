@@ -14,7 +14,7 @@ object HttpClientBuilder {
      *
      * @property isDevelopment The flag to check whether the app is in development mode or not.
      * If true, the [LessSecureHttpClient] instance will be returned. Otherwise, the default
-     * [OkHttpClient] instance will be returned. Default value is true. It is not recommended to
+     * [OkHttpClient] instance will be returned. Default value is `false`. It is not recommended to
      * keep this value as `true` in production environment.
      *
      * @return [OkHttpClient] instance.
