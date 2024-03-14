@@ -28,7 +28,7 @@ import kotlin.coroutines.suspendCoroutine
  * @property authenticatorManagerImplRequestBuilder The [AuthenticatorManagerImplRequestBuilder] instance.
  * @property authnUrl The authentication endpoint URL.
  */
-internal class AuthenticatorManagerImpl(
+internal class AuthenticatorManagerImpl private constructor(
     private val client: OkHttpClient,
     private val authenticatorTypeFactory: AuthenticatorTypeFactory,
     private val authenticatorManagerImplRequestBuilder: AuthenticatorManagerImplRequestBuilder,

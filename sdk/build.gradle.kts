@@ -43,4 +43,5 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation ("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
     implementation ("net.openid:appauth:0.11.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
 }

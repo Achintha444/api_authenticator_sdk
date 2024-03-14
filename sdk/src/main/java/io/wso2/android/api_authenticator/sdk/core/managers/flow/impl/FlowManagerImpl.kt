@@ -15,7 +15,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-internal class FlowManagerImpl(
+internal class FlowManagerImpl private constructor(
     private val authenticatorManager: AuthenticatorManager
 ) : FlowManager {
     companion object {
