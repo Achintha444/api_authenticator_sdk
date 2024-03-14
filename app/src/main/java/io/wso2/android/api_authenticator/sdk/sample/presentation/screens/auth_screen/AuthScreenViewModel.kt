@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
-import io.wso2.android.api_authenticator.sdk.models.authorize_flow.AuthorizeFlow
-import io.wso2.android.api_authenticator.sdk.models.authorize_flow.AuthorizeFlowNotSuccess
+import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
+import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowNotSuccess
 import io.wso2.android.api_authenticator.sdk.models.flow_status.FlowStatus
 import io.wso2.android.api_authenticator.sdk.sample.domain.repository.AuthenticationRepository
 import io.wso2.android.api_authenticator.sdk.sample.presentation.util.sendEvent
@@ -15,7 +15,6 @@ import io.wso2.android.api_authenticator.sdk.sample.util.navigation.NavigationVi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.net.URLEncoder
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,10 +29,10 @@ class AuthScreenViewModel @Inject constructor(
     private val _state = MutableStateFlow(AuthScreenState())
     val state = _state
 
-    fun setAuthorizeFlow(authorizeFlow: AuthorizeFlow) {
+    fun setAuthenticationFlow(authenticationFlow: AuthenticationFlow) {
         _state.update {
             it.copy(
-                authorizeFlow = authorizeFlow as AuthorizeFlowNotSuccess,
+                authenticationFlow = authenticationFlow as AuthenticationFlowNotSuccess,
                 isLoading = false
             )
         }
@@ -51,15 +50,16 @@ class AuthScreenViewModel @Inject constructor(
                 authenticatorType,
                 authenticatorParameters
             )
-                .onRight { authorizeFlow ->
+                .onRight { authenticationFlow ->
+                    // TODO: Move this to MutableSharedFlow
                     // Handle success
-                    if(authorizeFlow.flowStatus == FlowStatus.SUCCESS.flowStatus) {
+                    if(authenticationFlow.flowStatus == FlowStatus.SUCCESS.flowStatus) {
                         sendEvent(Event.Toast("Logged in successfully"))
                         NavigationViewModel.navigationEvents.emit(
                             NavigationViewModel.Companion.NavigationEvent.NavigateToHome
                         )
                     } else {
-                        setAuthorizeFlow(authorizeFlow)
+                        setAuthenticationFlow(authenticationFlow)
                     }
                 }
                 .onLeft { authenticationError ->

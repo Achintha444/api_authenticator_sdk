@@ -5,11 +5,8 @@ import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.Authent
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.BasicAuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.authenticator_type_factory.AuthenticatorTypeFactory
-import io.wso2.android.api_authenticator.sdk.models.authorize_flow.AuthorizeFlowNotSuccess
+import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowNotSuccess
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorTypeException
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.Call
 import okhttp3.Callback
@@ -120,17 +117,17 @@ internal class AuthenticatorManagerImpl(
                 override fun onResponse(call: Call, response: Response) {
                     try {
                         if (response.code == 200) {
-                            val authorizeFlow: AuthorizeFlowNotSuccess =
-                                AuthorizeFlowNotSuccess.fromJson(response.body!!.string())
+                            val authenticationFlow: AuthenticationFlowNotSuccess =
+                                AuthenticationFlowNotSuccess.fromJson(response.body!!.string())
 
-                            if (authorizeFlow.nextStep.authenticators.size == 1) {
+                            if (authenticationFlow.nextStep.authenticators.size == 1) {
                                 val detailedAuthenticatorType: AuthenticatorType =
                                     authenticatorTypeFactory.getAuthenticatorType(
-                                        authorizeFlow.nextStep.authenticators[0].authenticatorId,
-                                        authorizeFlow.nextStep.authenticators[0].authenticator,
-                                        authorizeFlow.nextStep.authenticators[0].idp,
-                                        authorizeFlow.nextStep.authenticators[0].metadata,
-                                        authorizeFlow.nextStep.authenticators[0].requiredParams
+                                        authenticationFlow.nextStep.authenticators[0].authenticatorId,
+                                        authenticationFlow.nextStep.authenticators[0].authenticator,
+                                        authenticationFlow.nextStep.authenticators[0].idp,
+                                        authenticationFlow.nextStep.authenticators[0].metadata,
+                                        authenticationFlow.nextStep.authenticators[0].requiredParams
                                     )
 
                                 continuation.resume(detailedAuthenticatorType)

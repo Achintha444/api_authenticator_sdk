@@ -6,14 +6,10 @@ import io.wso2.android.api_authenticator.sdk.core.managers.authn.AuthnManager
 import io.wso2.android.api_authenticator.sdk.core.managers.flow.FlowManager
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
-import io.wso2.android.api_authenticator.sdk.models.authorize_flow.AuthorizeFlow
+import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorTypeException
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthnManagerException
 import io.wso2.android.api_authenticator.sdk.util.JsonUtil
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.Call
 import okhttp3.Callback
@@ -84,7 +80,7 @@ internal class AuthnManagerImpl private constructor(
      * @throws [AuthnManagerException] If the authorization fails
      * @throws [IOException] If the request fails due to a network error
      */
-    override suspend fun authorize(): AuthorizeFlow? = suspendCoroutine { continuation ->
+    override suspend fun authorize(): AuthenticationFlow? = suspendCoroutine { continuation ->
         val request: Request = authenticationCoreRequestBuilder.authorizeRequestBuilder(
             authenticationCoreConfig.getAuthorizeUrl(),
             authenticationCoreConfig.getClientId(),
@@ -144,14 +140,14 @@ internal class AuthnManagerImpl private constructor(
      * @throws [FlowManagerException] If the flow is incomplete
      * @throws [IOException] If the request fails due to a network error
      *
-     * @return [AuthorizeFlow] with the next step of the authentication flow
+     * @return [AuthenticationFlow] with the next step of the authentication flow
      *
      * TODO: In the AuthnManager class we can use retrofit to make the network calls.
      */
     override suspend fun authenticate(
         authenticatorType: AuthenticatorType,
         authenticatorParameters: AuthParams
-    ): AuthorizeFlow? = suspendCoroutine { continuation ->
+    ): AuthenticationFlow? = suspendCoroutine { continuation ->
         val request: Request = authenticationCoreRequestBuilder.authenticateRequestBuilder(
             authenticationCoreConfig.getAuthnUrl(),
             flowManager.getFlowId(),

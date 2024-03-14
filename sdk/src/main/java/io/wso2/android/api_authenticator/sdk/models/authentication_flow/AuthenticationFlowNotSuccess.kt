@@ -1,4 +1,4 @@
-package io.wso2.android.api_authenticator.sdk.models.authorize_flow
+package io.wso2.android.api_authenticator.sdk.models.authentication_flow
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.JsonNode
@@ -14,13 +14,13 @@ import io.wso2.android.api_authenticator.sdk.util.JsonUtil
  * @property nextStep Next step of the authentication flow
  * @property links Links of the authentication flow
  */
-data class AuthorizeFlowNotSuccess(
+data class AuthenticationFlowNotSuccess(
     override val flowStatus: String,
     val flowId: String,
     val flowType: String,
     var nextStep: AuthorizeFlowNotSuccessNextStep,
     val links: Any
-): AuthorizeFlow(flowStatus) {
+): AuthenticationFlow(flowStatus) {
     /**
      * Authorize flow next step data class.
      *
@@ -42,14 +42,14 @@ data class AuthorizeFlowNotSuccess(
 
     companion object {
         /**
-         * Convert a json string to a [AuthorizeFlowNotSuccess] object.
+         * Convert a json string to a [AuthenticationFlowNotSuccess] object.
          *
          * @param jsonString Json string to be converted
          *
-         * @return [AuthorizeFlowNotSuccess] converted from the json string
+         * @return [AuthenticationFlowNotSuccess] converted from the json string
          */
-        fun fromJson(jsonString: String): AuthorizeFlowNotSuccess {
-            val stepTypeReference = object : TypeReference<AuthorizeFlowNotSuccess>() {}
+        fun fromJson(jsonString: String): AuthenticationFlowNotSuccess {
+            val stepTypeReference = object : TypeReference<AuthenticationFlowNotSuccess>() {}
             val jsonNodeAuthorizeFlow: JsonNode = JsonUtil.getJsonObject(jsonString)
 
             return JsonUtil.jsonNodeToObject(jsonNodeAuthorizeFlow, stepTypeReference)

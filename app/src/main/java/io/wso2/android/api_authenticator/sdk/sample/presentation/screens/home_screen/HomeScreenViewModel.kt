@@ -23,27 +23,4 @@ class HomeScreenViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(AuthScreenState())
     val state = _state
-
-    fun authorize() {
-        viewModelScope.launch {
-            _state.update {
-                it.copy(isLoading = true)
-            }
-            authenticationRepository.authorize()
-                .onRight {
-                    // Handle success
-                    println(it)
-                }
-                .onLeft { authenticationError ->
-                    // Handle error
-                    _state.update {
-                        it.copy(error = authenticationError.toString())
-                    }
-                    sendEvent(Event.Toast(authenticationError.toString()))
-                }
-            _state.update {
-                it.copy(isLoading = false)
-            }
-        }
-    }
 }

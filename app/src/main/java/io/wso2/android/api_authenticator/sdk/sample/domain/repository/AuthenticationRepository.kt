@@ -5,15 +5,15 @@ import android.content.Context
 import arrow.core.Either
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
-import io.wso2.android.api_authenticator.sdk.models.authorize_flow.AuthorizeFlow
+import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 
 interface AuthenticationRepository {
-    suspend fun authorize(): Either<AuthenticationError, AuthorizeFlow>
+    suspend fun authorize(): Either<AuthenticationError, AuthenticationFlow>
 
     suspend fun authenticate(
         authenticatorType: AuthenticatorType,
         authenticatorParameters: AuthParams,
-    ): Either<AuthenticationError, AuthorizeFlow>
+    ): Either<AuthenticationError, AuthenticationFlow>
 
     suspend fun getAccessToken(
         context: Context,

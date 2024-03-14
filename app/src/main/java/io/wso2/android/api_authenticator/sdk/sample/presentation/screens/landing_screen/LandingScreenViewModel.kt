@@ -3,11 +3,9 @@ package io.wso2.android.api_authenticator.sdk.sample.presentation.screens.landin
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.wso2.android.api_authenticator.sdk.models.authorize_flow.AuthorizeFlow
 import io.wso2.android.api_authenticator.sdk.sample.domain.repository.AuthenticationRepository
 import io.wso2.android.api_authenticator.sdk.sample.presentation.util.sendEvent
 import io.wso2.android.api_authenticator.sdk.sample.util.Event
-import io.wso2.android.api_authenticator.sdk.sample.util.JsonUtil
 import io.wso2.android.api_authenticator.sdk.sample.util.navigation.NavigationViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -32,10 +30,10 @@ class LandingScreenViewModel @Inject constructor(
                 it.copy(isLoading = true)
             }
             authenticationRepository.authorize()
-                .onRight { authorizeFlow ->
+                .onRight { authenticationFlow ->
                     NavigationViewModel.navigationEvents.emit(
                         NavigationViewModel.Companion.NavigationEvent.NavigateToAuthWithData(
-                            URLEncoder.encode(authorizeFlow.toJsonString(), "utf-8")
+                            URLEncoder.encode(authenticationFlow.toJsonString(), "utf-8")
                         )
                     )
                 }

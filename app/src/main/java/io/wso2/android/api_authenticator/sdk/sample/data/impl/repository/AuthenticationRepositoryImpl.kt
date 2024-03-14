@@ -7,7 +7,7 @@ import io.wso2.android.api_authenticator.sdk.core.impl.AuthenticationCore
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
-import io.wso2.android.api_authenticator.sdk.models.authorize_flow.AuthorizeFlow
+import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 import io.wso2.android.api_authenticator.sdk.sample.domain.repository.AuthenticationRepository
 import io.wso2.android.api_authenticator.sdk.sample.data.impl.mapper.toAuthenticationError
 import io.wso2.android.api_authenticator.sdk.sample.util.Config
@@ -24,7 +24,8 @@ class AuthenticationRepositoryImpl @Inject constructor() : AuthenticationReposit
         )
     )
 
-    override suspend fun authorize(): Either<AuthenticationError, AuthorizeFlow> {
+    override suspend fun authorize(): Either<AuthenticationError, AuthenticationFlow> {
+
         return Either.catch {
             authenticationCore.authorize()!!
         }.mapLeft {
@@ -35,7 +36,7 @@ class AuthenticationRepositoryImpl @Inject constructor() : AuthenticationReposit
     override suspend fun authenticate(
         authenticatorType: AuthenticatorType,
         authenticatorParameters: AuthParams,
-    ): Either<AuthenticationError, AuthorizeFlow> {
+    ): Either<AuthenticationError, AuthenticationFlow> {
         return Either.catch {
             authenticationCore.authenticate(
                 authenticatorType,

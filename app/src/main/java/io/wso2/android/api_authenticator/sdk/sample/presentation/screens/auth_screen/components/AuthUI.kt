@@ -3,13 +3,13 @@ package io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_s
 import androidx.compose.runtime.Composable
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.BasicAuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.TotpAuthenticatorType
-import io.wso2.android.api_authenticator.sdk.models.authorize_flow.AuthorizeFlowNotSuccess
+import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowNotSuccess
 
 @Composable
 internal fun AuthUI(
-    authorizeFlow: AuthorizeFlowNotSuccess
+    authenticationFlow: AuthenticationFlowNotSuccess
 ) {
-    authorizeFlow.nextStep.authenticators.forEach {
+    authenticationFlow.nextStep.authenticators.forEach {
         when (it.authenticator) {
             BasicAuthenticatorType.AUTHENTICATOR_TYPE -> {
                 BasicAuth(authenticatorType = it)

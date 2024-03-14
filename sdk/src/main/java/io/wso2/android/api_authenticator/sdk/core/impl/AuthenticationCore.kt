@@ -8,7 +8,7 @@ import io.wso2.android.api_authenticator.sdk.core.managers.app_auth.AppAuthManag
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.AuthnManager
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
-import io.wso2.android.api_authenticator.sdk.models.authorize_flow.AuthorizeFlow
+import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticationCoreException
 import java.io.IOException
 import java.lang.ref.WeakReference
@@ -85,7 +85,7 @@ class AuthenticationCore private constructor(
      * @throws [AuthenticationCoreException] If the authorization fails
      * @throws [IOException] If the request fails due to a network error
      */
-    override suspend fun authorize(): AuthorizeFlow? = authnMangerInstance.authorize()
+    override suspend fun authorize(): AuthenticationFlow? = authnMangerInstance.authorize()
 
     /**
      * Send the authentication parameters to the authentication endpoint and get the next step of the
@@ -98,12 +98,12 @@ class AuthenticationCore private constructor(
      * @throws [AuthenticationCoreException] If the authentication fails
      * @throws [IOException] If the request fails due to a network error
      *
-     * @return [AuthorizeFlow] with the next step of the authentication flow
+     * @return [AuthenticationFlow] with the next step of the authentication flow
      */
     override suspend fun authenticate(
         authenticatorType: AuthenticatorType,
         authenticatorParameters: AuthParams,
-    ): AuthorizeFlow? = authnMangerInstance.authenticate(
+    ): AuthenticationFlow? = authnMangerInstance.authenticate(
         authenticatorType,
         authenticatorParameters
     )

@@ -64,9 +64,9 @@ class MainActivity : ComponentActivity() {
 
                             is NavigationViewModel.Companion.NavigationEvent.NavigateToAuthWithData -> {
                                 navigationController.navigate(
-                                    "${NavDestination.AuthScreen}?authorizeFlow={authorizeFlow}"
+                                    "${NavDestination.AuthScreen}?authenticationFlow={authenticationFlow}"
                                         .replace(
-                                            "{authorizeFlow}",
+                                            "{authenticationFlow}",
                                             newValue = it.data
                                         )
                                 )
