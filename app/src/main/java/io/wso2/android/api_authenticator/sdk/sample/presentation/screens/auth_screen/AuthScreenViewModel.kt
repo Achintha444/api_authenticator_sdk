@@ -89,13 +89,11 @@ class AuthScreenViewModel @Inject constructor(
     }
 
     fun authenticateWithUsernamePassword(
-        authenticatorType: AuthenticatorType,
         username: String,
         password: String
     ) {
         viewModelScope.launch {
             authenticationManager.authenticateWithUsernameAndPassword(
-                authenticatorType,
                 username,
                 password
             )
@@ -103,12 +101,10 @@ class AuthScreenViewModel @Inject constructor(
     }
 
     fun authenticateWithTotp(
-        authenticatorType: AuthenticatorType,
         token: String
     ) {
         viewModelScope.launch {
             authenticationManager.authenticateWithTotp(
-                authenticatorType,
                 token
             )
         }

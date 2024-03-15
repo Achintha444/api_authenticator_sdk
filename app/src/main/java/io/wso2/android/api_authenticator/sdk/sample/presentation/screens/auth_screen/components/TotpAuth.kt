@@ -44,7 +44,6 @@ internal fun TotpAuth(
 //                )
 //            )
             viewModel.authenticateWithTotp(
-                authenticatorType,
                 token
             )
         }
