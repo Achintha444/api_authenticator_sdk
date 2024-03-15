@@ -22,6 +22,16 @@ internal class AppAuthManagerException(
          * Message to be shown when authenticator is not initialized
          */
         const val TOKEN_REQUEST_FAILED = "Token request failed"
+
+        /**
+         * Message to be shown when token response is empty
+         */
+        const val EMPTY_TOKEN_RESPONSE = "Token response is empty"
+
+        /**
+         * Message to be shown when token response is empty or invalid
+         */
+        const val INVALID_REFRESH_TOKEN = "Invalid refresh token or refresh token is expired"
     }
 
     override fun toString(): String {

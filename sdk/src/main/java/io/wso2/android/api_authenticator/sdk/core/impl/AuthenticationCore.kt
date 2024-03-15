@@ -10,6 +10,7 @@ import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticationCoreException
+import net.openid.appauth.TokenResponse
 import java.io.IOException
 import java.lang.ref.WeakReference
 
@@ -109,17 +110,32 @@ class AuthenticationCore private constructor(
     )
 
     /**
-     * Get the access token using the authorization code.
+     * Exchange the authorization code for the access token.
      *
-     * @param context Context of the application
      * @param authorizationCode Authorization code
+     * @param context Context of the application
      *
      * @throws [AppAuthManagerException] If the token request fails.
      *
-     * @return Access token [String]
+     * @return Token response [TokenResponse]
      */
-    override suspend fun getAccessToken(
+    override suspend fun exchangeAuthorizationCode(
+        authorizationCode: String,
         context: Context,
-        authorizationCode: String
-    ): String? = appAuthManagerInstance.getAccessToken(authorizationCode, context)
+    ): TokenResponse? = appAuthManagerInstance.exchangeAuthorizationCode(authorizationCode, context)
+
+    /**
+     * Perform the refresh token grant.
+     *
+     * @param refreshToken Refresh token
+     * @param context Context of the application
+     *
+     * @throws [AppAuthManagerException] If the token request fails.
+     *
+     * @return Token response [TokenResponse]
+     */
+    override suspend fun performRefreshTokenGrant(
+        refreshToken: String,
+        context: Context,
+    ): TokenResponse? = appAuthManagerInstance.performRefreshTokenGrant(refreshToken, context)
 }
