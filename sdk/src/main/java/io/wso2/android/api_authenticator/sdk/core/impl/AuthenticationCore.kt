@@ -6,17 +6,12 @@ import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.core.di.AuthenticationCoreContainer
 import io.wso2.android.api_authenticator.sdk.core.managers.app_auth.AppAuthManager
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.AuthnManager
-import io.wso2.android.api_authenticator.sdk.core.managers.authn.callback.TokenRequestCallback
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticationCoreException
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticationCoreException.Companion.AUTHORIZATION_SERVICE_NOT_INITIALIZED
-import kotlinx.coroutines.runBlocking
 import net.openid.appauth.TokenResponse
 import java.io.IOException
 import java.lang.ref.WeakReference
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 /**
  * Authentication core class which has the core functionality of the Authenticator SDK.
@@ -130,46 +125,8 @@ class AuthenticationCore private constructor(
         context: Context,
     ): TokenResponse? = appAuthManagerInstance.exchangeAuthorizationCode(
         authorizationCode,
-        TokenRequestCallback(
-            onSuccess = { tokenResponse ->
-                //continuation.resume(tokenResponse)
-            },
-            onFailure = { error ->
-                //continuation.resumeWithException(error)
-            }
-        ),
         context
     )
-
-
-//        appAuthManagerInstance.exchangeAuthorizationCode(
-//        authorizationCode,
-//        TokenRequestCallback(
-//            onSuccess = { tokenResponse ->
-//                println("Token response: $tokenResponse")
-//            },
-//            onFailure = { error ->
-//                throw error
-//            }
-//        ),
-//        context
-//    )
-
-
-//        suspendCoroutine { continuation ->
-//        appAuthManagerInstance.exchangeAuthorizationCode(
-//            authorizationCode,
-//            TokenRequestCallback(
-//                onSuccess = { tokenResponse ->
-//                    continuation.resume(tokenResponse)
-//                },
-//                onFailure = { error ->
-//                    continuation.resumeWithException(error)
-//                }
-//            ),
-//            context
-//        )
-
 
     /**
      * Perform the refresh token grant.

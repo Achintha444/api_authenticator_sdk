@@ -10,7 +10,11 @@ import io.wso2.android.api_authenticator.sdk.models.authentication_flow.Authenti
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorTypeException
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthnManagerException
 import io.wso2.android.api_authenticator.sdk.util.JsonUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
@@ -29,6 +33,8 @@ import kotlin.coroutines.suspendCoroutine
  * @property authenticationCoreConfig Configuration of the Identity Server [AuthenticationCoreConfig]
  * @property client OkHttpClient instance to handle network calls [OkHttpClient]
  * @property authenticationCoreRequestBuilder Request builder class to build the requests [AuthnManagerImplRequestBuilder]
+ *
+ * TODO: Dispose managers instances when the authentication flow is completed.
  */
 internal class AuthnManagerImpl private constructor(
     private val authenticationCoreConfig: AuthenticationCoreConfig,
@@ -80,7 +86,7 @@ internal class AuthnManagerImpl private constructor(
      * @throws [AuthnManagerException] If the authorization fails
      * @throws [IOException] If the request fails due to a network error
      */
-    override suspend fun authorize(): AuthenticationFlow? =
+    override suspend fun authorize(): AuthenticationFlow? = withContext(Dispatchers.IO) {
         suspendCoroutine { continuation ->
             val request: Request = authenticationCoreRequestBuilder.authorizeRequestBuilder(
                 authenticationCoreConfig.getAuthorizeUrl(),
@@ -106,7 +112,7 @@ internal class AuthnManagerImpl private constructor(
                             // set the flow id of the authorization flow
                             flowManager.setFlowId(responseObject.get("flowId").asText())
 
-                            runBlocking {
+                            CoroutineScope(Dispatchers.IO).launch {
                                 runCatching {
                                     flowManager.manageStateOfAuthorizeFlow(responseObject)
                                 }.onSuccess {
@@ -117,22 +123,19 @@ internal class AuthnManagerImpl private constructor(
                             }
                         } else {
                             // throw an `AuthnManagerException` if the request does not return 200
-                            val exception =
+                            continuation.resumeWithException(
                                 AuthnManagerException(
                                     response.message
                                 )
-                            continuation.resumeWithException(exception)
+                            )
                         }
                     } catch (e: Exception) {
-                        val exception =
-                            AuthnManagerException(
-                                e.message
-                            )
-                        continuation.resumeWithException(exception)
+                        continuation.resumeWithException(AuthnManagerException(e.message))
                     }
                 }
             })
         }
+    }
 
     /**
      * Send the authentication parameters to the authentication endpoint and get the next step of the
@@ -154,7 +157,7 @@ internal class AuthnManagerImpl private constructor(
     override suspend fun authenticate(
         authenticatorType: AuthenticatorType,
         authenticatorParameters: AuthParams
-    ): AuthenticationFlow? =
+    ): AuthenticationFlow? = withContext(Dispatchers.IO) {
         suspendCoroutine { continuation ->
             val request: Request = authenticationCoreRequestBuilder.authenticateRequestBuilder(
                 authenticationCoreConfig.getAuthnUrl(),
@@ -180,7 +183,7 @@ internal class AuthnManagerImpl private constructor(
                             val responseObject: JsonNode =
                                 JsonUtil.getJsonObject(response.body!!.string())
 
-                            runBlocking {
+                            CoroutineScope(Dispatchers.IO).launch {
                                 runCatching {
                                     flowManager.manageStateOfAuthorizeFlow(responseObject)
                                 }.onSuccess {
@@ -190,17 +193,18 @@ internal class AuthnManagerImpl private constructor(
                                 }
                             }
                         } else {
-                            // Throw an [AuthnManagerException] if the request does not return 200
-                            val exception =
+                            // Throw an [AuthnManagerException] if the request does not return 200 response.message
+                            continuation.resumeWithException(
                                 AuthnManagerException(
                                     response.message
                                 )
-                            continuation.resumeWithException(exception)
+                            )
                         }
-                    } catch (e: IOException) {
-                        continuation.resumeWithException(e)
+                    } catch (e: Exception) {
+                        continuation.resumeWithException(AuthnManagerException(e.message))
                     }
                 }
             })
         }
+    }
 }

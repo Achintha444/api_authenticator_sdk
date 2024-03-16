@@ -7,12 +7,18 @@ import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.BasicAut
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.authenticator_type_factory.AuthenticatorTypeFactory
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowNotSuccess
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorTypeException
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import okhttp3.internal.wait
 import java.io.IOException
 import java.lang.ref.WeakReference
 import kotlin.coroutines.resume
@@ -84,7 +90,7 @@ internal class AuthenticatorManagerImpl private constructor(
     override suspend fun getDetailsOfAuthenticatorType(
         flowId: String,
         authenticatorType: AuthenticatorType
-    ): AuthenticatorType =
+    ): AuthenticatorType = withContext(Dispatchers.IO) {
         suspendCoroutine { continuation ->
             if (authenticatorType.authenticatorId == BasicAuthenticatorType.AUTHENTICATOR_TYPE) {
                 val detailedAuthenticatorType: AuthenticatorType =
@@ -165,6 +171,7 @@ internal class AuthenticatorManagerImpl private constructor(
                 })
             }
         }
+    }
 
     /**
      * Get full details of the all authenticators for the given flow.
@@ -179,53 +186,23 @@ internal class AuthenticatorManagerImpl private constructor(
     override suspend fun getDetailsOfAllAuthenticatorTypesGivenFlow(
         flowId: String,
         authenticatorTypes: ArrayList<AuthenticatorType>
-    ): ArrayList<AuthenticatorType> =
-        suspendCoroutine { outerContinuation ->
-            /**
-             * If there is only one authenticator type, do not call the endpoint to get the details.
-             * Because the details are already available, just calling the AuthenticatorTypeFactory to
-             * set the correct authenticator type.
-             */
-            if (authenticatorTypes.size == 1) {
-                val detailedAuthenticatorType: AuthenticatorType =
-                    authenticatorTypeFactory.getAuthenticatorType(
-                        authenticatorTypes[0].authenticatorId,
-                        authenticatorTypes[0].authenticator,
-                        authenticatorTypes[0].idp,
-                        authenticatorTypes[0].metadata,
-                        authenticatorTypes[0].requiredParams
-                    )
-                authenticatorTypes[0] = detailedAuthenticatorType
-
-                outerContinuation.resume(authenticatorTypes)
-            } else {
-                runBlocking {
-                    // Authenticator types with full details
-                    val detailedAuthenticatorTypes: ArrayList<AuthenticatorType> =
-                        ArrayList()
-
-                    for (authenticatorType in authenticatorTypes) {
-                        try {
-                            runCatching {
-                                getDetailsOfAuthenticatorType(
-                                    flowId,
-                                    authenticatorType
-                                )
-                            }.onSuccess {
-                                detailedAuthenticatorTypes.add(it)
-
-                                if (detailedAuthenticatorTypes.size == authenticatorTypes.size) {
-                                    outerContinuation.resume(detailedAuthenticatorTypes)
-                                }
-                            }.onFailure {
-                                outerContinuation.resumeWithException(it)
-                            }
-                        } catch (e: AuthenticatorTypeException) {
-                            outerContinuation.resumeWithException(e)
-                            break
-                        }
-                    }
-                }
+    ): ArrayList<AuthenticatorType> {
+        if (authenticatorTypes.size == 1) {
+            // If there is only one authenticator type, don't call the endpoint
+            val detailedAuthenticatorType = authenticatorTypeFactory.getAuthenticatorType(
+                authenticatorTypes[0].authenticatorId,
+                authenticatorTypes[0].authenticator,
+                authenticatorTypes[0].idp,
+                authenticatorTypes[0].metadata,
+                authenticatorTypes[0].requiredParams
+            )
+            return arrayListOf(detailedAuthenticatorType)
+        } else {
+            // Fetch details for multiple authenticator types
+            val detailedAuthenticatorTypes = authenticatorTypes.map { authenticatorType ->
+                getDetailsOfAuthenticatorType(flowId, authenticatorType)
             }
+            return detailedAuthenticatorTypes.toCollection(ArrayList())
         }
+    }
 }

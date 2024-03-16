@@ -54,54 +54,48 @@ class TokenDataStoreImpl(private val context: Context) : TokenDataStore {
      *
      * @return The access token [String]
      */
-    override suspend fun getAccessToken(): String? {
-        return getTokenResponse()?.accessToken
-    }
+    override suspend fun getAccessToken(): String? =
+        getTokenResponse()?.accessToken
 
     /**
      * Get the refresh token from the token data store.
      *
      * @return The refresh token [String]
      */
-    override suspend fun getRefreshToken(): String? {
-        return getTokenResponse()?.refreshToken
-    }
+    override suspend fun getRefreshToken(): String? =
+        getTokenResponse()?.refreshToken
 
     /**
      * Get the ID token from the token data store.
      *
      * @return The ID token [String]
      */
-    override suspend fun getIDToken(): String? {
-        return getTokenResponse()?.idToken
-    }
+    override suspend fun getIDToken(): String? =
+        getTokenResponse()?.idToken
 
     /**
      * Get the access token expiration time from the token data store.
      *
      * @return The access token expiration time [Long]
      */
-    override suspend fun getAccessTokenExpirationTime(): Long? {
-        return getTokenResponse()?.accessTokenExpirationTime
-    }
+    override suspend fun getAccessTokenExpirationTime(): Long? =
+        getTokenResponse()?.accessTokenExpirationTime
 
     /**
      * Get the scope from the token data store.
      *
      * @return The scope [String]
      */
-    override suspend fun getScope(): String? {
-        return getTokenResponse()?.scope
-    }
+    override suspend fun getScope(): String? =
+        getTokenResponse()?.scope
 
     /**
      * Get the token type from the token data store.
      *
      * @return The token type [String]
      */
-    override suspend fun getTokenType(): String? {
-        return getTokenResponse()?.tokenType
-    }
+    override suspend fun getTokenType(): String? =
+        getTokenResponse()?.tokenType
 
     /**
      * Clear the tokens from the token data store.

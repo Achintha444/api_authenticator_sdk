@@ -3,17 +3,14 @@ package io.wso2.android.api_authenticator.sdk.core.managers.flow.impl
 import com.fasterxml.jackson.databind.JsonNode
 import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.AuthenticatorManager
 import io.wso2.android.api_authenticator.sdk.core.managers.flow.FlowManager
+import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowNotSuccess
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowSuccess
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorTypeException
 import io.wso2.android.api_authenticator.sdk.models.exceptions.FlowManagerException
 import io.wso2.android.api_authenticator.sdk.models.flow_status.FlowStatus
-import kotlinx.coroutines.runBlocking
 import java.lang.ref.WeakReference
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 internal class FlowManagerImpl private constructor(
     private val authenticatorManager: AuthenticatorManager
@@ -76,25 +73,21 @@ internal class FlowManagerImpl private constructor(
      */
     private suspend fun handleAuthorizeFlow(
         responseBodyString: String
-    ): AuthenticationFlowNotSuccess = suspendCoroutine { continuation ->
-         runBlocking {
-            val authenticationFlow: AuthenticationFlowNotSuccess =
-                AuthenticationFlowNotSuccess.fromJson(
-                    responseBodyString
-                )
+    ): AuthenticationFlowNotSuccess {
+        val authenticationFlow: AuthenticationFlowNotSuccess =
+            AuthenticationFlowNotSuccess.fromJson(
+                responseBodyString
+            )
 
-            runCatching {
-                authenticatorManager.getDetailsOfAllAuthenticatorTypesGivenFlow(
-                    authenticationFlow.flowId,
-                    authenticationFlow.nextStep.authenticators
-                )
-            }.onSuccess {
-                authenticationFlow.nextStep.authenticators = it
-                continuation.resume(authenticationFlow)
-            }.onFailure {
-                continuation.resumeWithException(it)
-            }
-        }
+        val authenticatorTypes: ArrayList<AuthenticatorType> =
+            authenticatorManager.getDetailsOfAllAuthenticatorTypesGivenFlow(
+                authenticationFlow.flowId,
+                authenticationFlow.nextStep.authenticators
+            )
+
+        authenticationFlow.nextStep.authenticators = authenticatorTypes
+
+        return authenticationFlow
     }
 
     /**
@@ -112,31 +105,25 @@ internal class FlowManagerImpl private constructor(
      */
     override suspend fun manageStateOfAuthorizeFlow(
         responseObject: JsonNode
-    ): AuthenticationFlow? = suspendCoroutine { continuation ->
-        when (responseObject.get("flowStatus").asText()) {
+    ): AuthenticationFlow? {
+        return when (responseObject.get("flowStatus").asText()) {
             FlowStatus.FAIL_INCOMPLETE.flowStatus -> {
-                val exception =
-                    FlowManagerException(
-                        FlowManagerException.AUTHENTICATION_NOT_COMPLETED
-                    )
-                continuation.resumeWithException(exception)
+                throw FlowManagerException(
+                    FlowManagerException.AUTHENTICATION_NOT_COMPLETED
+                )
             }
 
             FlowStatus.INCOMPLETE.flowStatus -> {
-                runBlocking {
-                    runCatching {
-                        handleAuthorizeFlow(responseObject.toString())
-                    }.onSuccess {
-                        continuation.resume(it)
-                    }.onFailure {
-                        continuation.resumeWithException(it)
-                    }
-                }
+                handleAuthorizeFlow(responseObject.toString())
             }
 
             FlowStatus.SUCCESS.flowStatus -> {
-                continuation.resume(
-                    AuthenticationFlowSuccess.fromJson(responseObject.toString())
+                AuthenticationFlowSuccess.fromJson(responseObject.toString())
+            }
+
+            else -> {
+                throw FlowManagerException(
+                    FlowManagerException.AUTHENTICATION_NOT_COMPLETED_UNKNOWN
                 )
             }
         }

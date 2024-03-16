@@ -17,13 +17,9 @@ import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.flow_status.FlowStatus
 import io.wso2.android.api_authenticator.sdk.providers.di.AuthenticationProviderContainer
 import io.wso2.android.api_authenticator.sdk.providers.util.AuthenticatorProviderUtil
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.lang.ref.WeakReference
 
 /**
@@ -89,16 +85,14 @@ class AuthenticationProvider private constructor(
     suspend fun initializeAuthentication() {
         _authStateFlow.tryEmit(AuthenticationState.Loading)
 
-        runBlocking {
-            runCatching {
-                authenticationCore.authorize()
-            }.onSuccess {
-                authenticatorsInThisStep =
-                    (it as AuthenticationFlowNotSuccess)?.nextStep?.authenticators
-                _authStateFlow.tryEmit(AuthenticationState.Unauthorized(it))
-            }.onFailure {
-                _authStateFlow.tryEmit(AuthenticationState.Error(it))
-            }
+        runCatching {
+            authenticationCore.authorize()
+        }.onSuccess {
+            authenticatorsInThisStep =
+                (it as AuthenticationFlowNotSuccess)?.nextStep?.authenticators
+            _authStateFlow.tryEmit(AuthenticationState.Unauthorized(it))
+        }.onFailure {
+            _authStateFlow.tryEmit(AuthenticationState.Error(it))
         }
     }
 
@@ -112,64 +106,26 @@ class AuthenticationProvider private constructor(
         context: Context,
         authenticationFlow: AuthenticationFlow,
         authStateFlow: MutableStateFlow<AuthenticationState>
-     ) {
+    ) {
         when (authenticationFlow.flowStatus) {
             FlowStatus.SUCCESS.flowStatus -> {
                 // Clear the authenticators when the authentication is successful
                 authenticatorsInThisStep = null
 
-                CoroutineScope(Dispatchers.IO).launch {
-                    runCatching {
-                        authenticationCore.exchangeAuthorizationCode(
-                            (authenticationFlow as AuthenticationFlowSuccess).authData.code,
-                            context
-                        )
-                    }.onSuccess {
-                        authStateFlow.tryEmit(
-                            AuthenticationState.Authorized
-                        )
-                    }.onFailure {
-                        authStateFlow.tryEmit(
-                            AuthenticationState.Error(it)
-                        )
-                    }
+                runCatching {
+                    authenticationCore.exchangeAuthorizationCode(
+                        (authenticationFlow as AuthenticationFlowSuccess).authData.code,
+                        context
+                    )
+                }.onSuccess {
+                    authStateFlow.tryEmit(
+                        AuthenticationState.Authorized
+                    )
+                }.onFailure {
+                    authStateFlow.tryEmit(
+                        AuthenticationState.Error(it)
+                    )
                 }
-
-//                runBlocking {
-//                    runCatching {
-//                        authenticationCore.exchangeAuthorizationCode(
-//                            (authenticationFlow as AuthenticationFlowSuccess).authData.code,
-//                            context
-//                        )
-//                    }.onSuccess {
-//                        authStateFlow.tryEmit(
-//                            AuthenticationState.Authorized
-//                        )
-//                    }.onFailure {
-//                        authStateFlow.tryEmit(
-//                            AuthenticationState.Error(it)
-//                        )
-//                    }
-//                }
-
-//                try {
-//                    val tokenResponse = authenticationCore.exchangeAuthorizationCode(
-//                        (authenticationFlow as AuthenticationFlowSuccess).authData.code,
-//                        context
-//                    )
-//                    authStateFlow.tryEmit(
-//                        AuthenticationState.Authorized
-//                    )
-//                } catch (e: Exception) {
-//                    authStateFlow.tryEmit(
-//                        AuthenticationState.Error(e)
-//                    )
-//                }
-
-//                authenticationCore.exchangeAuthorizationCode(
-//                    (authenticationFlow as AuthenticationFlowSuccess).authData.code,
-//                    context
-//                )
             }
 
             else -> {
@@ -248,17 +204,15 @@ class AuthenticationProvider private constructor(
             )
 
         if (authenticatorType != null) {
-            runBlocking {
-                runCatching {
-                    authenticationCore.authenticate(
-                        authenticatorType,
-                        authParams
-                    )
-                }.onSuccess {
-                    emitSuccessStateOnFlowStatus(context, it!!, _authStateFlow)
-                }.onFailure {
-                    _authStateFlow.tryEmit(AuthenticationState.Error(it))
-                }
+            runCatching {
+                authenticationCore.authenticate(
+                    authenticatorType,
+                    authParams
+                )
+            }.onSuccess {
+                emitSuccessStateOnFlowStatus(context, it!!, _authStateFlow)
+            }.onFailure {
+                _authStateFlow.tryEmit(AuthenticationState.Error(it))
             }
         }
     }

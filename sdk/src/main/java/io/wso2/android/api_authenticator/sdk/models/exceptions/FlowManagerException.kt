@@ -16,6 +16,11 @@ internal class FlowManagerException (
          * Message to be shown when authentication is not completed
          */
         const val AUTHENTICATION_NOT_COMPLETED = "Authentication is not completed. Response returned FAIL_INCOMPLETE"
+
+        /**
+         * Message to be shown when authentication is not completed due to an unknown error
+         */
+        const val AUTHENTICATION_NOT_COMPLETED_UNKNOWN = "Authentication is not completed. Unknown error occurred"
     }
 
     override fun toString(): String {

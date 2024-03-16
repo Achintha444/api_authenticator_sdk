@@ -15,7 +15,7 @@ internal fun AuthUI(
                 BasicAuth(authenticatorType = it)
             }
 
-            TotpAuthenticatorType.AUTHENTICATOR_TYPE -> {
+            else -> {
                 TotpAuth(authenticatorType = it)
             }
         }
