@@ -49,6 +49,9 @@ internal object AuthenticationCoreContainer {
             AppAuthManagerImplContainer.getClientId(
                 authenticationCoreConfig.getClientId()
             ),
+            AppAuthManagerImplContainer.getRedirectUri(
+                authenticationCoreConfig.getRedirectUri()
+            ),
             AppAuthManagerImplContainer.getServiceConfig(
                 authenticationCoreConfig.getAuthorizeUrl(),
                 authenticationCoreConfig.getTokenUrl()

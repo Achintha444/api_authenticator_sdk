@@ -4,6 +4,6 @@ import io.wso2.android.api_authenticator.sdk.models.authentication_flow.Authenti
 
 data class AuthScreenState(
     val isLoading: Boolean = false,
-    val authenticationFlow: AuthenticationFlowNotSuccess? = null,
+    val authenticationFlow: io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowNotSuccess? = null,
     val error: String = ""
 )

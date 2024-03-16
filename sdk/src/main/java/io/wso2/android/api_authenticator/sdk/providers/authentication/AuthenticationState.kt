@@ -15,7 +15,7 @@ import io.wso2.android.api_authenticator.sdk.models.authentication_flow.Authenti
  */
 sealed class AuthenticationState {
     object Initial : AuthenticationState()
-    data class Unauthorized(val authenticationFlow: AuthenticationFlow?) : AuthenticationState()
+    data class Unauthorized(val authenticationFlow: io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow?) : AuthenticationState()
     object Authorized : AuthenticationState()
     object Loading : AuthenticationState()
     data class Error(val throwable: Throwable) : AuthenticationState()

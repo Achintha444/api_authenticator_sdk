@@ -1,20 +1,14 @@
 package io.wso2.android.api_authenticator.sdk.providers.util
 
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.BasicAuthenticatorType
-import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
-import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorTypeException
-import io.wso2.android.api_authenticator.sdk.models.flow_status.FlowStatus
-import io.wso2.android.api_authenticator.sdk.providers.authentication.AuthenticationState
 import io.wso2.android.api_authenticator.sdk.util.AuthenticatorTypeUtil
-import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
- * Utility class for the [AuthenticationManager]
+ * Utility class for the [AuthenticatorProvider]
  *
- * This class contains utility methods that are used by the [AuthenticationManager]
+ * This class contains utility methods that are used by the [AuthenticatorProvider]
  */
-object AuthenticationManagerUtil {
+object AuthenticatorProviderUtil {
     /**
      * Get the authenticator type from the authenticator type list
      *

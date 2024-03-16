@@ -1,6 +1,5 @@
 package io.wso2.android.api_authenticator.sdk.core
 
-import io.wso2.android.api_authenticator.sdk.models.http_client.LessSecureHttpClient
 import okhttp3.OkHttpClient
 
 /**

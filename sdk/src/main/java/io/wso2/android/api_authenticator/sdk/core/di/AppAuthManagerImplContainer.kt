@@ -1,11 +1,9 @@
 package io.wso2.android.api_authenticator.sdk.core.di
 
 import android.net.Uri
-import io.wso2.android.api_authenticator.sdk.models.http_client.LessSecureHttpClient
 import io.wso2.android.api_authenticator.sdk.models.http_client.http_client_builder.HttpClientBuilder
 import net.openid.appauth.AuthorizationServiceConfiguration
 import okhttp3.OkHttpClient
-import java.io.InputStream
 
 /**
  * Dependency Injection container for the [AppAuthManagerImpl] class.
@@ -38,6 +36,17 @@ internal object AppAuthManagerImplContainer {
     }
 
     /**
+     * Returns the redirect URI passed as a parameter.
+     *
+     * @property redirectUri The redirect URI.
+     *
+     * @return The redirect URI.
+     */
+    internal fun getRedirectUri(redirectUri: String): Uri {
+        return Uri.parse(redirectUri)
+    }
+
+    /**
      * Returns the [AuthorizationServiceConfiguration] instance, based on the given parameters.
      *
      * @property authorizeEndpoint The authorize endpoint.
@@ -51,7 +60,8 @@ internal object AppAuthManagerImplContainer {
     ): AuthorizationServiceConfiguration {
         return AuthorizationServiceConfiguration(
             Uri.parse(authorizeEndpoint),
-            Uri.parse(tokenEndpoint)
+            Uri.parse(tokenEndpoint),
+
         )
     }
 }

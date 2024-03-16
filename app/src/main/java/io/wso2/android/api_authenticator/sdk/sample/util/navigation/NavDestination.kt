@@ -31,8 +31,8 @@ fun NavGraph(navController: NavHostController) {
         }
         composable("${NavDestination.AuthScreen}?authenticationFlow={authenticationFlow}") {
             val authenticationFlowString: String? = it.arguments?.getString("authenticationFlow")
-            val authenticationFlow: AuthenticationFlow =
-                AuthenticationFlowNotSuccess.fromJson(URLDecoder.decode(
+            val authenticationFlow: io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow =
+                io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowNotSuccess.fromJson(URLDecoder.decode(
                     authenticationFlowString!!, "utf-8")
                 )
             AuthScreen(authenticationFlow = authenticationFlow)

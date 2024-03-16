@@ -65,8 +65,8 @@ internal object AuthnManagerImplRequestBuilder {
     internal fun authenticateRequestBuilder(
         authnUri: String,
         flowId: String,
-        authenticatorType: AuthenticatorType,
-        authenticatorAuthParams: AuthParams,
+        authenticatorType: io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType,
+        authenticatorAuthParams: io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams,
     ): Request {
         val authBody = LinkedHashMap<String, Any>()
         authBody["flowId"] = flowId

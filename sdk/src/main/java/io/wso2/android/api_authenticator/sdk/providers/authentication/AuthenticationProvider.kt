@@ -1,9 +1,9 @@
 package io.wso2.android.api_authenticator.sdk.providers.authentication
 
+import android.content.Context
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.AuthenticatorManager
-import io.wso2.android.api_authenticator.sdk.core.managers.authn.AuthnManager
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.auth_params.BasicAuthenticatorAuthParams
 import io.wso2.android.api_authenticator.sdk.models.auth_params.TotpAuthenticatorTypeAuthParams
@@ -12,29 +12,33 @@ import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.BasicAut
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.TotpAuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowNotSuccess
+import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowSuccess
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorTypeException
 import io.wso2.android.api_authenticator.sdk.models.flow_status.FlowStatus
-import io.wso2.android.api_authenticator.sdk.providers.di.AuthenticationManagerContainer
-import io.wso2.android.api_authenticator.sdk.providers.util.AuthenticationManagerUtil
+import io.wso2.android.api_authenticator.sdk.providers.di.AuthenticationProviderContainer
+import io.wso2.android.api_authenticator.sdk.providers.util.AuthenticatorProviderUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.lang.ref.WeakReference
 
 /**
- * Authentication manager class that is used to manage the authentication process.
+ * Authentication provider class that is used to manage the authentication process.
  *
  * @property authenticationCoreConfig [AuthenticationCoreConfig] object
  */
-class AuthenticationManager private constructor(
+class AuthenticationProvider private constructor(
     private val authenticationCoreConfig: AuthenticationCoreConfig
 ) {
     /**
-     * Instance of the [AuthnManager] that will be used throughout the application
+     * Instance of the [AuthenticationCoreDef] that will be used throughout the application
      */
     private var authenticationCore: AuthenticationCoreDef =
-        AuthenticationManagerContainer.getAuthenticationCoreDef(
+        AuthenticationProviderContainer.getAuthenticationCoreDef(
             authenticationCoreConfig
         )
 
@@ -52,25 +56,25 @@ class AuthenticationManager private constructor(
 
     companion object {
         /**
-         * Instance of the [AuthenticationManager] that will be used throughout the application
+         * Instance of the [AuthenticationProvider] that will be used throughout the application
          */
-        private var authenticationManagerInstance: WeakReference<AuthenticationManager> =
+        private var authenticationProviderInstance: WeakReference<AuthenticationProvider> =
             WeakReference(null)
 
         /**
-         * Initialize the [AuthenticationManager] instance and return the instance.
+         * Initialize the [AuthenticationProvider] instance and return the instance.
          *
          * @param authenticationCoreConfig The [AuthenticatorManager] instance
          */
         fun getInstance(
             authenticationCoreConfig: AuthenticationCoreConfig
-        ): AuthenticationManager {
-            var authenticatorManager = authenticationManagerInstance.get()
-            if (authenticatorManager == null) {
-                authenticatorManager = AuthenticationManager(authenticationCoreConfig)
-                authenticationManagerInstance = WeakReference(authenticatorManager)
+        ): AuthenticationProvider {
+            var authenticatorProvider = authenticationProviderInstance.get()
+            if (authenticatorProvider == null) {
+                authenticatorProvider = AuthenticationProvider(authenticationCoreConfig)
+                authenticationProviderInstance = WeakReference(authenticatorProvider)
             }
-            return authenticatorManager
+            return authenticatorProvider
         }
     }
 
@@ -104,16 +108,68 @@ class AuthenticationManager private constructor(
      * @param authenticationFlow [AuthenticationFlow] object
      * @param authStateFlow [MutableStateFlow] of [AuthenticationState]
      */
-    private fun emitSuccessStateOnFlowStatus(
+    private suspend fun emitSuccessStateOnFlowStatus(
+        context: Context,
         authenticationFlow: AuthenticationFlow,
         authStateFlow: MutableStateFlow<AuthenticationState>
-    ) {
+     ) {
         when (authenticationFlow.flowStatus) {
             FlowStatus.SUCCESS.flowStatus -> {
                 // Clear the authenticators when the authentication is successful
                 authenticatorsInThisStep = null
 
-                authStateFlow.tryEmit(AuthenticationState.Authorized)
+                CoroutineScope(Dispatchers.IO).launch {
+                    runCatching {
+                        authenticationCore.exchangeAuthorizationCode(
+                            (authenticationFlow as AuthenticationFlowSuccess).authData.code,
+                            context
+                        )
+                    }.onSuccess {
+                        authStateFlow.tryEmit(
+                            AuthenticationState.Authorized
+                        )
+                    }.onFailure {
+                        authStateFlow.tryEmit(
+                            AuthenticationState.Error(it)
+                        )
+                    }
+                }
+
+//                runBlocking {
+//                    runCatching {
+//                        authenticationCore.exchangeAuthorizationCode(
+//                            (authenticationFlow as AuthenticationFlowSuccess).authData.code,
+//                            context
+//                        )
+//                    }.onSuccess {
+//                        authStateFlow.tryEmit(
+//                            AuthenticationState.Authorized
+//                        )
+//                    }.onFailure {
+//                        authStateFlow.tryEmit(
+//                            AuthenticationState.Error(it)
+//                        )
+//                    }
+//                }
+
+//                try {
+//                    val tokenResponse = authenticationCore.exchangeAuthorizationCode(
+//                        (authenticationFlow as AuthenticationFlowSuccess).authData.code,
+//                        context
+//                    )
+//                    authStateFlow.tryEmit(
+//                        AuthenticationState.Authorized
+//                    )
+//                } catch (e: Exception) {
+//                    authStateFlow.tryEmit(
+//                        AuthenticationState.Error(e)
+//                    )
+//                }
+
+//                authenticationCore.exchangeAuthorizationCode(
+//                    (authenticationFlow as AuthenticationFlowSuccess).authData.code,
+//                    context
+//                )
             }
 
             else -> {
@@ -146,7 +202,7 @@ class AuthenticationManager private constructor(
         authenticatorTypeString: String
     ): AuthenticatorType? {
         val authenticatorType: AuthenticatorType? =
-            AuthenticationManagerUtil.getAuthenticatorTypeFromAuthenticatorTypeList(
+            AuthenticatorProviderUtil.getAuthenticatorTypeFromAuthenticatorTypeList(
                 authenticators,
                 authenticatorTypeString
             )
@@ -178,6 +234,7 @@ class AuthenticationManager private constructor(
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     private suspend fun commonAuthenticate(
+        context: Context,
         authenticatorTypeString: String,
         authParams: AuthParams
     ) {
@@ -198,7 +255,7 @@ class AuthenticationManager private constructor(
                         authParams
                     )
                 }.onSuccess {
-                    emitSuccessStateOnFlowStatus(it!!, _authStateFlow)
+                    emitSuccessStateOnFlowStatus(context, it!!, _authStateFlow)
                 }.onFailure {
                     _authStateFlow.tryEmit(AuthenticationState.Error(it))
                 }
@@ -218,10 +275,12 @@ class AuthenticationManager private constructor(
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     suspend fun authenticateWithUsernameAndPassword(
+        context: Context,
         username: String,
         password: String
     ) {
         commonAuthenticate(
+            context,
             BasicAuthenticatorType.AUTHENTICATOR_TYPE,
             BasicAuthenticatorAuthParams(username, password)
         )
@@ -238,9 +297,11 @@ class AuthenticationManager private constructor(
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     suspend fun authenticateWithTotp(
+        context: Context,
         token: String
     ) {
         commonAuthenticate(
+            context,
             TotpAuthenticatorType.AUTHENTICATOR_TYPE,
             TotpAuthenticatorTypeAuthParams(token)
         )

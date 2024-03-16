@@ -15,7 +15,7 @@ object AuthenticatorTypeUtil {
      * @return Boolean value whether there are duplicates authenticators of the given authenticator type in the given step
      */
     fun hasDuplicatesAuthenticatorsInGivenStep(
-        authenticators: ArrayList<AuthenticatorType>,
+        authenticators: ArrayList<io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType>,
         authenticatorTypeString: String
     ): Boolean {
         return authenticators.count { it.authenticator == authenticatorTypeString } > 1
@@ -30,9 +30,9 @@ object AuthenticatorTypeUtil {
      * @return [AuthenticatorType] object, `null` if the authenticator type is not found
      */
     fun getAuthenticatorTypeFromAuthenticatorTypeList(
-        authenticators: ArrayList<AuthenticatorType>,
+        authenticators: ArrayList<io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType>,
         authenticatorTypeString: String
-    ): AuthenticatorType? {
+    ): io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType? {
         return authenticators.find { it.authenticator == authenticatorTypeString }
     }
 }

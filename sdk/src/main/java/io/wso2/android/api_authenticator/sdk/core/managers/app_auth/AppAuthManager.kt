@@ -1,6 +1,7 @@
 package io.wso2.android.api_authenticator.sdk.core.managers.app_auth
 
 import android.content.Context
+import io.wso2.android.api_authenticator.sdk.core.managers.authn.callback.TokenRequestCallback
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AppAuthManagerException
 import net.openid.appauth.TokenResponse
 
@@ -15,10 +16,11 @@ interface AppAuthManager {
      *
      * @throws AppAuthManagerException If the token request fails.
      *
-     * @return The access token [String]
+     * @return The [TokenResponse] instance.
      */
     suspend fun exchangeAuthorizationCode(
         authorizationCode: String,
+        callback: TokenRequestCallback,
         context: Context
     ): TokenResponse?
 

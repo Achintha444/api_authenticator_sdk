@@ -6,13 +6,17 @@ import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.core.di.AuthenticationCoreContainer
 import io.wso2.android.api_authenticator.sdk.core.managers.app_auth.AppAuthManager
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.AuthnManager
-import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+import io.wso2.android.api_authenticator.sdk.core.managers.authn.callback.TokenRequestCallback
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticationCoreException
+import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticationCoreException.Companion.AUTHORIZATION_SERVICE_NOT_INITIALIZED
+import kotlinx.coroutines.runBlocking
 import net.openid.appauth.TokenResponse
 import java.io.IOException
 import java.lang.ref.WeakReference
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 /**
  * Authentication core class which has the core functionality of the Authenticator SDK.
@@ -21,7 +25,7 @@ import java.lang.ref.WeakReference
  */
 class AuthenticationCore private constructor(
     private val authenticationCoreConfig: AuthenticationCoreConfig
-): AuthenticationCoreDef {
+) : AuthenticationCoreDef {
     /**
      * Instance of the [AuthnManager] that will be used throughout the application
      */
@@ -73,7 +77,7 @@ class AuthenticationCore private constructor(
         fun getInstance(): AuthenticationCore {
             return authenticationCoreInstance.get()
                 ?: throw AuthenticationCoreException(
-                    AuthenticationCoreException.AUTHORIZATION_SERVICE_NOT_INITIALIZED
+                    AUTHORIZATION_SERVICE_NOT_INITIALIZED
                 )
         }
     }
@@ -86,7 +90,8 @@ class AuthenticationCore private constructor(
      * @throws [AuthenticationCoreException] If the authorization fails
      * @throws [IOException] If the request fails due to a network error
      */
-    override suspend fun authorize(): AuthenticationFlow? = authnMangerInstance.authorize()
+    override suspend fun authorize(): io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow? =
+        authnMangerInstance.authorize()
 
     /**
      * Send the authentication parameters to the authentication endpoint and get the next step of the
@@ -102,12 +107,13 @@ class AuthenticationCore private constructor(
      * @return [AuthenticationFlow] with the next step of the authentication flow
      */
     override suspend fun authenticate(
-        authenticatorType: AuthenticatorType,
-        authenticatorParameters: AuthParams,
-    ): AuthenticationFlow? = authnMangerInstance.authenticate(
-        authenticatorType,
-        authenticatorParameters
-    )
+        authenticatorType: io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType,
+        authenticatorParameters: io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams,
+    ): io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow? =
+        authnMangerInstance.authenticate(
+            authenticatorType,
+            authenticatorParameters
+        )
 
     /**
      * Exchange the authorization code for the access token.
@@ -122,7 +128,48 @@ class AuthenticationCore private constructor(
     override suspend fun exchangeAuthorizationCode(
         authorizationCode: String,
         context: Context,
-    ): TokenResponse? = appAuthManagerInstance.exchangeAuthorizationCode(authorizationCode, context)
+    ): TokenResponse? = appAuthManagerInstance.exchangeAuthorizationCode(
+        authorizationCode,
+        TokenRequestCallback(
+            onSuccess = { tokenResponse ->
+                //continuation.resume(tokenResponse)
+            },
+            onFailure = { error ->
+                //continuation.resumeWithException(error)
+            }
+        ),
+        context
+    )
+
+
+//        appAuthManagerInstance.exchangeAuthorizationCode(
+//        authorizationCode,
+//        TokenRequestCallback(
+//            onSuccess = { tokenResponse ->
+//                println("Token response: $tokenResponse")
+//            },
+//            onFailure = { error ->
+//                throw error
+//            }
+//        ),
+//        context
+//    )
+
+
+//        suspendCoroutine { continuation ->
+//        appAuthManagerInstance.exchangeAuthorizationCode(
+//            authorizationCode,
+//            TokenRequestCallback(
+//                onSuccess = { tokenResponse ->
+//                    continuation.resume(tokenResponse)
+//                },
+//                onFailure = { error ->
+//                    continuation.resumeWithException(error)
+//                }
+//            ),
+//            context
+//        )
+
 
     /**
      * Perform the refresh token grant.

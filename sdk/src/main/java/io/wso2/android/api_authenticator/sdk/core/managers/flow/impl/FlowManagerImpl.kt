@@ -77,10 +77,11 @@ internal class FlowManagerImpl private constructor(
     private suspend fun handleAuthorizeFlow(
         responseBodyString: String
     ): AuthenticationFlowNotSuccess = suspendCoroutine { continuation ->
-        runBlocking {
-            val authenticationFlow: AuthenticationFlowNotSuccess = AuthenticationFlowNotSuccess.fromJson(
-                responseBodyString
-            )
+         runBlocking {
+            val authenticationFlow: AuthenticationFlowNotSuccess =
+                AuthenticationFlowNotSuccess.fromJson(
+                    responseBodyString
+                )
 
             runCatching {
                 authenticatorManager.getDetailsOfAllAuthenticatorTypesGivenFlow(
@@ -114,9 +115,10 @@ internal class FlowManagerImpl private constructor(
     ): AuthenticationFlow? = suspendCoroutine { continuation ->
         when (responseObject.get("flowStatus").asText()) {
             FlowStatus.FAIL_INCOMPLETE.flowStatus -> {
-                val exception = FlowManagerException(
-                    FlowManagerException.AUTHENTICATION_NOT_COMPLETED
-                )
+                val exception =
+                    FlowManagerException(
+                        FlowManagerException.AUTHENTICATION_NOT_COMPLETED
+                    )
                 continuation.resumeWithException(exception)
             }
 

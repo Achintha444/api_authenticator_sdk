@@ -12,6 +12,10 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        manifestPlaceholders.putIfAbsent(
+            "appAuthRedirectScheme", "https://example-app.com/redirect"
+        )
     }
 
     buildTypes {
@@ -43,5 +47,5 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation ("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
     implementation ("net.openid:appauth:0.11.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 }

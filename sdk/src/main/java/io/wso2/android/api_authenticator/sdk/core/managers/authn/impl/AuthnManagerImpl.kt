@@ -80,52 +80,59 @@ internal class AuthnManagerImpl private constructor(
      * @throws [AuthnManagerException] If the authorization fails
      * @throws [IOException] If the request fails due to a network error
      */
-    override suspend fun authorize(): AuthenticationFlow? = suspendCoroutine { continuation ->
-        val request: Request = authenticationCoreRequestBuilder.authorizeRequestBuilder(
-            authenticationCoreConfig.getAuthorizeUrl(),
-            authenticationCoreConfig.getClientId(),
-            authenticationCoreConfig.getRedirectUri(),
-            authenticationCoreConfig.getScope(),
-            authenticationCoreConfig.getIntegrityToken()
-        )
+    override suspend fun authorize(): AuthenticationFlow? =
+        suspendCoroutine { continuation ->
+            val request: Request = authenticationCoreRequestBuilder.authorizeRequestBuilder(
+                authenticationCoreConfig.getAuthorizeUrl(),
+                authenticationCoreConfig.getClientId(),
+                authenticationCoreConfig.getRedirectUri(),
+                authenticationCoreConfig.getScope(),
+                authenticationCoreConfig.getIntegrityToken()
+            )
 
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                continuation.resumeWithException(e)
-            }
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    continuation.resumeWithException(e)
+                }
 
-            @Throws(IOException::class, AuthnManagerException::class)
-            override fun onResponse(call: Call, response: Response) {
-                try {
-                    if (response.code == 200) {
-                        // reading the json from the response
-                        val responseObject: JsonNode =
-                            JsonUtil.getJsonObject(response.body!!.string())
+                @Throws(IOException::class, AuthnManagerException::class)
+                override fun onResponse(call: Call, response: Response) {
+                    try {
+                        if (response.code == 200) {
+                            // reading the json from the response
+                            val responseObject: JsonNode =
+                                JsonUtil.getJsonObject(response.body!!.string())
 
-                        // set the flow id of the authorization flow
-                        flowManager.setFlowId(responseObject.get("flowId").asText())
+                            // set the flow id of the authorization flow
+                            flowManager.setFlowId(responseObject.get("flowId").asText())
 
-                        runBlocking {
-                            runCatching {
-                                flowManager.manageStateOfAuthorizeFlow(responseObject)
-                            }.onSuccess {
-                                continuation.resume(it)
-                            }.onFailure {
-                                continuation.resumeWithException(it)
+                            runBlocking {
+                                runCatching {
+                                    flowManager.manageStateOfAuthorizeFlow(responseObject)
+                                }.onSuccess {
+                                    continuation.resume(it)
+                                }.onFailure {
+                                    continuation.resumeWithException(it)
+                                }
                             }
+                        } else {
+                            // throw an `AuthnManagerException` if the request does not return 200
+                            val exception =
+                                AuthnManagerException(
+                                    response.message
+                                )
+                            continuation.resumeWithException(exception)
                         }
-                    } else {
-                        // throw an `AuthnManagerException` if the request does not return 200
-                        val exception = AuthnManagerException(response.message)
+                    } catch (e: Exception) {
+                        val exception =
+                            AuthnManagerException(
+                                e.message
+                            )
                         continuation.resumeWithException(exception)
                     }
-                } catch (e: Exception) {
-                    val exception = AuthnManagerException(e.message)
-                    continuation.resumeWithException(exception)
                 }
-            }
-        })
-    }
+            })
+        }
 
     /**
      * Send the authentication parameters to the authentication endpoint and get the next step of the
@@ -147,49 +154,53 @@ internal class AuthnManagerImpl private constructor(
     override suspend fun authenticate(
         authenticatorType: AuthenticatorType,
         authenticatorParameters: AuthParams
-    ): AuthenticationFlow? = suspendCoroutine { continuation ->
-        val request: Request = authenticationCoreRequestBuilder.authenticateRequestBuilder(
-            authenticationCoreConfig.getAuthnUrl(),
-            flowManager.getFlowId(),
-            authenticatorType,
-            authenticatorParameters
-        )
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                continuation.resumeWithException(e)
-            }
-
-            @Throws(
-                IOException::class,
-                AuthnManagerException::class,
-                AuthenticatorTypeException::class
+    ): AuthenticationFlow? =
+        suspendCoroutine { continuation ->
+            val request: Request = authenticationCoreRequestBuilder.authenticateRequestBuilder(
+                authenticationCoreConfig.getAuthnUrl(),
+                flowManager.getFlowId(),
+                authenticatorType,
+                authenticatorParameters
             )
-            override fun onResponse(call: Call, response: Response) {
-                try {
-                    if (response.code == 200) {
-                        // reading the json from the response
-                        val responseObject: JsonNode =
-                            JsonUtil.getJsonObject(response.body!!.string())
 
-                        runBlocking {
-                            runCatching {
-                                flowManager.manageStateOfAuthorizeFlow(responseObject)
-                            }.onSuccess {
-                                continuation.resume(it)
-                            }.onFailure {
-                                continuation.resumeWithException(it)
-                            }
-                        }
-                    } else {
-                        // Throw an [AuthnManagerException] if the request does not return 200
-                        val exception = AuthnManagerException(response.message)
-                        continuation.resumeWithException(exception)
-                    }
-                } catch (e: IOException) {
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
                     continuation.resumeWithException(e)
                 }
-            }
-        })
-    }
+
+                @Throws(
+                    IOException::class,
+                    AuthnManagerException::class,
+                    AuthenticatorTypeException::class
+                )
+                override fun onResponse(call: Call, response: Response) {
+                    try {
+                        if (response.code == 200) {
+                            // reading the json from the response
+                            val responseObject: JsonNode =
+                                JsonUtil.getJsonObject(response.body!!.string())
+
+                            runBlocking {
+                                runCatching {
+                                    flowManager.manageStateOfAuthorizeFlow(responseObject)
+                                }.onSuccess {
+                                    continuation.resume(it)
+                                }.onFailure {
+                                    continuation.resumeWithException(it)
+                                }
+                            }
+                        } else {
+                            // Throw an [AuthnManagerException] if the request does not return 200
+                            val exception =
+                                AuthnManagerException(
+                                    response.message
+                                )
+                            continuation.resumeWithException(exception)
+                        }
+                    } catch (e: IOException) {
+                        continuation.resumeWithException(e)
+                    }
+                }
+            })
+        }
 }

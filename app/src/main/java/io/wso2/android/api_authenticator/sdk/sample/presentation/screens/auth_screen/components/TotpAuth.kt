@@ -33,7 +33,7 @@ import io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_sc
 @Composable
 internal fun TotpAuth(
     viewModel: AuthScreenViewModel = hiltViewModel(),
-    authenticatorType: AuthenticatorType
+    authenticatorType: io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 ) {
     TotpAuthComponent(
         onSubmit = { token ->

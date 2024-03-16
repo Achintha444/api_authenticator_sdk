@@ -24,7 +24,7 @@ import io.wso2.android.api_authenticator.sdk.sample.ui.theme.Api_authenticator_s
 @Composable
 internal fun AuthScreen(
     viewModel: AuthScreenViewModel = hiltViewModel(),
-    authenticationFlow: AuthenticationFlow
+    authenticationFlow: io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
     LaunchedEffect(key1 = authenticationFlow) {

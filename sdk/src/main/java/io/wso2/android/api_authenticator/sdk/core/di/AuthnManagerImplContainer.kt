@@ -5,7 +5,6 @@ import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.Authent
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.impl.AuthnManagerImplRequestBuilder
 import io.wso2.android.api_authenticator.sdk.core.managers.flow.FlowManager
 import io.wso2.android.api_authenticator.sdk.core.managers.flow.impl.FlowManagerImpl
-import io.wso2.android.api_authenticator.sdk.models.http_client.LessSecureHttpClient
 import io.wso2.android.api_authenticator.sdk.models.http_client.http_client_builder.HttpClientBuilder
 import okhttp3.OkHttpClient
 import java.io.InputStream

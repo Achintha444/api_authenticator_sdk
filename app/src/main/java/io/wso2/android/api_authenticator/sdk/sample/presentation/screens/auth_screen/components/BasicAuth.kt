@@ -12,12 +12,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -40,11 +42,13 @@ import kotlinx.coroutines.flow.update
 @Composable
 internal fun BasicAuth(
     viewModel: AuthScreenViewModel = hiltViewModel(),
-    authenticatorType: AuthenticatorType
+    authenticatorType: io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 ) {
+    val context = LocalContext.current
     BasicAuthComponent(
         onLoginClick = { username, password ->
             viewModel.authenticateWithUsernamePassword(
+                context = context,
                 username,
                 password
             )

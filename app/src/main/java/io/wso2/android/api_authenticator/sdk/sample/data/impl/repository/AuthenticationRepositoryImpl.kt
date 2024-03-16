@@ -28,7 +28,7 @@ class AuthenticationRepositoryImpl @Inject constructor() : AuthenticationReposit
         )
     )
 
-    override suspend fun authorize(): Either<AuthenticationError, AuthenticationFlow> {
+    override suspend fun authorize(): Either<AuthenticationError, io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow> {
 
         return Either.catch {
             authenticationCore.authorize()!!
@@ -38,9 +38,9 @@ class AuthenticationRepositoryImpl @Inject constructor() : AuthenticationReposit
     }
 
     override suspend fun authenticate(
-        authenticatorType: AuthenticatorType,
-        authenticatorParameters: AuthParams,
-    ): Either<AuthenticationError, AuthenticationFlow> {
+        authenticatorType: io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType,
+        authenticatorParameters: io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams,
+    ): Either<AuthenticationError, io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow> {
         return Either.catch {
             authenticationCore.authenticate(
                 authenticatorType,
@@ -56,10 +56,11 @@ class AuthenticationRepositoryImpl @Inject constructor() : AuthenticationReposit
         authorizationCode: String
     ): Either<AuthenticationError, String> {
         return Either.catch {
-            authenticationCore.getAccessToken(
-                context,
-                authorizationCode
-            )!!
+//            authenticationCore.getAccessToken(
+//                context,
+//                authorizationCode
+//            )!!
+            "accessToken"
         }.mapLeft {
             it.toAuthenticationError()
         }

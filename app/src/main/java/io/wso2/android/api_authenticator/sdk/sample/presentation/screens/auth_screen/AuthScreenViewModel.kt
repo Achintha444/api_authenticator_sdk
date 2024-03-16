@@ -1,8 +1,10 @@
 package io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
@@ -17,14 +19,14 @@ import io.wso2.android.api_authenticator.sdk.sample.util.navigation.NavigationVi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.net.URLEncoder
 import javax.inject.Inject
 
 @HiltViewModel
 class AuthScreenViewModel @Inject constructor(
+    @ApplicationContext private val applicationContext: Context,
     private val authenticationRepository: AuthenticationRepository,
     private val authenticationProviderRepository: AuthenticationProviderRepository
-): ViewModel() {
+) : ViewModel() {
 
     companion object {
         const val TAG = "AuthScreen"
@@ -66,7 +68,7 @@ class AuthScreenViewModel @Inject constructor(
                 .onRight { authenticationFlow ->
                     // TODO: Move this to MutableSharedFlow
                     // Handle success
-                    if(authenticationFlow.flowStatus == FlowStatus.SUCCESS.flowStatus) {
+                    if (authenticationFlow.flowStatus == FlowStatus.SUCCESS.flowStatus) {
                         sendEvent(Event.Toast("Logged in successfully"))
                         NavigationViewModel.navigationEvents.emit(
                             NavigationViewModel.Companion.NavigationEvent.NavigateToHome
@@ -89,11 +91,13 @@ class AuthScreenViewModel @Inject constructor(
     }
 
     fun authenticateWithUsernamePassword(
+        context: Context,
         username: String,
         password: String
     ) {
         viewModelScope.launch {
             authenticationManager.authenticateWithUsernameAndPassword(
+                context,
                 username,
                 password
             )
@@ -105,6 +109,7 @@ class AuthScreenViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             authenticationManager.authenticateWithTotp(
+                applicationContext,
                 token
             )
         }
@@ -119,7 +124,10 @@ class AuthScreenViewModel @Inject constructor(
 
                 is AuthenticationState.Error -> {
                     _state.update { landingScreenState ->
-                        landingScreenState.copy(error = it.toString())
+                        landingScreenState.copy(
+                            error = it.toString(),
+                            isLoading = false
+                        )
                     }
                     sendEvent(Event.Toast(it.toString()))
                 }

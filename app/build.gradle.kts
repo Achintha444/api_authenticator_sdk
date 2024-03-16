@@ -22,7 +22,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        manifestPlaceholders.putIfAbsent("appAuthRedirectScheme", "https://example-app.com/redirect")
+        manifestPlaceholders.putIfAbsent(
+            "appAuthRedirectScheme", "https://example-app.com/redirect"
+        )
     }
 
     buildTypes {
