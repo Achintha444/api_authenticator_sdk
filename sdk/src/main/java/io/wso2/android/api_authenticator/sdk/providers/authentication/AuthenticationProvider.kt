@@ -20,12 +20,18 @@ import io.wso2.android.api_authenticator.sdk.providers.util.AuthenticatorProvide
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import net.openid.appauth.TokenResponse
 import java.lang.ref.WeakReference
 
 /**
  * Authentication provider class that is used to manage the authentication process.
  *
  * @property authenticationCoreConfig [AuthenticationCoreConfig] object
+ *
+ * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+ * emit: [AuthenticationState.Authorized] - The user is authorized to access the application
+ * emit: [AuthenticationState.Unauthorized] - The user is not authorized to access the application
+ * emit: [AuthenticationState.Error] - An error occurred during the authentication process
  */
 class AuthenticationProvider private constructor(
     private val authenticationCoreConfig: AuthenticationCoreConfig
@@ -109,22 +115,21 @@ class AuthenticationProvider private constructor(
     ) {
         when (authenticationFlow.flowStatus) {
             FlowStatus.SUCCESS.flowStatus -> {
-                // Clear the authenticators when the authentication is successful
-                authenticatorsInThisStep = null
-
+                // Exchange the authorization code for the access token and save the tokens
                 runCatching {
-                    authenticationCore.exchangeAuthorizationCode(
-                        (authenticationFlow as AuthenticationFlowSuccess).authData.code,
-                        context
-                    )
+                    val tokenResponse: TokenResponse? = authenticationCore
+                        .exchangeAuthorizationCode(
+                            (authenticationFlow as AuthenticationFlowSuccess).authData.code,
+                            context
+                        )
+                    authenticationCore.saveTokens(context, tokenResponse!!)
                 }.onSuccess {
-                    authStateFlow.tryEmit(
-                        AuthenticationState.Authorized
-                    )
+                    authStateFlow.tryEmit(AuthenticationState.Authorized)
+
+                    // Clear the authenticators when the authentication is successful
+                    authenticatorsInThisStep = null
                 }.onFailure {
-                    authStateFlow.tryEmit(
-                        AuthenticationState.Error(it)
-                    )
+                    authStateFlow.tryEmit(AuthenticationState.Error(it))
                 }
             }
 
@@ -134,9 +139,7 @@ class AuthenticationProvider private constructor(
                     (authenticationFlow as AuthenticationFlowNotSuccess)?.nextStep?.authenticators
 
                 authStateFlow.tryEmit(
-                    AuthenticationState.Unauthorized(
-                        authenticationFlow
-                    )
+                    AuthenticationState.Unauthorized(authenticationFlow)
                 )
             }
         }
