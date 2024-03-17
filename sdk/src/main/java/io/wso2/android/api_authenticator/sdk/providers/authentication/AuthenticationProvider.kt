@@ -134,7 +134,6 @@ class AuthenticationProvider private constructor(
                     authenticationCore.saveTokens(context, tokenResponse!!)
                 }.onSuccess {
                     authStateFlow.tryEmit(AuthenticationState.Authorized)
-
                     // Clear the authenticators when the authentication is successful
                     authenticatorsInThisStep = null
                 }.onFailure {
