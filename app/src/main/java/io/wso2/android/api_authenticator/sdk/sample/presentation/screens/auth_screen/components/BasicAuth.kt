@@ -44,11 +44,9 @@ internal fun BasicAuth(
     viewModel: AuthScreenViewModel = hiltViewModel(),
     authenticatorType: io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 ) {
-    val context = LocalContext.current
     BasicAuthComponent(
         onLoginClick = { username, password ->
             viewModel.authenticateWithUsernamePassword(
-                context = context,
                 username,
                 password
             )

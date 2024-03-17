@@ -25,7 +25,7 @@ import javax.inject.Inject
 class AuthScreenViewModel @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
     private val authenticationRepository: AuthenticationRepository,
-    private val authenticationProviderRepository: AuthenticationProviderRepository
+    authenticationProviderRepository: AuthenticationProviderRepository
 ) : ViewModel() {
 
     companion object {
@@ -91,13 +91,12 @@ class AuthScreenViewModel @Inject constructor(
     }
 
     fun authenticateWithUsernamePassword(
-        context: Context,
         username: String,
         password: String
     ) {
         viewModelScope.launch {
             authenticationManager.authenticateWithUsernameAndPassword(
-                context,
+                applicationContext,
                 username,
                 password
             )

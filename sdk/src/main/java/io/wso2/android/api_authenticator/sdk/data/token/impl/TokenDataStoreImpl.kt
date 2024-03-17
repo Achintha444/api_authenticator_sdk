@@ -33,8 +33,9 @@ class TokenDataStoreImpl(private val context: Context) : TokenDataStore {
      *
      * @return The [TokenResponse] instance.
      */
-    private suspend fun getTokenResponse(): TokenResponse? = withContext(Dispatchers.IO) {
+    override suspend fun getTokenResponse(): TokenResponse? = withContext(Dispatchers.IO) {
         val preferences: Preferences? = context.dataStore.data.firstOrNull()
+
         return@withContext preferences?.get(TOKEN_RESPONSE_TOKEN_KEY)?.let {
             TokenResponse.jsonDeserialize(it)
         }

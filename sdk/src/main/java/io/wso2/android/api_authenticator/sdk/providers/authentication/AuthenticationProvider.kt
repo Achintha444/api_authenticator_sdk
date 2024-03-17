@@ -88,17 +88,26 @@ class AuthenticationProvider private constructor(
      * emit: [AuthenticationState.Unauthorized] - The user is not authorized to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    suspend fun initializeAuthentication() {
+    suspend fun initializeAuthentication(context: Context) {
         _authStateFlow.tryEmit(AuthenticationState.Loading)
 
         runCatching {
-            authenticationCore.authorize()
+            // Check whether the access token is valid
+            authenticationCore.validateAccessToken(context)
         }.onSuccess {
-            authenticatorsInThisStep =
-                (it as AuthenticationFlowNotSuccess)?.nextStep?.authenticators
-            _authStateFlow.tryEmit(AuthenticationState.Unauthorized(it))
+            // If the access token is valid, emit the authorized state
+            _authStateFlow.tryEmit(AuthenticationState.Authorized)
         }.onFailure {
-            _authStateFlow.tryEmit(AuthenticationState.Error(it))
+            // Else call the authorize method to start the authentication process
+            runCatching {
+                authenticationCore.authorize()
+            }.onSuccess {
+                authenticatorsInThisStep =
+                    (it as AuthenticationFlowNotSuccess)?.nextStep?.authenticators
+                _authStateFlow.tryEmit(AuthenticationState.Unauthorized(it))
+            }.onFailure {
+                _authStateFlow.tryEmit(AuthenticationState.Error(it))
+            }
         }
     }
 

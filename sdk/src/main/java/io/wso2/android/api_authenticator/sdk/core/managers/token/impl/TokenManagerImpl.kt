@@ -4,11 +4,7 @@ import android.content.Context
 import io.wso2.android.api_authenticator.sdk.core.di.TokenManagerImplContainer
 import io.wso2.android.api_authenticator.sdk.core.managers.token.TokenManager
 import io.wso2.android.api_authenticator.sdk.data.token.TokenDataStore
-import kotlinx.coroutines.runBlocking
 import net.openid.appauth.TokenResponse
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 /**
  * Use to manage the tokens.
@@ -90,20 +86,21 @@ internal class TokenManagerImpl internal constructor(private val context: Contex
      * @return `true` if the access token is valid, `false` otherwise.
      */
     override suspend fun validateAccessToken(): Boolean? {
-        val accessToken: String? = getAccessToken()
+        /**
+         * Get the token response from the token data store. If the token response is null, then the
+         * access token is not valid, and exception will be thrown when accessing the access token.
+         */
+        val tokenResponse: TokenResponse? = tokenDataStore.getTokenResponse()
+        val accessToken: String? = tokenResponse!!.accessToken
 
         // If the access token is null or empty, then it is not valid
         if (accessToken.isNullOrBlank()) {
             return false
         }
 
-        // Get the access token expiration time
-        val accessTokenExpirationTime: Long? = getAccessTokenExpirationTime()
-
-        return if (accessTokenExpirationTime != null) {
-            accessTokenExpirationTime > System.currentTimeMillis()
-        } else {
-            false
-        }
+        // If the access token expiration time is null, then it is not valid
+        return tokenResponse!!.accessTokenExpirationTime?.let { expirationTime ->
+            expirationTime > System.currentTimeMillis()
+        } ?: false
     }
 }

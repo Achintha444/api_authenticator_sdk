@@ -14,6 +14,13 @@ interface TokenDataStore {
     suspend fun saveTokens(tokenResponse: TokenResponse)
 
     /**
+     * Get the token response from the token data store.
+     *
+     * @return The [TokenResponse] instance.
+     */
+     suspend fun getTokenResponse(): TokenResponse?
+
+    /**
      * Get the access token from the token data store.
      *
      * @return The access token [String]

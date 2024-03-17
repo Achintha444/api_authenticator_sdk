@@ -1,8 +1,10 @@
 package io.wso2.android.api_authenticator.sdk.sample.presentation.screens.landing_screen
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import io.wso2.android.api_authenticator.sdk.providers.authentication.AuthenticationState
 import io.wso2.android.api_authenticator.sdk.sample.domain.repository.AuthenticationProviderRepository
 import io.wso2.android.api_authenticator.sdk.sample.domain.repository.AuthenticationRepository
@@ -18,6 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LandingScreenViewModel @Inject constructor(
+    @ApplicationContext private val applicationContext: Context,
     private val authenticationRepository: AuthenticationRepository,
     private val authenticationProviderRepository: AuthenticationProviderRepository
 ) : ViewModel() {
@@ -70,7 +73,7 @@ class LandingScreenViewModel @Inject constructor(
                 it.copy(isLoading = true)
             }
 
-            authenticationManager.initializeAuthentication()
+            authenticationManager.initializeAuthentication(applicationContext)
         }
     }
 
