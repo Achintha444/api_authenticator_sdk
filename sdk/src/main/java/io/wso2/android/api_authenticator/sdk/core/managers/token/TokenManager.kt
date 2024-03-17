@@ -59,4 +59,13 @@ interface TokenManager {
      * Clear the tokens from the token data store.
      */
     suspend fun clearTokens(): Unit?
+
+    /**
+     * Validate the access token, by checking the expiration time of the access token, and
+     * by checking if the access token is null or empty.
+     * **Here we are not calling the introspection endpoint to validate the access token!**
+     *
+     * @return `true` if the access token is valid, `false` otherwise.
+     */
+    suspend fun validateAccessToken(): Boolean?
 }

@@ -7,7 +7,9 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import io.wso2.android.api_authenticator.sdk.data.token.TokenDataStore
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.withContext
 import net.openid.appauth.TokenResponse
 
 private const val DATA_STORE_NAME = "token_data_store"
@@ -31,9 +33,9 @@ class TokenDataStoreImpl(private val context: Context) : TokenDataStore {
      *
      * @return The [TokenResponse] instance.
      */
-    private suspend fun getTokenResponse(): TokenResponse? {
+    private suspend fun getTokenResponse(): TokenResponse? = withContext(Dispatchers.IO) {
         val preferences: Preferences? = context.dataStore.data.firstOrNull()
-        return preferences?.get(TOKEN_RESPONSE_TOKEN_KEY)?.let {
+        return@withContext preferences?.get(TOKEN_RESPONSE_TOKEN_KEY)?.let {
             TokenResponse.jsonDeserialize(it)
         }
     }
@@ -43,11 +45,12 @@ class TokenDataStoreImpl(private val context: Context) : TokenDataStore {
      *
      * @param tokenResponse The [TokenResponse] instance.
      */
-    override suspend fun saveTokens(tokenResponse: TokenResponse) {
-        context.dataStore.edit { preferences ->
-            preferences[TOKEN_RESPONSE_TOKEN_KEY] = tokenResponse.jsonSerializeString()
+    override suspend fun saveTokens(tokenResponse: TokenResponse): Unit =
+        withContext(Dispatchers.IO) {
+            context.dataStore.edit { preferences ->
+                preferences[TOKEN_RESPONSE_TOKEN_KEY] = tokenResponse.jsonSerializeString()
+            }
         }
-    }
 
     /**
      * Get the access token from the token data store.
@@ -100,7 +103,7 @@ class TokenDataStoreImpl(private val context: Context) : TokenDataStore {
     /**
      * Clear the tokens from the token data store.
      */
-    override suspend fun clearTokens() {
+    override suspend fun clearTokens(): Unit = withContext(Dispatchers.IO) {
         context.dataStore.edit { preferences ->
             preferences.clear()
         }

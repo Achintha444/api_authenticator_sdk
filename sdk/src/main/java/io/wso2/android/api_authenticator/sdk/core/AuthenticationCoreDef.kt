@@ -57,4 +57,67 @@ interface AuthenticationCoreDef {
         refreshToken: String,
         context: Context,
     ): TokenResponse?
+
+    /**
+     * Save the tokens to the token data store.
+     *
+     * @param tokenResponse The [TokenResponse] instance.
+     */
+    suspend fun saveTokens(context: Context, tokenResponse: TokenResponse): Unit?
+
+    /**
+     * Get the access token from the token data store.
+     *
+     * @return The access token [String]
+     */
+    suspend fun getAccessToken(context: Context): String?
+
+    /**
+     * Get the refresh token from the token data store.
+     *
+     * @return The refresh token [String]
+     */
+    suspend fun getRefreshToken(context: Context): String?
+
+    /**
+     * Get the ID token from the token data store.
+     *
+     * @return The ID token [String]
+     */
+    suspend fun getIDToken(context: Context): String?
+
+    /**
+     * Get the access token expiration time from the token data store.
+     *
+     * @return The access token expiration time [Long]
+     */
+    suspend fun getAccessTokenExpirationTime(context: Context): Long?
+
+    /**
+     * Get the scope from the token data store.
+     *
+     * @return The scope [String]
+     */
+    suspend fun getScope(context: Context): String?
+
+    /**
+     * Get the token type from the token data store.
+     *
+     * @return The token type [String]
+     */
+    suspend fun getTokenType(context: Context): String?
+
+    /**
+     * Clear the tokens from the token data store.
+     */
+    suspend fun clearTokens(context: Context): Unit?
+
+    /**
+     * Validate the access token, by checking the expiration time of the access token, and
+     * by checking if the access token is null or empty.
+     * **Here we are not calling the introspection endpoint to validate the access token!**
+     *
+     * @return `true` if the access token is valid, `false` otherwise.
+     */
+    suspend fun validateAccessToken(context: Context): Boolean?
 }

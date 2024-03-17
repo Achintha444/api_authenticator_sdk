@@ -1,11 +1,15 @@
 package io.wso2.android.api_authenticator.sdk.core.di
 
+import android.content.Context
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.managers.app_auth.AppAuthManager
 import io.wso2.android.api_authenticator.sdk.core.managers.app_auth.impl.AppAuthManagerImpl
 import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.AuthenticatorManager
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.AuthnManager
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.impl.AuthnManagerImpl
+import io.wso2.android.api_authenticator.sdk.core.managers.token.TokenManager
+import io.wso2.android.api_authenticator.sdk.core.managers.token.TokenManagerFactory
+import io.wso2.android.api_authenticator.sdk.core.managers.token.impl.TokenManagerImpl
 
 /**
  * Dependency Injection container for the [AuthenticationCore]
@@ -57,5 +61,16 @@ internal object AuthenticationCoreContainer {
                 authenticationCoreConfig.getTokenUrl()
             )
         )
+    }
+
+    /**
+     * Returns an instance of the [TokenManager] object, based on the given parameters.
+     *
+     * @property context The [Context] instance.
+     *
+     * @return [TokenManager] instance.
+     */
+    internal fun getTokenManagerInstance(context: Context): TokenManager {
+        return TokenManagerFactory.getTokenManager(context)
     }
 }

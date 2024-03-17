@@ -15,9 +15,8 @@ import kotlin.coroutines.suspendCoroutine
  *
  * @property context The [Context] instance.
  */
-internal class TokenManagerImpl(
-    private val context: Context
-) : TokenManager {
+internal class TokenManagerImpl internal constructor(private val context: Context) : TokenManager {
+    // Get the token data store
     private val tokenDataStore: TokenDataStore =
         TokenManagerImplContainer.getTokenDataStoreFactory().getTokenDataStore(context)
 
@@ -83,16 +82,28 @@ internal class TokenManagerImpl(
     override suspend fun clearTokens(): Unit? =
         tokenDataStore.clearTokens()
 
-//    suspend fun validateAccessToken(): Boolean? = suspendCoroutine { continuation ->
-//        // Validate access token based on the access token time
-//        runBlocking {
-//            runCatching {
-//                getAccessTokenExpirationTime()
-//            }.onSuccess {
-//
-//            }.onFailure {
-//                continuation.resumeWithException(it)
-//            }
-//        }
-//    }
+    /**
+     * Validate the access token, by checking the expiration time of the access token, and
+     * by checking if the access token is null or empty.
+     * **Here we are not calling the introspection endpoint to validate the access token!**
+     *
+     * @return `true` if the access token is valid, `false` otherwise.
+     */
+    override suspend fun validateAccessToken(): Boolean? {
+        val accessToken: String? = getAccessToken()
+
+        // If the access token is null or empty, then it is not valid
+        if (accessToken.isNullOrBlank()) {
+            return false
+        }
+
+        // Get the access token expiration time
+        val accessTokenExpirationTime: Long? = getAccessTokenExpirationTime()
+
+        return if (accessTokenExpirationTime != null) {
+            accessTokenExpirationTime > System.currentTimeMillis()
+        } else {
+            false
+        }
+    }
 }
