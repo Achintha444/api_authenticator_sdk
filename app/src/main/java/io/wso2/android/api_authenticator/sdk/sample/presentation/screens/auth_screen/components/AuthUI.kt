@@ -2,7 +2,6 @@ package io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_s
 
 import androidx.compose.runtime.Composable
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.BasicAuthenticatorType
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.TotpAuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowNotSuccess
 
 @Composable

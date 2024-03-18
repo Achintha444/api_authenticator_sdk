@@ -117,7 +117,7 @@ class AuthScreenViewModel @Inject constructor(
     private suspend fun handleAuthenticationState() {
         authenticationStateFlow.collect {
             when (it) {
-                is AuthenticationState.Unauthorized -> {
+                is AuthenticationState.Unauthenticated -> {
                     setAuthenticationFlow(it.authenticationFlow!!)
                 }
 
@@ -131,7 +131,7 @@ class AuthScreenViewModel @Inject constructor(
                     sendEvent(Event.Toast(it.toString()))
                 }
 
-                is AuthenticationState.Authorized -> {
+                is AuthenticationState.Authenticated -> {
                     NavigationViewModel.navigationEvents.emit(
                         NavigationViewModel.Companion.NavigationEvent.NavigateToHome
                     )

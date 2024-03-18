@@ -85,7 +85,7 @@ class LandingScreenViewModel @Inject constructor(
                         // Do nothing
                     }
 
-                    is AuthenticationState.Unauthorized -> {
+                    is AuthenticationState.Unauthenticated -> {
                         _state.update { landingScreenState ->
                             landingScreenState.copy(isLoading = false)
                         }
@@ -104,7 +104,7 @@ class LandingScreenViewModel @Inject constructor(
                         sendEvent(Event.Toast(it.toString()))
                     }
 
-                    is AuthenticationState.Authorized -> {
+                    is AuthenticationState.Authenticated -> {
                         _state.update { landingScreenState ->
                             landingScreenState.copy(isLoading = false)
                         }

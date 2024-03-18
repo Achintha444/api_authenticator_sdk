@@ -6,7 +6,7 @@ import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.Authenti
 import io.wso2.android.api_authenticator.sdk.util.JsonUtil
 
 /**
- * Authorize flow data class. Which is used to hold the data of an authentication flow.
+ * Authentication flow data class. Which is used to hold the data of an authentication flow.
  *
  * @property flowId Id of the authentication flow
  * @property flowStatus Status of the authentication flow

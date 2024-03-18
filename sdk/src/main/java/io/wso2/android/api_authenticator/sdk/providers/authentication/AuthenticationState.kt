@@ -8,15 +8,15 @@ import io.wso2.android.api_authenticator.sdk.models.authentication_flow.Authenti
  *
  * States:
  * - [Initial]: The initial state of the application
- * - [Unauthorized]: The user is not authorized to access the application
- * - [Authorized]: The user is authorized to access the application
+ * - [Unauthenticated]: The user is not authenticated to access the application
+ * - [Authenticated]: The user is authenticated to access the application
  * - [Loading]: The application is in the process of loading the authentication state
  * - [Error]: An error occurred during the authentication process
  */
 sealed class AuthenticationState {
     object Initial : AuthenticationState()
-    data class Unauthorized(val authenticationFlow: io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow?) : AuthenticationState()
-    object Authorized : AuthenticationState()
+    data class Unauthenticated(val authenticationFlow: AuthenticationFlow?) : AuthenticationState()
+    object Authenticated : AuthenticationState()
     object Loading : AuthenticationState()
     data class Error(val throwable: Throwable) : AuthenticationState()
 }

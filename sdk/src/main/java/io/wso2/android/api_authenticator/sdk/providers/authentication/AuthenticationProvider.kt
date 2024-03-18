@@ -30,8 +30,8 @@ import java.lang.ref.WeakReference
  * @property authenticationCoreConfig [AuthenticationCoreConfig] object
  *
  * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
- * emit: [AuthenticationState.Authorized] - The user is authorized to access the application
- * emit: [AuthenticationState.Unauthorized] - The user is not authorized to access the application
+ * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+ * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
  * emit: [AuthenticationState.Error] - An error occurred during the authentication process
  */
 class AuthenticationProvider private constructor(
@@ -86,7 +86,7 @@ class AuthenticationProvider private constructor(
      * This method will initialize the authentication process and emit the state of the authentication process.
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Unauthorized] - The user is not authorized to access the application
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     suspend fun initializeAuthentication(context: Context) {
@@ -96,8 +96,8 @@ class AuthenticationProvider private constructor(
             // Check whether the access token is valid
             authenticationCore.validateAccessToken(context)
         }.onSuccess {
-            // If the access token is valid, emit the authorized state
-            _authStateFlow.tryEmit(AuthenticationState.Authorized)
+            // If the access token is valid, emit the authenticated state
+            _authStateFlow.tryEmit(AuthenticationState.Authenticated)
         }.onFailure {
             // Else call the authorize method to start the authentication process
             runCatching {
@@ -105,7 +105,7 @@ class AuthenticationProvider private constructor(
             }.onSuccess {
                 authenticatorsInThisStep =
                     (it as AuthenticationFlowNotSuccess)?.nextStep?.authenticators
-                _authStateFlow.tryEmit(AuthenticationState.Unauthorized(it))
+                _authStateFlow.tryEmit(AuthenticationState.Unauthenticated(it))
             }.onFailure {
                 _authStateFlow.tryEmit(AuthenticationState.Error(it))
             }
@@ -134,7 +134,7 @@ class AuthenticationProvider private constructor(
                         )
                     authenticationCore.saveAppAuthState(context, appAuthState!!)
                 }.onSuccess {
-                    authStateFlow.tryEmit(AuthenticationState.Authorized)
+                    authStateFlow.tryEmit(AuthenticationState.Authenticated)
                     // Clear the authenticators when the authentication is successful
                     authenticatorsInThisStep = null
                 }.onFailure {
@@ -148,7 +148,7 @@ class AuthenticationProvider private constructor(
                     (authenticationFlow as AuthenticationFlowNotSuccess)?.nextStep?.authenticators
 
                 authStateFlow.tryEmit(
-                    AuthenticationState.Unauthorized(authenticationFlow)
+                    AuthenticationState.Unauthenticated(authenticationFlow)
                 )
             }
         }
@@ -197,8 +197,8 @@ class AuthenticationProvider private constructor(
      * @param authParams [AuthParams] object
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Authorized] - The user is authorized to access the application
-     * emit: [AuthenticationState.Unauthorized] - The user is not authorized to access the application
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     private suspend fun commonAuthenticate(
@@ -236,8 +236,8 @@ class AuthenticationProvider private constructor(
      * @param password The password of the user
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Authorized] - The user is authorized to access the application
-     * emit: [AuthenticationState.Unauthorized] - The user is not authorized to access the application
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     suspend fun authenticateWithUsernameAndPassword(
@@ -258,8 +258,8 @@ class AuthenticationProvider private constructor(
      * @param token The TOTP token of the user
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Authorized] - The user is authorized to access the application
-     * emit: [AuthenticationState.Unauthorized] - The user is not authorized to access the application
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     suspend fun authenticateWithTotp(
