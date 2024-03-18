@@ -15,13 +15,13 @@ import io.wso2.android.api_authenticator.sdk.models.authentication_flow.Authenti
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowSuccess
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorTypeException
 import io.wso2.android.api_authenticator.sdk.models.flow_status.FlowStatus
+import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
 import io.wso2.android.api_authenticator.sdk.providers.di.AuthenticationProviderContainer
 import io.wso2.android.api_authenticator.sdk.providers.util.AuthenticatorProviderUtil
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import net.openid.appauth.AuthState
-import net.openid.appauth.TokenResponse
 import java.lang.ref.WeakReference
 
 /**

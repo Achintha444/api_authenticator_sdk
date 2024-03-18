@@ -1,4 +1,4 @@
-package io.wso2.android.api_authenticator.sdk.providers.authentication
+package io.wso2.android.api_authenticator.sdk.models.state
 
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 
