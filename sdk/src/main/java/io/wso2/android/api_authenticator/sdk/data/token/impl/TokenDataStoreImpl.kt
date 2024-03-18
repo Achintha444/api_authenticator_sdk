@@ -10,6 +10,7 @@ import io.wso2.android.api_authenticator.sdk.data.token.TokenDataStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
+import net.openid.appauth.AuthState
 import net.openid.appauth.TokenResponse
 
 private const val DATA_STORE_NAME = "token_data_store"
@@ -25,33 +26,33 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
  */
 class TokenDataStoreImpl(private val context: Context) : TokenDataStore {
     companion object {
-        private val TOKEN_RESPONSE_TOKEN_KEY = stringPreferencesKey("token_response")
+        private val AUTH_STATE_KEY = stringPreferencesKey("AUTH_STATE")
     }
 
     /**
-     * Get the token response from the token data store.
+     * Save the [AuthState] to the data store.
      *
-     * @return The [TokenResponse] instance.
+     * @param appAuthState The [AuthState] instance.
      */
-    override suspend fun getTokenResponse(): TokenResponse? = withContext(Dispatchers.IO) {
-        val preferences: Preferences? = context.dataStore.data.firstOrNull()
-
-        return@withContext preferences?.get(TOKEN_RESPONSE_TOKEN_KEY)?.let {
-            TokenResponse.jsonDeserialize(it)
-        }
-    }
-
-    /**
-     * Save the tokens to the token data store.
-     *
-     * @param tokenResponse The [TokenResponse] instance.
-     */
-    override suspend fun saveTokens(tokenResponse: TokenResponse): Unit =
+    override suspend fun saveAppAuthState(appAuthState: AuthState): Unit =
         withContext(Dispatchers.IO) {
             context.dataStore.edit { preferences ->
-                preferences[TOKEN_RESPONSE_TOKEN_KEY] = tokenResponse.jsonSerializeString()
+                preferences[AUTH_STATE_KEY] = appAuthState.jsonSerializeString()
             }
         }
+
+    /**
+     * Get the [AuthState] from the data store.
+     *
+     * @return The [AuthState] instance.
+     */
+    override suspend fun getAppAuthState(): AuthState? = withContext(Dispatchers.IO) {
+        val preferences: Preferences? = context.dataStore.data.firstOrNull()
+
+        return@withContext preferences?.get(AUTH_STATE_KEY)?.let {
+            AuthState.jsonDeserialize(it)
+        }
+    }
 
     /**
      * Get the access token from the token data store.
@@ -59,7 +60,7 @@ class TokenDataStoreImpl(private val context: Context) : TokenDataStore {
      * @return The access token [String]
      */
     override suspend fun getAccessToken(): String? =
-        getTokenResponse()?.accessToken
+        getAppAuthState()?.accessToken
 
     /**
      * Get the refresh token from the token data store.
@@ -67,7 +68,7 @@ class TokenDataStoreImpl(private val context: Context) : TokenDataStore {
      * @return The refresh token [String]
      */
     override suspend fun getRefreshToken(): String? =
-        getTokenResponse()?.refreshToken
+        getAppAuthState()?.refreshToken
 
     /**
      * Get the ID token from the token data store.
@@ -75,7 +76,7 @@ class TokenDataStoreImpl(private val context: Context) : TokenDataStore {
      * @return The ID token [String]
      */
     override suspend fun getIDToken(): String? =
-        getTokenResponse()?.idToken
+        getAppAuthState()?.idToken
 
     /**
      * Get the access token expiration time from the token data store.
@@ -83,7 +84,7 @@ class TokenDataStoreImpl(private val context: Context) : TokenDataStore {
      * @return The access token expiration time [Long]
      */
     override suspend fun getAccessTokenExpirationTime(): Long? =
-        getTokenResponse()?.accessTokenExpirationTime
+        getAppAuthState()?.accessTokenExpirationTime
 
     /**
      * Get the scope from the token data store.
@@ -91,15 +92,7 @@ class TokenDataStoreImpl(private val context: Context) : TokenDataStore {
      * @return The scope [String]
      */
     override suspend fun getScope(): String? =
-        getTokenResponse()?.scope
-
-    /**
-     * Get the token type from the token data store.
-     *
-     * @return The token type [String]
-     */
-    override suspend fun getTokenType(): String? =
-        getTokenResponse()?.tokenType
+        getAppAuthState()?.scope
 
     /**
      * Clear the tokens from the token data store.

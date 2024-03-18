@@ -12,6 +12,7 @@ import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.Authenti
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticationCoreException
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticationCoreException.Companion.AUTHORIZATION_SERVICE_NOT_INITIALIZED
+import net.openid.appauth.AuthState
 import net.openid.appauth.TokenResponse
 import java.io.IOException
 import java.lang.ref.WeakReference
@@ -135,7 +136,7 @@ class AuthenticationCore private constructor(
     override suspend fun exchangeAuthorizationCode(
         authorizationCode: String,
         context: Context,
-    ): TokenResponse? = appAuthManagerInstance.exchangeAuthorizationCode(
+    ): AuthState? = appAuthManagerInstance.exchangeAuthorizationCode(
         authorizationCode,
         context
     )
@@ -156,15 +157,26 @@ class AuthenticationCore private constructor(
     ): TokenResponse? = appAuthManagerInstance.performRefreshTokenGrant(refreshToken, context)
 
     /**
-     * Save the tokens to the token data store.
+     * Save the [AuthState] to the data store.
      *
-     * @param tokenResponse The [TokenResponse] instance.
+     * @param context Context of the application
+     * @param appAuthState The [AuthState] instance.
      */
-    override suspend fun saveTokens(context: Context, tokenResponse: TokenResponse): Unit? =
-        getTokenManagerInstance(context).saveTokens(tokenResponse)
+    override suspend fun saveAppAuthState(context: Context, appAuthState: AuthState): Unit? =
+        getTokenManagerInstance(context).saveAppAuthState(appAuthState)
+
+    /**
+     * Get the [AuthState] from the data store.
+     *
+     * @param context Context of the application
+     */
+    override suspend fun getAppAuthState(context: Context): AuthState? =
+        getTokenManagerInstance(context).getAppAuthState()
 
     /**
      * Get the access token from the token data store.
+     *
+     * @param context Context of the application
      *
      * @return The access token [String]
      */
@@ -174,6 +186,8 @@ class AuthenticationCore private constructor(
     /**
      * Get the refresh token from the token data store.
      *
+     * @param context Context of the application
+     *
      * @return The refresh token [String]
      */
     override suspend fun getRefreshToken(context: Context): String? =
@@ -181,6 +195,8 @@ class AuthenticationCore private constructor(
 
     /**
      * Get the ID token from the token data store.
+     *
+     * @param context Context of the application
      *
      * @return The ID token [String]
      */
@@ -198,21 +214,17 @@ class AuthenticationCore private constructor(
     /**
      * Get the scope from the token data store.
      *
+     * @param context Context of the application
+     *
      * @return The scope [String]
      */
     override suspend fun getScope(context: Context): String? =
         getTokenManagerInstance(context).getScope()
 
     /**
-     * Get the token type from the token data store.
-     *
-     * @return The token type [String]
-     */
-    override suspend fun getTokenType(context: Context): String? =
-        getTokenManagerInstance(context).getTokenType()
-
-    /**
      * Clear the tokens from the token data store.
+     *
+     * @param context Context of the application
      */
     override suspend fun clearTokens(context: Context): Unit? =
         getTokenManagerInstance(context).clearTokens()
@@ -221,6 +233,8 @@ class AuthenticationCore private constructor(
      * Validate the access token, by checking the expiration time of the access token, and
      * by checking if the access token is null or empty.
      * **Here we are not calling the introspection endpoint to validate the access token!**
+     *
+     * @param context Context of the application
      *
      * @return `true` if the access token is valid, `false` otherwise.
      */

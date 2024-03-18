@@ -2,6 +2,7 @@ package io.wso2.android.api_authenticator.sdk.core.managers.app_auth
 
 import android.content.Context
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AppAuthManagerException
+import net.openid.appauth.AuthState
 import net.openid.appauth.TokenResponse
 
 /**
@@ -15,12 +16,12 @@ interface AppAuthManager {
      *
      * @throws AppAuthManagerException If the token request fails.
      *
-     * @return The [TokenResponse] instance.
+     * @return The [AuthState] instance.
      */
     suspend fun exchangeAuthorizationCode(
         authorizationCode: String,
         context: Context
-    ): TokenResponse?
+    ): AuthState?
 
     /**
      * Use to perform the refresh token grant.

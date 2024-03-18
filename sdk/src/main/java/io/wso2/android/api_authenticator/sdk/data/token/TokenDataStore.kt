@@ -1,24 +1,25 @@
 package io.wso2.android.api_authenticator.sdk.data.token
 
-import net.openid.appauth.TokenResponse
+import net.openid.appauth.AuthState
 
 /**
  * Interface which has the methods to manage the token data store.
  */
 interface TokenDataStore {
-    /**
-     * Save the tokens to the token data store.
-     *
-     * @param tokenResponse The [TokenResponse] instance.
-     */
-    suspend fun saveTokens(tokenResponse: TokenResponse)
 
     /**
-     * Get the token response from the token data store.
+     * Save the [AuthState] to the data store.
      *
-     * @return The [TokenResponse] instance.
+     * @param appAuthState The [AuthState] instance.
      */
-     suspend fun getTokenResponse(): TokenResponse?
+    suspend fun saveAppAuthState(appAuthState: AuthState): Unit
+
+    /**
+     * Get the [AuthState] from the data store.
+     *
+     * @return The [AuthState] instance.
+     */
+    suspend fun getAppAuthState(): AuthState?
 
     /**
      * Get the access token from the token data store.
@@ -54,13 +55,6 @@ interface TokenDataStore {
      * @return The scope [String]
      */
     suspend fun getScope(): String?
-
-    /**
-     * Get the token type from the token data store.
-     *
-     * @return The token type [String]
-     */
-    suspend fun getTokenType(): String?
 
     /**
      * Clear the tokens from the token data store.

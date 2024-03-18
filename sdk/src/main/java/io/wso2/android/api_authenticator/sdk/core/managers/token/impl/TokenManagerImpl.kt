@@ -4,6 +4,7 @@ import android.content.Context
 import io.wso2.android.api_authenticator.sdk.core.di.TokenManagerImplContainer
 import io.wso2.android.api_authenticator.sdk.core.managers.token.TokenManager
 import io.wso2.android.api_authenticator.sdk.data.token.TokenDataStore
+import net.openid.appauth.AuthState
 import net.openid.appauth.TokenResponse
 
 /**
@@ -17,12 +18,19 @@ internal class TokenManagerImpl internal constructor(private val context: Contex
         TokenManagerImplContainer.getTokenDataStoreFactory().getTokenDataStore(context)
 
     /**
-     * Save the tokens to the token data store.
+     * Save the [AuthState] to the data store.
      *
-     * @param tokenResponse The [TokenResponse] instance.
+     * @param appAuthState The [AuthState] instance.
      */
-    override suspend fun saveTokens(tokenResponse: TokenResponse): Unit? =
-        tokenDataStore.saveTokens(tokenResponse)
+    override suspend fun saveAppAuthState(appAuthState: AuthState): Unit? =
+        tokenDataStore.saveAppAuthState(appAuthState)
+
+    /**
+     * Get the [AuthState] from the data store.
+     *
+     * @return The [AuthState] instance.
+     */
+    override suspend fun getAppAuthState(): AuthState? = tokenDataStore.getAppAuthState()
 
     /**
      * Get the access token from the token data store.
@@ -65,14 +73,6 @@ internal class TokenManagerImpl internal constructor(private val context: Contex
         tokenDataStore.getScope()
 
     /**
-     * Get the token type from the token data store.
-     *
-     * @return The token type [String]
-     */
-    override suspend fun getTokenType(): String? =
-        tokenDataStore.getTokenType()
-
-    /**
      * Clear the tokens from the token data store.*
      */
     override suspend fun clearTokens(): Unit? =
@@ -85,22 +85,5 @@ internal class TokenManagerImpl internal constructor(private val context: Contex
      *
      * @return `true` if the access token is valid, `false` otherwise.
      */
-    override suspend fun validateAccessToken(): Boolean? {
-        /**
-         * Get the token response from the token data store. If the token response is null, then the
-         * access token is not valid, and exception will be thrown when accessing the access token.
-         */
-        val tokenResponse: TokenResponse? = tokenDataStore.getTokenResponse()
-        val accessToken: String? = tokenResponse!!.accessToken
-
-        // If the access token is null or empty, then it is not valid
-        if (accessToken.isNullOrBlank()) {
-            return false
-        }
-
-        // If the access token expiration time is null, then it is not valid
-        return tokenResponse!!.accessTokenExpirationTime?.let { expirationTime ->
-            expirationTime > System.currentTimeMillis()
-        } ?: false
-    }
+    override suspend fun validateAccessToken(): Boolean? = getAppAuthState()?.isAuthorized
 }

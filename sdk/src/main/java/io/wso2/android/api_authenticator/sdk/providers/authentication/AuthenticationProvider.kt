@@ -20,6 +20,7 @@ import io.wso2.android.api_authenticator.sdk.providers.util.AuthenticatorProvide
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import net.openid.appauth.AuthState
 import net.openid.appauth.TokenResponse
 import java.lang.ref.WeakReference
 
@@ -126,12 +127,12 @@ class AuthenticationProvider private constructor(
             FlowStatus.SUCCESS.flowStatus -> {
                 // Exchange the authorization code for the access token and save the tokens
                 runCatching {
-                    val tokenResponse: TokenResponse? = authenticationCore
+                    val appAuthState: AuthState? = authenticationCore
                         .exchangeAuthorizationCode(
                             (authenticationFlow as AuthenticationFlowSuccess).authData.code,
                             context
                         )
-                    authenticationCore.saveTokens(context, tokenResponse!!)
+                    authenticationCore.saveAppAuthState(context, appAuthState!!)
                 }.onSuccess {
                     authStateFlow.tryEmit(AuthenticationState.Authorized)
                     // Clear the authenticators when the authentication is successful

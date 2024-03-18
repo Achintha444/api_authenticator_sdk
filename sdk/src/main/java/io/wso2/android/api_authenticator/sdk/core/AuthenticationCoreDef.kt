@@ -4,6 +4,7 @@ import android.content.Context
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
+import net.openid.appauth.AuthState
 import net.openid.appauth.TokenResponse
 
 /**
@@ -43,7 +44,7 @@ interface AuthenticationCoreDef {
     suspend fun exchangeAuthorizationCode(
         authorizationCode: String,
         context: Context,
-    ): TokenResponse?
+    ): AuthState?
 
     /**
      * Perform the refresh token grant.
@@ -59,14 +60,26 @@ interface AuthenticationCoreDef {
     ): TokenResponse?
 
     /**
-     * Save the tokens to the token data store.
+     * Save the [AuthState] to the data store.
      *
-     * @param tokenResponse The [TokenResponse] instance.
+     * @param context Context of the application
+     * @param appAuthState The [AuthState] instance.
      */
-    suspend fun saveTokens(context: Context, tokenResponse: TokenResponse): Unit?
+     suspend fun saveAppAuthState(context: Context, appAuthState: AuthState): Unit?
+
+    /**
+     * Get the [AuthState] from the data store.
+     *
+     * @param context Context of the application
+     *
+     * @param context Context of the application
+     */
+     suspend fun getAppAuthState(context: Context): AuthState?
 
     /**
      * Get the access token from the token data store.
+     *
+     * @param context Context of the application
      *
      * @return The access token [String]
      */
@@ -74,6 +87,8 @@ interface AuthenticationCoreDef {
 
     /**
      * Get the refresh token from the token data store.
+     *
+     * @param context Context of the application
      *
      * @return The refresh token [String]
      */
@@ -89,6 +104,8 @@ interface AuthenticationCoreDef {
     /**
      * Get the access token expiration time from the token data store.
      *
+     * @param context Context of the application
+     *
      * @return The access token expiration time [Long]
      */
     suspend fun getAccessTokenExpirationTime(context: Context): Long?
@@ -96,19 +113,16 @@ interface AuthenticationCoreDef {
     /**
      * Get the scope from the token data store.
      *
+     * @param context Context of the application
+     *
      * @return The scope [String]
      */
     suspend fun getScope(context: Context): String?
 
     /**
-     * Get the token type from the token data store.
-     *
-     * @return The token type [String]
-     */
-    suspend fun getTokenType(context: Context): String?
-
-    /**
      * Clear the tokens from the token data store.
+     *
+     * @param context Context of the application
      */
     suspend fun clearTokens(context: Context): Unit?
 
@@ -116,6 +130,8 @@ interface AuthenticationCoreDef {
      * Validate the access token, by checking the expiration time of the access token, and
      * by checking if the access token is null or empty.
      * **Here we are not calling the introspection endpoint to validate the access token!**
+     *
+     * @param context Context of the application
      *
      * @return `true` if the access token is valid, `false` otherwise.
      */
