@@ -1,6 +1,7 @@
 package io.wso2.android.api_authenticator.sdk.providers.authentication
 
 import android.content.Context
+import android.media.session.MediaSession.Token
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.AuthenticatorManager
@@ -16,6 +17,7 @@ import io.wso2.android.api_authenticator.sdk.models.authentication_flow.Authenti
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorTypeException
 import io.wso2.android.api_authenticator.sdk.models.flow_status.FlowStatus
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
+import io.wso2.android.api_authenticator.sdk.models.state.TokenState
 import io.wso2.android.api_authenticator.sdk.providers.di.AuthenticationProviderContainer
 import io.wso2.android.api_authenticator.sdk.providers.util.AuthenticatorProviderUtil
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -92,12 +94,28 @@ class AuthenticationProvider private constructor(
     suspend fun initializeAuthentication(context: Context) {
         _authStateFlow.tryEmit(AuthenticationState.Loading)
 
+        // TODO: Remove this block
+        authenticationCore.clearTokens(context)
+
         runCatching {
             // Check whether the access token is valid
             authenticationCore.validateAccessToken(context)
-        }.onSuccess {
-            // If the access token is valid, emit the authenticated state
-            _authStateFlow.tryEmit(AuthenticationState.Authenticated)
+        }.onSuccess { isAccessTokenValid ->
+            if (isAccessTokenValid == true) {
+                // If the access token is valid, emit the authenticated state
+                _authStateFlow.tryEmit(AuthenticationState.Authenticated)
+            } else {
+                // Else call the authorize method to start the authentication process
+                runCatching {
+                    authenticationCore.authorize()
+                }.onSuccess {
+                    authenticatorsInThisStep =
+                        (it as AuthenticationFlowNotSuccess)?.nextStep?.authenticators
+                    _authStateFlow.tryEmit(AuthenticationState.Unauthenticated(it))
+                }.onFailure {
+                    _authStateFlow.tryEmit(AuthenticationState.Error(it))
+                }
+            }
         }.onFailure {
             // Else call the authorize method to start the authentication process
             runCatching {
@@ -127,12 +145,12 @@ class AuthenticationProvider private constructor(
             FlowStatus.SUCCESS.flowStatus -> {
                 // Exchange the authorization code for the access token and save the tokens
                 runCatching {
-                    val appAuthState: AuthState? = authenticationCore
+                    val tokenState: TokenState? = authenticationCore
                         .exchangeAuthorizationCode(
                             (authenticationFlow as AuthenticationFlowSuccess).authData.code,
                             context
                         )
-                    authenticationCore.saveAppAuthState(context, appAuthState!!)
+                    authenticationCore.saveTokenState(context, tokenState!!)
                 }.onSuccess {
                     authStateFlow.tryEmit(AuthenticationState.Authenticated)
                     // Clear the authenticators when the authentication is successful

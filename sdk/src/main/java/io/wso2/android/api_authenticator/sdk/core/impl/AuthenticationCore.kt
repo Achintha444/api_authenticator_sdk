@@ -12,6 +12,7 @@ import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.Authenti
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticationCoreException
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticationCoreException.Companion.AUTHORIZATION_SERVICE_NOT_INITIALIZED
+import io.wso2.android.api_authenticator.sdk.models.state.TokenState
 import net.openid.appauth.AuthState
 import net.openid.appauth.TokenResponse
 import java.io.IOException
@@ -131,12 +132,12 @@ class AuthenticationCore private constructor(
      *
      * @throws [AppAuthManagerException] If the token request fails.
      *
-     * @return Token response [TokenResponse]
+     * @return token state [TokenState]
      */
     override suspend fun exchangeAuthorizationCode(
         authorizationCode: String,
         context: Context,
-    ): AuthState? = appAuthManagerInstance.exchangeAuthorizationCode(
+    ): TokenState? = appAuthManagerInstance.exchangeAuthorizationCode(
         authorizationCode,
         context
     )
@@ -149,29 +150,29 @@ class AuthenticationCore private constructor(
      *
      * @throws [AppAuthManagerException] If the token request fails.
      *
-     * @return Token response [TokenResponse]
+     * @return token state [TokenState]
      */
     override suspend fun performRefreshTokenGrant(
         refreshToken: String,
         context: Context,
-    ): TokenResponse? = appAuthManagerInstance.performRefreshTokenGrant(refreshToken, context)
+    ): TokenState? = appAuthManagerInstance.performRefreshTokenGrant(refreshToken, context)
 
     /**
-     * Save the [AuthState] to the data store.
+     * Save the [TokenState] to the data store.
      *
      * @param context Context of the application
-     * @param appAuthState The [AuthState] instance.
+     * @param tokenState The [TokenState] instance.
      */
-    override suspend fun saveAppAuthState(context: Context, appAuthState: AuthState): Unit? =
-        getTokenManagerInstance(context).saveAppAuthState(appAuthState)
+    override suspend fun saveTokenState(context: Context, tokenState: TokenState): Unit? =
+        getTokenManagerInstance(context).saveTokenState(tokenState)
 
     /**
-     * Get the [AuthState] from the data store.
+     * Get the [TokenState] from the data store.
      *
      * @param context Context of the application
      */
-    override suspend fun getAppAuthState(context: Context): AuthState? =
-        getTokenManagerInstance(context).getAppAuthState()
+    override suspend fun getTokenState(context: Context): TokenState? =
+        getTokenManagerInstance(context).getTokenState()
 
     /**
      * Get the access token from the token data store.

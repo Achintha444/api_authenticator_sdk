@@ -4,6 +4,7 @@ import android.content.Context
 import io.wso2.android.api_authenticator.sdk.core.di.TokenManagerImplContainer
 import io.wso2.android.api_authenticator.sdk.core.managers.token.TokenManager
 import io.wso2.android.api_authenticator.sdk.data.token.TokenDataStore
+import io.wso2.android.api_authenticator.sdk.models.state.TokenState
 import net.openid.appauth.AuthState
 import net.openid.appauth.TokenResponse
 
@@ -18,19 +19,19 @@ internal class TokenManagerImpl internal constructor(private val context: Contex
         TokenManagerImplContainer.getTokenDataStoreFactory().getTokenDataStore(context)
 
     /**
-     * Save the [AuthState] to the data store.
+     * Save the [TokenState] to the data store.
      *
-     * @param appAuthState The [AuthState] instance.
+     * @param tokenState The [TokenState] instance.
      */
-    override suspend fun saveAppAuthState(appAuthState: AuthState): Unit? =
-        tokenDataStore.saveAppAuthState(appAuthState)
+    override suspend fun saveTokenState(tokenState: TokenState): Unit? =
+        tokenDataStore.saveTokenState(tokenState)
 
     /**
-     * Get the [AuthState] from the data store.
+     * Get the [TokenState] from the data store.
      *
-     * @return The [AuthState] instance.
+     * @return The [TokenState] instance.
      */
-    override suspend fun getAppAuthState(): AuthState? = tokenDataStore.getAppAuthState()
+    override suspend fun getTokenState(): TokenState? = tokenDataStore.getTokenState()
 
     /**
      * Get the access token from the token data store.
@@ -85,5 +86,6 @@ internal class TokenManagerImpl internal constructor(private val context: Contex
      *
      * @return `true` if the access token is valid, `false` otherwise.
      */
-    override suspend fun validateAccessToken(): Boolean? = getAppAuthState()?.isAuthorized
+    override suspend fun validateAccessToken(): Boolean? =
+        getTokenState()?.getAppAuthState()?.isAuthorized
 }

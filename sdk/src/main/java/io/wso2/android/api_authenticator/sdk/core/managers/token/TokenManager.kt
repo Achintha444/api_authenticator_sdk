@@ -1,5 +1,6 @@
 package io.wso2.android.api_authenticator.sdk.core.managers.token
 
+import io.wso2.android.api_authenticator.sdk.models.state.TokenState
 import net.openid.appauth.AuthState
 import net.openid.appauth.TokenResponse
 
@@ -9,18 +10,18 @@ import net.openid.appauth.TokenResponse
 interface TokenManager {
 
     /**
-     * Save the [AuthState] to the data store.
+     * Save the [TokenState] to the data store.
      *
-     * @param appAuthState The [AuthState] instance.
+     * @param tokenState The [TokenState] instance.
      */
-     suspend fun saveAppAuthState(appAuthState: AuthState): Unit?
+     suspend fun saveTokenState(tokenState: TokenState): Unit?
 
     /**
-     * Get the [AuthState] from the data store.
+     * Get the [TokenState] from the data store.
      *
-     * @return The [AuthState] instance.
+     * @return The [TokenState] instance.
      */
-     suspend fun getAppAuthState(): AuthState?
+     suspend fun getTokenState(): TokenState?
 
     /**
      * Get the access token from the token data store.

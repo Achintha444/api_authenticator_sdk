@@ -4,8 +4,7 @@ import android.content.Context
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
-import net.openid.appauth.AuthState
-import net.openid.appauth.TokenResponse
+import io.wso2.android.api_authenticator.sdk.models.state.TokenState
 
 /**
  * Authentication core class interface which has the core functionality of the Authenticator SDK.
@@ -29,9 +28,9 @@ interface AuthenticationCoreDef {
      * @return [AuthenticationFlow] with the next step of the authentication flow
      */
     suspend fun authenticate(
-        authenticatorType: io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType,
-        authenticatorParameters: io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams,
-    ): io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow?
+        authenticatorType: AuthenticatorType,
+        authenticatorParameters: AuthParams,
+    ): AuthenticationFlow?
 
     /**
      * Exchange the authorization code for the access token.
@@ -39,12 +38,12 @@ interface AuthenticationCoreDef {
      * @param authorizationCode Authorization code
      * @param context Context of the application
      *
-     * @return Token response [TokenResponse]
+     * @return token state [TokenState]
      */
     suspend fun exchangeAuthorizationCode(
         authorizationCode: String,
         context: Context,
-    ): AuthState?
+    ): TokenState?
 
     /**
      * Perform the refresh token grant.
@@ -52,29 +51,29 @@ interface AuthenticationCoreDef {
      * @param refreshToken Refresh token
      * @param context Context of the application
      *
-     * @return Token response [TokenResponse]
+     * @return token state [TokenState]
      */
     suspend fun performRefreshTokenGrant(
         refreshToken: String,
         context: Context,
-    ): TokenResponse?
+    ): TokenState?
 
     /**
-     * Save the [AuthState] to the data store.
+     * Save the [TokenState] to the data store.
      *
      * @param context Context of the application
-     * @param appAuthState The [AuthState] instance.
+     * @param tokenState The [TokenState] instance.
      */
-     suspend fun saveAppAuthState(context: Context, appAuthState: AuthState): Unit?
+    suspend fun saveTokenState(context: Context, tokenState: TokenState): Unit?
 
     /**
-     * Get the [AuthState] from the data store.
+     * Get the [TokenState] from the data store.
      *
      * @param context Context of the application
      *
      * @param context Context of the application
      */
-     suspend fun getAppAuthState(context: Context): AuthState?
+    suspend fun getTokenState(context: Context): TokenState?
 
     /**
      * Get the access token from the token data store.

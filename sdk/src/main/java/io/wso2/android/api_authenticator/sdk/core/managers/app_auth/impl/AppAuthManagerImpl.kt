@@ -5,6 +5,7 @@ import android.net.Uri
 import io.wso2.android.api_authenticator.sdk.core.managers.app_auth.AppAuthManager
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AppAuthManagerException
 import io.wso2.android.api_authenticator.sdk.models.http_client.CustomHttpURLConnection
+import io.wso2.android.api_authenticator.sdk.models.state.TokenState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -75,14 +76,9 @@ internal class AppAuthManagerImpl private constructor(
     }
 
     /**
-     * The [AuthState] instance to keep track of the authorization state.
+     * The [TokenState] instance to keep track of the token state.
      */
-    private var _appAuthState: AuthState? = null
-
-    init {
-        // Initialize the AuthState
-        _appAuthState = AuthState(serviceConfig)
-    }
+    private var _tokenState: TokenState? = null
 
     /**
      * Use to get the [AuthorizationService] instance to perform requests.
@@ -125,12 +121,12 @@ internal class AppAuthManagerImpl private constructor(
      *
      * @throws AppAuthManagerException If the token request fails.
      *
-     * @return The token response [TokenResponse] instance.
+     * @return The [TokenState] instance.
      */
     override suspend fun exchangeAuthorizationCode(
         authorizationCode: String,
         context: Context,
-    ): AuthState? = withContext(Dispatchers.IO) {
+    ): TokenState? = withContext(Dispatchers.IO) {
         suspendCoroutine { continuation ->
             val tokenRequest: TokenRequest = getTokenRequestBuilder()
                 .setAuthorizationCode(authorizationCode)
@@ -142,17 +138,14 @@ internal class AppAuthManagerImpl private constructor(
 
             try {
                 authService.performTokenRequest(tokenRequest) { tokenResponse, exception ->
-                    // Update the AuthState
-                    _appAuthState!!.update(tokenResponse, exception)
+                    val appAuthState = AuthState(serviceConfig)
+                    appAuthState.update(tokenResponse, exception)
 
+                    // Update the TokenState
+                    _tokenState = TokenState(appAuthState)
                     when {
                         exception != null -> {
-                            continuation.resumeWithException(
-                                AppAuthManagerException(
-                                    AppAuthManagerException.TOKEN_REQUEST_FAILED,
-                                    exception.message
-                                )
-                            )
+                            continuation.resumeWithException(exception)
                         }
 
                         tokenResponse == null -> {
@@ -164,39 +157,12 @@ internal class AppAuthManagerImpl private constructor(
                         }
 
                         else -> {
-                            continuation.resume(_appAuthState)
-                        }
-                    }
-                    when {
-                        exception != null -> {
-                            continuation.resumeWithException(
-                                AppAuthManagerException(
-                                    AppAuthManagerException.TOKEN_REQUEST_FAILED,
-                                    exception.message
-                                )
-                            )
-                        }
-
-                        tokenResponse == null -> {
-                            continuation.resumeWithException(
-                                AppAuthManagerException(
-                                    AppAuthManagerException.EMPTY_TOKEN_RESPONSE
-                                )
-                            )
-                        }
-
-                        else -> {
-                            continuation.resume(_appAuthState)
+                            continuation.resume(_tokenState)
                         }
                     }
                 }
-            } catch (ex: Exception) {
-                continuation.resumeWithException(
-                    AppAuthManagerException(
-                        AppAuthManagerException.TOKEN_REQUEST_FAILED,
-                        ex.message
-                    )
-                )
+            } catch (exception: Exception) {
+                continuation.resumeWithException(exception)
             } finally {
                 authService.dispose()
             }
@@ -211,12 +177,12 @@ internal class AppAuthManagerImpl private constructor(
      *
      * @throws AppAuthManagerException If the token request fails.
      *
-     * @return The [TokenResponse] instance.
+     * @return The [TokenState] instance.
      */
     override suspend fun performRefreshTokenGrant(
         refreshToken: String?,
         context: Context
-    ): TokenResponse? = withContext(Dispatchers.IO) {
+    ): TokenState? = withContext(Dispatchers.IO) {
         suspendCoroutine { continuation ->
             // Check we have a refresh token
             if (refreshToken.isNullOrBlank()) {
@@ -239,6 +205,7 @@ internal class AppAuthManagerImpl private constructor(
             // Trigger the request
             try {
                 authService.performTokenRequest(tokenRequest) { tokenResponse, exception ->
+                    _tokenState!!.getAppAuthState().update(tokenResponse, exception)
                     when {
                         // Translate AppAuth errors to the display format
                         exception != null -> {
@@ -254,12 +221,7 @@ internal class AppAuthManagerImpl private constructor(
                                 )
 
                             } else {
-                                continuation.resumeWithException(
-                                    AppAuthManagerException(
-                                        AppAuthManagerException.TOKEN_REQUEST_FAILED,
-                                        exception.message
-                                    )
-                                )
+                                continuation.resumeWithException(exception)
                             }
                         }
 
@@ -274,7 +236,7 @@ internal class AppAuthManagerImpl private constructor(
 
                         // return the token response
                         else -> {
-                            continuation.resume(tokenResponse)
+                            continuation.resume(_tokenState)
                         }
                     }
                 }
@@ -291,35 +253,32 @@ internal class AppAuthManagerImpl private constructor(
         }
     }
 
-    suspend fun performActionWithFreshTokens(
+    /**
+     * Perform an action with fresh tokens.
+     *
+     * @param context The [Context] instance.
+     * @param action The action to perform.
+     *
+     * @return The [TokenState] instance.
+     */
+    override suspend fun performActionWithFreshTokens(
         context: Context,
         action: suspend (String, String) -> Unit
-    ): AuthState? = withContext(Dispatchers.IO) {
+    ): TokenState? = withContext(Dispatchers.IO) {
         suspendCoroutine { continuation ->
-            val authState = _appAuthState ?: throw AppAuthManagerException(
-                AppAuthManagerException.INVALID_AUTH_STATE
-            )
-
             val authService: AuthorizationService = getAuthorizationService(context)
 
-            if (authState.isAuthorized) {
-                authState.performActionWithFreshTokens(authService)
+            if (_tokenState!!.getAppAuthState().isAuthorized) {
+                _tokenState!!.getAppAuthState().performActionWithFreshTokens(authService)
                 { accessToken, idToken, exception ->
                     if (exception != null) {
-                        continuation.resumeWithException(
-                            AppAuthManagerException(
-                                AppAuthManagerException.TOKEN_REQUEST_FAILED,
-                                exception.message
-                            )
-                        )
+                        continuation.resumeWithException(exception)
                     } else {
-                        _appAuthState = authState
-
                         CoroutineScope(Dispatchers.IO).launch {
                             action(accessToken!!, idToken!!)
                         }
 
-                        continuation.resume(authState)
+                        continuation.resume(_tokenState)
                     }
                 }
             } else {
