@@ -38,6 +38,7 @@ class LandingScreenViewModel @Inject constructor(
 
     init {
         handleAuthenticationState()
+        isLoggedInStateFlow()
     }
 
     fun authorize() {
@@ -69,11 +70,13 @@ class LandingScreenViewModel @Inject constructor(
 
     fun initializeAuthentication() {
         viewModelScope.launch {
-            _state.update {
-                it.copy(isLoading = true)
-            }
-
             authenticationManager.initializeAuthentication(applicationContext)
+        }
+    }
+
+    private fun isLoggedInStateFlow() {
+        viewModelScope.launch {
+            authenticationManager.isLoggedInStateFlow(applicationContext)
         }
     }
 
@@ -82,7 +85,9 @@ class LandingScreenViewModel @Inject constructor(
             authenticationStateFlow.collect {
                 when (it) {
                     is AuthenticationState.Initial -> {
-                        // Do nothing
+                        _state.update { landingScreenState ->
+                            landingScreenState.copy(isLoading = false)
+                        }
                     }
 
                     is AuthenticationState.Unauthenticated -> {

@@ -101,6 +101,9 @@ class AuthenticationProvider private constructor(
     suspend fun isLoggedInStateFlow(context: Context) {
         _authStateFlow.tryEmit(AuthenticationState.Loading)
 
+        // TODO: Remove this block
+        authenticationCore.clearTokens(context)
+
         runCatching {
             authenticationCore.validateAccessToken(context)
         }.onSuccess { isAccessTokenValid ->
@@ -110,7 +113,7 @@ class AuthenticationProvider private constructor(
                 _authStateFlow.tryEmit(AuthenticationState.Initial)
             }
         }.onFailure {
-            _authStateFlow.tryEmit(AuthenticationState.Error(it))
+            _authStateFlow.tryEmit(AuthenticationState.Initial)
         }
     }
 

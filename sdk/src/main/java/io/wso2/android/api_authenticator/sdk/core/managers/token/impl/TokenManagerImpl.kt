@@ -87,5 +87,5 @@ internal class TokenManagerImpl internal constructor(private val context: Contex
      * @return `true` if the access token is valid, `false` otherwise.
      */
     override suspend fun validateAccessToken(): Boolean? =
-        getTokenState()!!.getAppAuthState()!!.isAuthorized
+        getTokenState()?.getAppAuthState()?.isAuthorized
 }
