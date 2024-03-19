@@ -8,7 +8,6 @@ import io.wso2.android.api_authenticator.sdk.sample.util.Config
 import javax.inject.Inject
 
 class ProviderRepositoryImpl @Inject constructor() : ProviderRepository {
-
     private val authenticationProvider = AuthenticationProvider.getInstance(
         AuthenticationCoreConfig(
             Config.getBaseUrl(),
