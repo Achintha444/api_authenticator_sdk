@@ -5,6 +5,10 @@ import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.providers.di.TokenProviderContainer
 import java.lang.ref.WeakReference
 
+/**
+ * The [TokenProvider] class provides the functionality to get the tokens, validate the tokens,
+ * refresh the tokens, and clear the tokens.
+ */
 class TokenProvider {
     /**
      * Instance of the [AuthenticationCoreDef] that will be used throughout the application
