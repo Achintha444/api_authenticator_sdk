@@ -145,17 +145,17 @@ class AuthenticationCore private constructor(
     /**
      * Perform the refresh token grant.
      *
-     * @param refreshToken Refresh token
+     * @param tokenState The [TokenState] instance.
      * @param context Context of the application
      *
      * @throws [AppAuthManagerException] If the token request fails.
      *
-     * @return token state [TokenState]
+     * @return Updated [TokenState] instance.
      */
     override suspend fun performRefreshTokenGrant(
-        refreshToken: String,
+        tokenState: TokenState,
         context: Context,
-    ): TokenState? = appAuthManagerInstance.performRefreshTokenGrant(refreshToken, context)
+    ): TokenState? = appAuthManagerInstance.performRefreshTokenGrant(tokenState, context)
 
     /**
      * Save the [TokenState] to the data store.

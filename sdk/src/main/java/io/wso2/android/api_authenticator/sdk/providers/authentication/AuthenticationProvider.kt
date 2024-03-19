@@ -1,7 +1,6 @@
 package io.wso2.android.api_authenticator.sdk.providers.authentication
 
 import android.content.Context
-import android.media.session.MediaSession.Token
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.AuthenticatorManager
@@ -23,7 +22,6 @@ import io.wso2.android.api_authenticator.sdk.providers.util.AuthenticatorProvide
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import net.openid.appauth.AuthState
 import java.lang.ref.WeakReference
 
 /**
@@ -84,6 +82,39 @@ class AuthenticationProvider private constructor(
     }
 
     /**
+     * Check whether the user is logged in or not.
+     *
+     * @return `true` if the user is logged in, `false` otherwise
+     */
+    suspend fun isLoggedIn(context: Context): Boolean {
+        return authenticationCore.validateAccessToken(context) ?: false
+    }
+
+    /**
+     * Handle the authentication flow initially to check whether the user is authenticated or not.
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     * emit: [AuthenticationState.Initial] - The user is not authenticated to access the application
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     */
+    suspend fun isLoggedInStateFlow(context: Context) {
+        _authStateFlow.tryEmit(AuthenticationState.Loading)
+
+        runCatching {
+            authenticationCore.validateAccessToken(context)
+        }.onSuccess { isAccessTokenValid ->
+            if (isAccessTokenValid == true) {
+                _authStateFlow.tryEmit(AuthenticationState.Authenticated)
+            } else {
+                _authStateFlow.tryEmit(AuthenticationState.Initial)
+            }
+        }.onFailure {
+            _authStateFlow.tryEmit(AuthenticationState.Error(it))
+        }
+    }
+
+    /**
      * Initialize the authentication process.
      * This method will initialize the authentication process and emit the state of the authentication process.
      *
@@ -94,39 +125,17 @@ class AuthenticationProvider private constructor(
     suspend fun initializeAuthentication(context: Context) {
         _authStateFlow.tryEmit(AuthenticationState.Loading)
 
-        // TODO: Remove this block
-        authenticationCore.clearTokens(context)
+//        // TODO: Remove this block
+//        authenticationCore.clearTokens(context)
 
         runCatching {
-            // Check whether the access token is valid
-            authenticationCore.validateAccessToken(context)
-        }.onSuccess { isAccessTokenValid ->
-            if (isAccessTokenValid == true) {
-                // If the access token is valid, emit the authenticated state
-                _authStateFlow.tryEmit(AuthenticationState.Authenticated)
-            } else {
-                // Else call the authorize method to start the authentication process
-                runCatching {
-                    authenticationCore.authorize()
-                }.onSuccess {
-                    authenticatorsInThisStep =
-                        (it as AuthenticationFlowNotSuccess)?.nextStep?.authenticators
-                    _authStateFlow.tryEmit(AuthenticationState.Unauthenticated(it))
-                }.onFailure {
-                    _authStateFlow.tryEmit(AuthenticationState.Error(it))
-                }
-            }
+            authenticationCore.authorize()
+        }.onSuccess {
+            authenticatorsInThisStep =
+                (it as AuthenticationFlowNotSuccess)?.nextStep?.authenticators
+            _authStateFlow.tryEmit(AuthenticationState.Unauthenticated(it))
         }.onFailure {
-            // Else call the authorize method to start the authentication process
-            runCatching {
-                authenticationCore.authorize()
-            }.onSuccess {
-                authenticatorsInThisStep =
-                    (it as AuthenticationFlowNotSuccess)?.nextStep?.authenticators
-                _authStateFlow.tryEmit(AuthenticationState.Unauthenticated(it))
-            }.onFailure {
-                _authStateFlow.tryEmit(AuthenticationState.Error(it))
-            }
+            _authStateFlow.tryEmit(AuthenticationState.Error(it))
         }
     }
 

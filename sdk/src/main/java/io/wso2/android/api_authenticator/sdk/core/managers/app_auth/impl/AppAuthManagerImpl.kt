@@ -17,7 +17,6 @@ import net.openid.appauth.AuthorizationService
 import net.openid.appauth.AuthorizationServiceConfiguration
 import net.openid.appauth.GrantTypeValues
 import net.openid.appauth.TokenRequest
-import net.openid.appauth.TokenResponse
 import okhttp3.OkHttpClient
 import java.lang.ref.WeakReference
 import javax.net.ssl.X509TrustManager
@@ -74,11 +73,6 @@ internal class AppAuthManagerImpl private constructor(
             return appAuthManagerImpl
         }
     }
-
-    /**
-     * The [TokenState] instance to keep track of the token state.
-     */
-    private var _tokenState: TokenState? = null
 
     /**
      * Use to get the [AuthorizationService] instance to perform requests.
@@ -141,8 +135,6 @@ internal class AppAuthManagerImpl private constructor(
                     val appAuthState = AuthState(serviceConfig)
                     appAuthState.update(tokenResponse, exception)
 
-                    // Update the TokenState
-                    _tokenState = TokenState(appAuthState)
                     when {
                         exception != null -> {
                             continuation.resumeWithException(exception)
@@ -157,7 +149,7 @@ internal class AppAuthManagerImpl private constructor(
                         }
 
                         else -> {
-                            continuation.resume(_tokenState)
+                            continuation.resume(TokenState(appAuthState))
                         }
                     }
                 }
@@ -172,18 +164,21 @@ internal class AppAuthManagerImpl private constructor(
     /**
      * Use to perform the refresh token grant.
      *
-     * @param refreshToken The refresh token.
+     * @param tokenState The [TokenState] instance.
      * @param context The [Context] instance.
      *
      * @throws AppAuthManagerException If the token request fails.
      *
-     * @return The [TokenState] instance.
+     * @return Updated [TokenState] instance.
      */
     override suspend fun performRefreshTokenGrant(
-        refreshToken: String?,
+        tokenState: TokenState,
         context: Context
     ): TokenState? = withContext(Dispatchers.IO) {
         suspendCoroutine { continuation ->
+
+            val refreshToken: String? = tokenState.getAppAuthState().refreshToken
+
             // Check we have a refresh token
             if (refreshToken.isNullOrBlank()) {
                 continuation.resumeWithException(
@@ -204,8 +199,10 @@ internal class AppAuthManagerImpl private constructor(
 
             // Trigger the request
             try {
+                val appAuthState: AuthState = tokenState.getAppAuthState()
+
                 authService.performTokenRequest(tokenRequest) { tokenResponse, exception ->
-                    _tokenState!!.getAppAuthState().update(tokenResponse, exception)
+                    appAuthState.update(tokenResponse, exception)
                     when {
                         // Translate AppAuth errors to the display format
                         exception != null -> {
@@ -236,7 +233,8 @@ internal class AppAuthManagerImpl private constructor(
 
                         // return the token response
                         else -> {
-                            continuation.resume(_tokenState)
+                            tokenState.updateAppAuthState(appAuthState)
+                            continuation.resume(tokenState)
                         }
                     }
                 }
@@ -256,20 +254,23 @@ internal class AppAuthManagerImpl private constructor(
     /**
      * Perform an action with fresh tokens.
      *
+     * @param tokenState The [TokenState] instance.
      * @param context The [Context] instance.
      * @param action The action to perform.
      *
-     * @return The [TokenState] instance.
+     * @return Updated [TokenState] instance.
      */
     override suspend fun performActionWithFreshTokens(
+        tokenState: TokenState,
         context: Context,
         action: suspend (String, String) -> Unit
     ): TokenState? = withContext(Dispatchers.IO) {
         suspendCoroutine { continuation ->
+            val appAuthState: AuthState = tokenState.getAppAuthState()
             val authService: AuthorizationService = getAuthorizationService(context)
 
-            if (_tokenState!!.getAppAuthState().isAuthorized) {
-                _tokenState!!.getAppAuthState().performActionWithFreshTokens(authService)
+            if (appAuthState.isAuthorized) {
+                appAuthState.performActionWithFreshTokens(authService)
                 { accessToken, idToken, exception ->
                     if (exception != null) {
                         continuation.resumeWithException(exception)
@@ -278,7 +279,8 @@ internal class AppAuthManagerImpl private constructor(
                             action(accessToken!!, idToken!!)
                         }
 
-                        continuation.resume(_tokenState)
+                        tokenState.updateAppAuthState(appAuthState)
+                        continuation.resume(tokenState)
                     }
                 }
             } else {

@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 rootProject.name = "api_authenticator_sdk"
 include(":app")
 include(":sdk")
+include(":app-legacy")

@@ -48,13 +48,13 @@ interface AuthenticationCoreDef {
     /**
      * Perform the refresh token grant.
      *
-     * @param refreshToken Refresh token
+     * @param tokenState The [TokenState] instance.
      * @param context Context of the application
      *
-     * @return token state [TokenState]
+     * @return updated [TokenState] instance.
      */
     suspend fun performRefreshTokenGrant(
-        refreshToken: String,
+        tokenState: TokenState,
         context: Context,
     ): TokenState?
 

@@ -27,7 +27,7 @@ interface AppAuthManager {
     /**
      * Use to perform the refresh token grant.
      *
-     * @param refreshToken The refresh token.
+     * @param tokenState The [TokenState] instance.
      * @param context The [Context] instance.
      *
      * @throws AppAuthManagerException If the token request fails.
@@ -35,19 +35,21 @@ interface AppAuthManager {
      * @return The [TokenState] instance.
      */
     suspend fun performRefreshTokenGrant(
-        refreshToken: String?,
+        tokenState: TokenState,
         context: Context
     ): TokenState?
 
     /**
      * Perform an action with fresh tokens.
      *
+     * @param tokenState The [TokenState] instance.
      * @param context The [Context] instance.
      * @param action The action to perform.
      *
      * @return The [TokenState] instance.
      */
     suspend fun performActionWithFreshTokens(
+        tokenState: TokenState,
         context: Context,
         action: suspend (String, String) -> Unit
     ): TokenState?

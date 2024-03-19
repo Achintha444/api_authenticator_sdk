@@ -7,7 +7,7 @@ import net.openid.appauth.AuthState
  *
  * @property appAuthState The [AuthState] instance.
  */
-class TokenState(private val appAuthState: AuthState) {
+class TokenState(private var appAuthState: AuthState) {
     companion object {
         /**
          * Create a [TokenState] instance from a [String].
@@ -26,6 +26,15 @@ class TokenState(private val appAuthState: AuthState) {
      */
     fun getAppAuthState(): AuthState {
         return appAuthState
+    }
+
+    /**
+     * Update the [AuthState] instance.
+     *
+     * @param authState The new [AuthState] instance.
+     */
+    fun updateAppAuthState(authState: AuthState) {
+        this.appAuthState = authState
     }
 
     /**
