@@ -164,16 +164,16 @@ internal class AppAuthManagerImpl private constructor(
     /**
      * Use to perform the refresh token grant.
      *
-     * @param tokenState The [TokenState] instance.
      * @param context The [Context] instance.
+     * @param tokenState The [TokenState] instance.
      *
      * @throws AppAuthManagerException If the token request fails.
      *
      * @return Updated [TokenState] instance.
      */
     override suspend fun performRefreshTokenGrant(
+        context: Context,
         tokenState: TokenState,
-        context: Context
     ): TokenState? = withContext(Dispatchers.IO) {
         suspendCoroutine { continuation ->
 
@@ -254,15 +254,15 @@ internal class AppAuthManagerImpl private constructor(
     /**
      * Perform an action with fresh tokens.
      *
-     * @param tokenState The [TokenState] instance.
      * @param context The [Context] instance.
+     * @param tokenState The [TokenState] instance.
      * @param action The action to perform.
      *
      * @return Updated [TokenState] instance.
      */
     override suspend fun performActionWithFreshTokens(
-        tokenState: TokenState,
         context: Context,
+        tokenState: TokenState,
         action: suspend (String, String) -> Unit
     ): TokenState? = withContext(Dispatchers.IO) {
         suspendCoroutine { continuation ->

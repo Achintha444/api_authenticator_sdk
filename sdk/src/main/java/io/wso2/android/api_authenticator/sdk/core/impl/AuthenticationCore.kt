@@ -13,8 +13,6 @@ import io.wso2.android.api_authenticator.sdk.models.authentication_flow.Authenti
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticationCoreException
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticationCoreException.Companion.AUTHORIZATION_SERVICE_NOT_INITIALIZED
 import io.wso2.android.api_authenticator.sdk.models.state.TokenState
-import net.openid.appauth.AuthState
-import net.openid.appauth.TokenResponse
 import java.io.IOException
 import java.lang.ref.WeakReference
 
@@ -120,9 +118,9 @@ class AuthenticationCore private constructor(
         authenticatorType: AuthenticatorType,
         authenticatorParameters: AuthParams,
     ): AuthenticationFlow? = authnMangerInstance.authenticate(
-            authenticatorType,
-            authenticatorParameters
-        )
+        authenticatorType,
+        authenticatorParameters
+    )
 
     /**
      * Exchange the authorization code for the access token.
@@ -145,17 +143,33 @@ class AuthenticationCore private constructor(
     /**
      * Perform the refresh token grant.
      *
-     * @param tokenState The [TokenState] instance.
      * @param context Context of the application
+     * @param tokenState The [TokenState] instance.
      *
      * @throws [AppAuthManagerException] If the token request fails.
      *
      * @return Updated [TokenState] instance.
      */
     override suspend fun performRefreshTokenGrant(
-        tokenState: TokenState,
         context: Context,
-    ): TokenState? = appAuthManagerInstance.performRefreshTokenGrant(tokenState, context)
+        tokenState: TokenState,
+    ): TokenState? = appAuthManagerInstance.performRefreshTokenGrant(context, tokenState)
+
+    /**
+     * Perform an action with fresh tokens.
+     *
+     * @param context The [Context] instance.
+     * @param tokenState The [TokenState] instance.
+     * @param action The action to perform.
+     *
+     * @return Updated [TokenState] instance.
+     */
+    override suspend fun performActionWithFreshTokens(
+        context: Context,
+        tokenState: TokenState,
+        action: suspend (String, String) -> Unit
+    ): TokenState? =
+        appAuthManagerInstance.performActionWithFreshTokens(context, tokenState, action)
 
     /**
      * Save the [TokenState] to the data store.

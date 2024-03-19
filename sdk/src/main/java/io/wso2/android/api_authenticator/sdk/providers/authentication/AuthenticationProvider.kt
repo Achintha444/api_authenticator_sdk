@@ -45,12 +45,14 @@ class AuthenticationProvider private constructor(
             authenticationCoreConfig
         )
 
-    private val _authStateFlow = MutableStateFlow<AuthenticationState>(AuthenticationState.Initial)
+    private val _authenticationStateFlow
+        = MutableStateFlow<AuthenticationState>(AuthenticationState.Initial)
 
     /**
      * Flow of the authentication state which is exposed to the outside.
      */
-    val authenticationStateFlow: SharedFlow<AuthenticationState> = _authStateFlow.asSharedFlow()
+    val authenticationStateFlow: SharedFlow<AuthenticationState>
+        = _authenticationStateFlow.asSharedFlow()
 
     /**
      * List of authenticators in the current step of the authentication flow
@@ -99,7 +101,7 @@ class AuthenticationProvider private constructor(
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     suspend fun isLoggedInStateFlow(context: Context) {
-        _authStateFlow.tryEmit(AuthenticationState.Loading)
+        _authenticationStateFlow.tryEmit(AuthenticationState.Loading)
 
         // TODO: Remove this block
         authenticationCore.clearTokens(context)
@@ -108,12 +110,12 @@ class AuthenticationProvider private constructor(
             authenticationCore.validateAccessToken(context)
         }.onSuccess { isAccessTokenValid ->
             if (isAccessTokenValid == true) {
-                _authStateFlow.tryEmit(AuthenticationState.Authenticated)
+                _authenticationStateFlow.tryEmit(AuthenticationState.Authenticated)
             } else {
-                _authStateFlow.tryEmit(AuthenticationState.Initial)
+                _authenticationStateFlow.tryEmit(AuthenticationState.Initial)
             }
         }.onFailure {
-            _authStateFlow.tryEmit(AuthenticationState.Initial)
+            _authenticationStateFlow.tryEmit(AuthenticationState.Initial)
         }
     }
 
@@ -126,7 +128,7 @@ class AuthenticationProvider private constructor(
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     suspend fun initializeAuthentication(context: Context) {
-        _authStateFlow.tryEmit(AuthenticationState.Loading)
+        _authenticationStateFlow.tryEmit(AuthenticationState.Loading)
 
 //        // TODO: Remove this block
 //        authenticationCore.clearTokens(context)
@@ -136,9 +138,9 @@ class AuthenticationProvider private constructor(
         }.onSuccess {
             authenticatorsInThisStep =
                 (it as AuthenticationFlowNotSuccess)?.nextStep?.authenticators
-            _authStateFlow.tryEmit(AuthenticationState.Unauthenticated(it))
+            _authenticationStateFlow.tryEmit(AuthenticationState.Unauthenticated(it))
         }.onFailure {
-            _authStateFlow.tryEmit(AuthenticationState.Error(it))
+            _authenticationStateFlow.tryEmit(AuthenticationState.Error(it))
         }
     }
 
@@ -236,11 +238,11 @@ class AuthenticationProvider private constructor(
         authenticatorTypeString: String,
         authParams: AuthParams
     ) {
-        _authStateFlow.tryEmit(AuthenticationState.Loading)
+        _authenticationStateFlow.tryEmit(AuthenticationState.Loading)
 
         val authenticatorType: AuthenticatorType? =
             handleStateWhenAuthenticatorTypeIsNotFound(
-                _authStateFlow,
+                _authenticationStateFlow,
                 authenticatorsInThisStep!!,
                 authenticatorTypeString
             )
@@ -252,9 +254,9 @@ class AuthenticationProvider private constructor(
                     authParams
                 )
             }.onSuccess {
-                emitSuccessStateOnFlowStatus(context, it!!, _authStateFlow)
+                emitSuccessStateOnFlowStatus(context, it!!, _authenticationStateFlow)
             }.onFailure {
-                _authStateFlow.tryEmit(AuthenticationState.Error(it))
+                _authenticationStateFlow.tryEmit(AuthenticationState.Error(it))
             }
         }
     }

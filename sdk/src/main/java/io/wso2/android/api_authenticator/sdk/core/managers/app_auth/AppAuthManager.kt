@@ -3,8 +3,6 @@ package io.wso2.android.api_authenticator.sdk.core.managers.app_auth
 import android.content.Context
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AppAuthManagerException
 import io.wso2.android.api_authenticator.sdk.models.state.TokenState
-import net.openid.appauth.AuthState
-import net.openid.appauth.TokenResponse
 
 /**
  * Interface which has the methods to manage the AppAuth SDK.
@@ -27,30 +25,30 @@ interface AppAuthManager {
     /**
      * Use to perform the refresh token grant.
      *
-     * @param tokenState The [TokenState] instance.
      * @param context The [Context] instance.
+     * @param tokenState The [TokenState] instance.
      *
      * @throws AppAuthManagerException If the token request fails.
      *
-     * @return The [TokenState] instance.
+     * @return Updated [TokenState] instance.
      */
     suspend fun performRefreshTokenGrant(
+        context: Context,
         tokenState: TokenState,
-        context: Context
     ): TokenState?
 
     /**
      * Perform an action with fresh tokens.
      *
-     * @param tokenState The [TokenState] instance.
      * @param context The [Context] instance.
+     * @param tokenState The [TokenState] instance.
      * @param action The action to perform.
      *
-     * @return The [TokenState] instance.
+     * @return Updated [TokenState] instance.
      */
     suspend fun performActionWithFreshTokens(
-        tokenState: TokenState,
         context: Context,
+        tokenState: TokenState,
         action: suspend (String, String) -> Unit
     ): TokenState?
 }
