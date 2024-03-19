@@ -35,4 +35,9 @@ interface FlowManager {
      * @throws [FlowManagerException] If the flow is failed incomplete
      */
     suspend fun manageStateOfAuthorizeFlow(responseObject: JsonNode): AuthenticationFlow?
+
+    /**
+     * Remove the instance of the [FlowManager]
+     */
+    fun dispose()
 }

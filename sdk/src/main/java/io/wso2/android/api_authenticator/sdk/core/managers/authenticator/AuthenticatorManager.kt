@@ -37,4 +37,9 @@ interface AuthenticatorManager {
         flowId: String,
         authenticatorTypes: ArrayList<AuthenticatorType>
     ): ArrayList<AuthenticatorType>
+
+    /**
+     * Remove the instance of the [AuthenticatorManager]
+     */
+    fun dispose()
 }

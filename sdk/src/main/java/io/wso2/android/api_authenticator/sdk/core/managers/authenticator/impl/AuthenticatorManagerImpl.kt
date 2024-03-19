@@ -59,7 +59,7 @@ internal class AuthenticatorManagerImpl private constructor(
          */
         fun getInstance(
             client: OkHttpClient,
-            authenticatorTypeFactory: io.wso2.android.api_authenticator.sdk.models.autheniticator_type.authenticator_type_factory.AuthenticatorTypeFactory,
+            authenticatorTypeFactory: AuthenticatorTypeFactory,
             authenticatorManagerImplRequestBuilder: AuthenticatorManagerImplRequestBuilder,
             authnUrl: String
         ): AuthenticatorManagerImpl {
@@ -204,5 +204,12 @@ internal class AuthenticatorManagerImpl private constructor(
             }
             return detailedAuthenticatorTypes.toCollection(ArrayList())
         }
+    }
+
+    /**
+     * Remove the instance of the [AuthenticatorManagerImpl]
+     */
+    override fun dispose() {
+        authenticatorManagerImplInstance.clear()
     }
 }

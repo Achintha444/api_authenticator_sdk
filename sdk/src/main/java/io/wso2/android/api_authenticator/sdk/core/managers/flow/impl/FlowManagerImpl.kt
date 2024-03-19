@@ -128,6 +128,14 @@ internal class FlowManagerImpl private constructor(
             }
         }
     }
+
+    /**
+     * Remove the instance of the [FlowManagerImpl]
+     */
+    override fun dispose() {
+        flowManagerImplInstance.clear()
+    }
+
 }
 
 
