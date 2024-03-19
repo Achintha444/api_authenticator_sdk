@@ -49,6 +49,6 @@ interface AppAuthManager {
     suspend fun performActionWithFreshTokens(
         context: Context,
         tokenState: TokenState,
-        action: suspend (String, String) -> Unit
+        action: suspend (String?, String?) -> Unit
     ): TokenState?
 }

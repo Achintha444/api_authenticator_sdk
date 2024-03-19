@@ -115,7 +115,7 @@ class TokenProvider {
      */
     suspend fun performActionWithFreshTokens(
         context: Context,
-        action: suspend (String, String) -> Unit
+        action: suspend (String?, String?) -> Unit
     ) {
         var tokenState = authenticationCore?.getTokenState(context)
         tokenState = authenticationCore.performActionWithFreshTokens(context, tokenState!!, action)

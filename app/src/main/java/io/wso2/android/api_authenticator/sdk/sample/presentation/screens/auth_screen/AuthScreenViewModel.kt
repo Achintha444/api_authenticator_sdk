@@ -11,8 +11,8 @@ import io.wso2.android.api_authenticator.sdk.models.authentication_flow.Authenti
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowNotSuccess
 import io.wso2.android.api_authenticator.sdk.models.flow_status.FlowStatus
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
-import io.wso2.android.api_authenticator.sdk.sample.domain.repository.AuthenticationProviderRepository
 import io.wso2.android.api_authenticator.sdk.sample.domain.repository.AuthenticationRepository
+import io.wso2.android.api_authenticator.sdk.sample.domain.repository.ProviderRepository
 import io.wso2.android.api_authenticator.sdk.sample.presentation.util.sendEvent
 import io.wso2.android.api_authenticator.sdk.sample.util.Event
 import io.wso2.android.api_authenticator.sdk.sample.util.navigation.NavigationViewModel
@@ -25,7 +25,7 @@ import javax.inject.Inject
 class AuthScreenViewModel @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
     private val authenticationRepository: AuthenticationRepository,
-    authenticationProviderRepository: AuthenticationProviderRepository
+    providerRepository: ProviderRepository
 ) : ViewModel() {
 
     companion object {
@@ -35,8 +35,8 @@ class AuthScreenViewModel @Inject constructor(
     private val _state = MutableStateFlow(AuthScreenState())
     val state = _state
 
-    private val authenticationManager = authenticationProviderRepository.getAuthenticationManager()
-    private val authenticationStateFlow = authenticationManager.authenticationStateFlow
+    private val authenticationProvider = providerRepository.getAuthenticationProvider()
+    private val authenticationStateFlow = authenticationProvider.authenticationStateFlow
 
     init {
         viewModelScope.launch {
@@ -95,7 +95,7 @@ class AuthScreenViewModel @Inject constructor(
         password: String
     ) {
         viewModelScope.launch {
-            authenticationManager.authenticateWithUsernameAndPassword(
+            authenticationProvider.authenticateWithUsernameAndPassword(
                 applicationContext,
                 username,
                 password
@@ -107,7 +107,7 @@ class AuthScreenViewModel @Inject constructor(
         token: String
     ) {
         viewModelScope.launch {
-            authenticationManager.authenticateWithTotp(
+            authenticationProvider.authenticateWithTotp(
                 applicationContext,
                 token
             )

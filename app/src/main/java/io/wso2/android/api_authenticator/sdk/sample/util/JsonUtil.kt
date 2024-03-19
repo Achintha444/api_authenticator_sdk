@@ -8,7 +8,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 /**
  * Util class to handle json related operations
  */
-internal object JsonUtil {
+object JsonUtil {
     /**
      * [ObjectMapper] instance to handle json related operations
      */

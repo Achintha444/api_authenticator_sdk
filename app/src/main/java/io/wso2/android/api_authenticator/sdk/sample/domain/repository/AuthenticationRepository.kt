@@ -11,12 +11,12 @@ import io.wso2.android.api_authenticator.sdk.models.authentication_flow.Authenti
  * Use as a repository to handle the authentication related operations using Core package of the SDK
  */
 interface AuthenticationRepository {
-    suspend fun authorize(): Either<AuthenticationError, io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow>
+    suspend fun authorize(): Either<AuthenticationError, AuthenticationFlow>
 
     suspend fun authenticate(
-        authenticatorType: io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType,
-        authenticatorParameters: io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams,
-    ): Either<AuthenticationError, io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow>
+        authenticatorType: AuthenticatorType,
+        authenticatorParameters: AuthParams,
+    ): Either<AuthenticationError, AuthenticationFlow>
 
     suspend fun getAccessToken(
         context: Context,

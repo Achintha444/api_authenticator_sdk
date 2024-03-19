@@ -263,31 +263,30 @@ internal class AppAuthManagerImpl private constructor(
     override suspend fun performActionWithFreshTokens(
         context: Context,
         tokenState: TokenState,
-        action: suspend (String, String) -> Unit
-    ): TokenState? = withContext(Dispatchers.IO) {
-        suspendCoroutine { continuation ->
-            val appAuthState: AuthState = tokenState.getAppAuthState()
-            val authService: AuthorizationService = getAuthorizationService(context)
+        action: suspend (String?, String?) -> Unit
+    ): TokenState? = suspendCoroutine { continuation ->
+        val appAuthState: AuthState = tokenState.getAppAuthState()
+        val authService: AuthorizationService = getAuthorizationService(context)
 
-            if (appAuthState.isAuthorized) {
-                appAuthState.performActionWithFreshTokens(authService)
-                { accessToken, idToken, exception ->
-                    if (exception != null) {
-                        continuation.resumeWithException(exception)
-                    } else {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            action(accessToken!!, idToken!!)
-                        }
-
-                        tokenState.updateAppAuthState(appAuthState)
-                        continuation.resume(tokenState)
+        if (appAuthState.isAuthorized) {
+            appAuthState.performActionWithFreshTokens(authService)
+            { accessToken, idToken, exception ->
+                if (exception != null) {
+                    continuation.resumeWithException(exception)
+                } else {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        action(accessToken, idToken)
                     }
+
+                    tokenState.updateAppAuthState(appAuthState)
+                    continuation.resume(tokenState)
                 }
-            } else {
-                continuation.resumeWithException(
-                    AppAuthManagerException(AppAuthManagerException.INVALID_AUTH_STATE)
-                )
             }
+        } else {
+            continuation.resumeWithException(
+                AppAuthManagerException(AppAuthManagerException.INVALID_AUTH_STATE)
+            )
         }
     }
+
 }

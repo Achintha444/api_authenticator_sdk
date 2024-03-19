@@ -30,6 +30,11 @@
     <string name="screens_auth_screen_totp_login">Sign in with TOTP</string>
 
     <!--  Home Screen  -->
+    <string name="screens_home_screen_user_card_username">Username</string>
+    <string name="screens_home_screen_user_card_email">Email</string>
+    <string name="screens_home_screen_user_card_first_name">First Name</string>
+    <string name="screens_home_screen_user_card_last_name">Last Name</string>
+    <string name="screens_home_screen_user_card_user_image_description">User profile picture</string>
     <string name="screens_home_screen_login_success">Login Successful</string>
 
     <string name="title_activity_home">Home</string>

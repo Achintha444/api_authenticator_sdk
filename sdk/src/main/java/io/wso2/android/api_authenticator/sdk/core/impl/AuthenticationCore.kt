@@ -167,7 +167,7 @@ class AuthenticationCore private constructor(
     override suspend fun performActionWithFreshTokens(
         context: Context,
         tokenState: TokenState,
-        action: suspend (String, String) -> Unit
+        action: suspend (String?, String?) -> Unit
     ): TokenState? =
         appAuthManagerInstance.performActionWithFreshTokens(context, tokenState, action)
 

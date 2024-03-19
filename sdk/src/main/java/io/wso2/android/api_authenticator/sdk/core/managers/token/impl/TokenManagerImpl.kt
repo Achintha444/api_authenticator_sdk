@@ -39,7 +39,7 @@ internal class TokenManagerImpl internal constructor(private val context: Contex
      * @return The access token [String]
      */
     override suspend fun getAccessToken(): String? =
-        getTokenState()!!.getAppAuthState()!!.accessToken
+        getTokenState()?.getAppAuthState()?.accessToken
 
     /**
      * Get the refresh token from the token data store.
@@ -47,7 +47,7 @@ internal class TokenManagerImpl internal constructor(private val context: Contex
      * @return The refresh token [String]
      */
     override suspend fun getRefreshToken(): String? =
-        getTokenState()!!.getAppAuthState()!!.refreshToken
+        getTokenState()?.getAppAuthState()?.refreshToken
 
     /**
      * Get the ID token from the token data store.
@@ -55,7 +55,7 @@ internal class TokenManagerImpl internal constructor(private val context: Contex
      * @return The ID token [String]
      */
     override suspend fun getIDToken(): String? =
-        getTokenState()!!.getAppAuthState()!!.idToken
+        getTokenState()?.getAppAuthState()?.idToken
 
     /**
      * Get the access token expiration time from the token data store.
@@ -63,7 +63,7 @@ internal class TokenManagerImpl internal constructor(private val context: Contex
      * @return The access token expiration time [Long]
      */
     override suspend fun getAccessTokenExpirationTime(): Long? =
-        getTokenState()!!.getAppAuthState()!!.accessTokenExpirationTime
+        getTokenState()?.getAppAuthState()?.accessTokenExpirationTime
 
     /**
      * Get the scope from the token data store.
@@ -71,7 +71,7 @@ internal class TokenManagerImpl internal constructor(private val context: Contex
      * @return The scope [String]
      */
     override suspend fun getScope(): String? =
-        getTokenState()!!.getAppAuthState()!!.scope
+        getTokenState()?.getAppAuthState()?.scope
 
     /**
      * Clear the tokens from the token data store.*

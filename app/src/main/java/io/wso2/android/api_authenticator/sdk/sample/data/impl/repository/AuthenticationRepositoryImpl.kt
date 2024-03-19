@@ -29,7 +29,6 @@ class AuthenticationRepositoryImpl @Inject constructor() : AuthenticationReposit
     )
 
     override suspend fun authorize(): Either<AuthenticationError, AuthenticationFlow> {
-
         return Either.catch {
             authenticationCore.authorize()!!
         }.mapLeft {
