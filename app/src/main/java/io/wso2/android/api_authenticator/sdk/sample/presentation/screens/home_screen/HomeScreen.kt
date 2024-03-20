@@ -39,12 +39,13 @@ internal fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
-    HomeScreenContent(state.value)
+    HomeScreenContent(state.value, onLogoutClick = viewModel::logout)
 }
 
 @Composable
 fun HomeScreenContent(
-    state: HomeScreenState
+    state: HomeScreenState,
+    onLogoutClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -63,7 +64,7 @@ fun HomeScreenContent(
             lastName = state.user?.lastName
         )
         LoginSuccessMessage()
-        LogoutButton(Modifier)
+        LogoutButton(Modifier, onLogoutClick = onLogoutClick)
     }
 }
 
@@ -152,10 +153,10 @@ private fun UserField(
 
 
 @Composable
-private fun LogoutButton(modifier: Modifier = Modifier) {
+private fun LogoutButton(modifier: Modifier = Modifier, onLogoutClick: () -> Unit) {
     Button(
         modifier = modifier,
-        onClick = { /*TODO*/ }
+        onClick = onLogoutClick
     ) {
         Text(text = stringResource(R.string.common_logout))
     }
@@ -175,7 +176,8 @@ fun HomeScreenPreview() {
                     firstName = "John",
                     lastName = "Doe"
                 )
-            )
+            ),
+            onLogoutClick = {}
         )
     }
 }

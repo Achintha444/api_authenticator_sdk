@@ -18,17 +18,27 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import io.wso2.android.api_authenticator.sdk.sample.domain.repository.ProviderRepository
 import io.wso2.android.api_authenticator.sdk.sample.ui.theme.Api_authenticator_sdkTheme
 import io.wso2.android.api_authenticator.sdk.sample.util.Event
 import io.wso2.android.api_authenticator.sdk.sample.util.EventBus
 import io.wso2.android.api_authenticator.sdk.sample.util.navigation.NavDestination
 import io.wso2.android.api_authenticator.sdk.sample.util.navigation.NavGraph
 import io.wso2.android.api_authenticator.sdk.sample.util.navigation.NavigationViewModel
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var providerRepository: ProviderRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val authenticationProvider = providerRepository.getAuthenticationProvider()
+        val authenticationStateFlow = authenticationProvider.authenticationStateFlow
+
         setContent {
             Api_authenticator_sdkTheme {
                 val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -58,6 +68,10 @@ class MainActivity : ComponentActivity() {
                                 navigationController.popBackStack()
                             }
 
+                            is NavigationViewModel.Companion.NavigationEvent.NavigateToLanding -> {
+                                navigationController.navigate(NavDestination.LandingScreen)
+                            }
+
                             is NavigationViewModel.Companion.NavigationEvent.NavigateToHome -> {
                                 navigationController.navigate(NavDestination.HomeScreen)
                             }
@@ -74,6 +88,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
+
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()

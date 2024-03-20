@@ -91,15 +91,19 @@ internal object AuthnManagerImplRequestBuilder {
      * This request will be used to logout the user from the application.
      *
      * @param logoutUri Logout endpoint
+     * @param clientId Client id of the application
      * @param idToken Id token of the user
      *
      * @return [okhttp3.Request] to logout the user
      */
     internal fun logoutRequestBuilder(
         logoutUri: String,
+        clientId: String,
         idToken: String
     ): Request {
         val formBody: RequestBody = FormBody.Builder()
+            .add("response_mode", "direct")
+            .add("client_id", clientId)
             .add("id_token_hint", idToken)
             .build()
 

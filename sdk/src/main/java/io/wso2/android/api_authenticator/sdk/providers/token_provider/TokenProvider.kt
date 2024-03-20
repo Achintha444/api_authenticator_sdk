@@ -1,4 +1,4 @@
-package io.wso2.android.api_authenticator.sdk.providers.tokenProvider
+package io.wso2.android.api_authenticator.sdk.providers.token_provider
 
 import android.content.Context
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
@@ -13,7 +13,7 @@ class TokenProvider {
     /**
      * Instance of the [AuthenticationCoreDef] that will be used throughout the application
      */
-    private var authenticationCore: AuthenticationCoreDef =
+    private var authenticationCore: AuthenticationCoreDef? =
         TokenProviderContainer.getAuthenticationCoreDef()
 
     companion object {
@@ -104,7 +104,7 @@ class TokenProvider {
      */
     suspend fun performRefreshTokenGrant(context: Context) {
         var tokenState = authenticationCore?.getTokenState(context)
-        tokenState = authenticationCore.performRefreshTokenGrant(context, tokenState!!)
+        tokenState = authenticationCore?.performRefreshTokenGrant(context, tokenState!!)
         authenticationCore?.saveTokenState(context, tokenState!!)
     }
 
@@ -122,7 +122,7 @@ class TokenProvider {
         action: suspend (String?, String?) -> Unit
     ) {
         var tokenState = authenticationCore?.getTokenState(context)
-        tokenState = authenticationCore.performActionWithFreshTokens(context, tokenState!!, action)
+        tokenState = authenticationCore?.performActionWithFreshTokens(context, tokenState!!, action)
         authenticationCore?.saveTokenState(context, tokenState!!)
     }
 

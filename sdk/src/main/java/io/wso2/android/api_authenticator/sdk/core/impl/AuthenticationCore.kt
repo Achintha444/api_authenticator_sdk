@@ -12,6 +12,7 @@ import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.Authenti
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticationCoreException
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticationCoreException.Companion.AUTHORIZATION_SERVICE_NOT_INITIALIZED
+import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthnManagerException
 import io.wso2.android.api_authenticator.sdk.models.state.TokenState
 import java.io.IOException
 import java.lang.ref.WeakReference
@@ -72,11 +73,8 @@ class AuthenticationCore private constructor(
          *
          * @throws [AuthenticationCoreException] If the AuthenticationCore instance is not initialized
          */
-        fun getInstance(): AuthenticationCore {
+        fun getInstance(): AuthenticationCore? {
             return authenticationCoreInstance.get()
-                ?: throw AuthenticationCoreException(
-                    AUTHORIZATION_SERVICE_NOT_INITIALIZED
-                )
         }
     }
 
@@ -255,4 +253,16 @@ class AuthenticationCore private constructor(
      */
     override suspend fun validateAccessToken(context: Context): Boolean? =
         getTokenManagerInstance(context).validateAccessToken()
+
+    /**
+     * Logout the user from the application.
+     *
+     * @param clientId Client id of the application
+     * @param idToken Id token of the user
+     *
+     * @throws [AuthnManagerException] If the logout fails
+     * @throws [IOException] If the request fails due to a network error
+     */
+    override suspend fun logout(clientId: String, idToken: String): Unit? =
+        authnMangerInstance.logout(clientId, idToken)
 }

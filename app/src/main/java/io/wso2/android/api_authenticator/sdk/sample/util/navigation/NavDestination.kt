@@ -26,15 +26,15 @@ fun NavGraph(navController: NavHostController) {
         navController = navController,
         startDestination = NavDestination.LandingScreen
     ) {
-        composable(NavDestination.LandingScreen) {
-            LandingScreen()
+        if (navController.currentDestination?.route != NavDestination.LandingScreen) {
+            composable(NavDestination.LandingScreen) {
+                LandingScreen()
+            }
         }
         composable("${NavDestination.AuthScreen}?authenticationFlow={authenticationFlow}") {
             val authenticationFlowString: String? = it.arguments?.getString("authenticationFlow")
-            val authenticationFlow: io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow =
-                io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowNotSuccess.fromJson(URLDecoder.decode(
-                    authenticationFlowString!!, "utf-8")
-                )
+            val authenticationFlow: AuthenticationFlow = AuthenticationFlowNotSuccess.fromJson(
+                URLDecoder.decode(authenticationFlowString!!, "utf-8"))
             AuthScreen(authenticationFlow = authenticationFlow)
         }
         composable(NavDestination.HomeScreen) {

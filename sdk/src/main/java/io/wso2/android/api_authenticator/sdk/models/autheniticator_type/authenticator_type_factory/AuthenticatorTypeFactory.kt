@@ -36,8 +36,8 @@ internal object AuthenticatorTypeFactory {
         return when (authenticator) {
             BasicAuthenticatorType.AUTHENTICATOR_TYPE -> {
                 val authenticatorTypeMetaData = BasicAuthenticatorTypeMetaData(
-                    metadata!!.promptType,
-                    metadata.params
+                    metadata?.promptType,
+                    metadata?.params
                 )
                 BasicAuthenticatorType(
                     authenticatorId,
@@ -86,9 +86,9 @@ internal object AuthenticatorTypeFactory {
 
             TotpAuthenticatorType.AUTHENTICATOR_TYPE -> {
                 val authenticatorTypeMetaData = TotpAuthenticatorTypeMetaData(
-                    metadata!!.i18nKey!!,
-                    metadata!!.promptType,
-                    metadata!!.params
+                    metadata?.i18nKey!!,
+                    metadata?.promptType,
+                    metadata?.params
                 )
                 TotpAuthenticatorType(
                     authenticatorId,

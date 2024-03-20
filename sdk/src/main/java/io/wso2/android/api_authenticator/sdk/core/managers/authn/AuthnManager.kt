@@ -3,6 +3,8 @@ package io.wso2.android.api_authenticator.sdk.core.managers.authn
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
+import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthnManagerException
+import java.io.IOException
 
 /**
  * Interface which has the methods to initiate the authorization and authentication flows.
@@ -30,4 +32,15 @@ interface AuthnManager {
         authenticatorType: AuthenticatorType,
         authenticatorParameters: AuthParams,
     ): AuthenticationFlow?
+
+    /**
+     * Logout the user from the application.
+     *
+     * @param clientId Client id of the application
+     * @param idToken Id token of the user
+     *
+     * @throws [AuthnManagerException] If the logout fails
+     * @throws [IOException] If the request fails due to a network error
+     */
+    suspend fun logout(clientId: String, idToken: String): Unit?
 }

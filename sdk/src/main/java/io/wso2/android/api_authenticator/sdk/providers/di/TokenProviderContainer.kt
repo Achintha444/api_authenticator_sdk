@@ -11,12 +11,9 @@ internal object TokenProviderContainer {
     /**
      * Get the instance of the [AuthenticationCoreDef].
      *
-     * @param authenticationCoreConfig Configuration of the [AuthenticationCoreDef]
-     *
      * @return [AuthenticationCoreDef] instance
      */
-    internal fun getAuthenticationCoreDef()
-            : AuthenticationCoreDef {
+    internal fun getAuthenticationCoreDef(): AuthenticationCoreDef? {
         return AuthenticationCore.getInstance()
     }
 }

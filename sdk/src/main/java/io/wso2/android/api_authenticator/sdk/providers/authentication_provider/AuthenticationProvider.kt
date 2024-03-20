@@ -1,4 +1,4 @@
-package io.wso2.android.api_authenticator.sdk.providers.authentication
+package io.wso2.android.api_authenticator.sdk.providers.authentication_provider
 
 import android.content.Context
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
@@ -14,6 +14,7 @@ import io.wso2.android.api_authenticator.sdk.models.authentication_flow.Authenti
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowNotSuccess
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowSuccess
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorTypeException
+import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthnManagerException
 import io.wso2.android.api_authenticator.sdk.models.flow_status.FlowStatus
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
 import io.wso2.android.api_authenticator.sdk.models.state.TokenState
@@ -22,6 +23,7 @@ import io.wso2.android.api_authenticator.sdk.providers.util.AuthenticatorProvide
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import java.io.IOException
 import java.lang.ref.WeakReference
 
 /**
@@ -291,14 +293,33 @@ class AuthenticationProvider private constructor(
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    suspend fun authenticateWithTotp(
-        context: Context,
-        token: String
-    ) {
+    suspend fun authenticateWithTotp(context: Context, token: String) {
         commonAuthenticate(
             context,
             TotpAuthenticatorType.AUTHENTICATOR_TYPE,
             TotpAuthenticatorTypeAuthParams(token)
         )
+    }
+
+    /**
+     * Logout the user from the application.
+     */
+    suspend fun logout(context: Context) {
+        runCatching {
+            val clientId: String = authenticationCoreConfig.getClientId()
+            val idToken: String? = authenticationCore.getIDToken(context)
+            // Call the logout endpoint
+            authenticationCore.logout(
+                clientId,
+                idToken!!
+            )
+
+            // clear the tokens
+            authenticationCore.clearTokens(context)
+        }.onSuccess {
+            _authenticationStateFlow.tryEmit(AuthenticationState.Initial)
+        }.onFailure {
+            _authenticationStateFlow.tryEmit(AuthenticationState.Error(it))
+        }
     }
 }

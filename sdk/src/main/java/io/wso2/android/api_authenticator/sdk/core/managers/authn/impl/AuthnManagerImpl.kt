@@ -210,40 +210,43 @@ internal class AuthnManagerImpl private constructor(
     /**
      * Logout the user from the application.
      *
+     * @param clientId Client id of the application
      * @param idToken Id token of the user
      *
      * @throws [AuthnManagerException] If the logout fails
      * @throws [IOException] If the request fails due to a network error
      */
-    suspend fun logout(
-        idToken: String
-    ): Unit? = withContext(Dispatchers.IO) {
-        suspendCoroutine { continuation ->
-            val request: Request = authenticationCoreRequestBuilder.logoutRequestBuilder(
-                authenticationCoreConfig.getLogoutUrl(),
-                idToken
-            )
+    override suspend fun logout(clientId: String, idToken: String): Unit? =
+        withContext(Dispatchers.IO) {
+            suspendCoroutine { continuation ->
+                val request: Request = authenticationCoreRequestBuilder.logoutRequestBuilder(
+                    authenticationCoreConfig.getLogoutUrl(),
+                    clientId,
+                    idToken
+                )
 
-            client.newCall(request).enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    continuation.resumeWithException(e)
-                }
-
-                override fun onResponse(call: Call, response: Response) {
-                    try {
-                        if (response.code != 200) {
-                            // Throw an [AuthnManagerException] if the request does not return 200 response.message
-                            continuation.resumeWithException(
-                                AuthnManagerException(
-                                    response.message
-                                )
-                            )
-                        }
-                    } catch (e: Exception) {
+                client.newCall(request).enqueue(object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {
                         continuation.resumeWithException(e)
                     }
-                }
-            })
+
+                    override fun onResponse(call: Call, response: Response) {
+                        try {
+                            if (response.code != 200) {
+                                // Throw an [AuthnManagerException] if the request does not return 200 response.message
+                                continuation.resumeWithException(
+                                    AuthnManagerException(
+                                        response.message
+                                    )
+                                )
+                            } else {
+                                continuation.resume(Unit)
+                            }
+                        } catch (e: Exception) {
+                            continuation.resumeWithException(e)
+                        }
+                    }
+                })
+            }
         }
-    }
 }
