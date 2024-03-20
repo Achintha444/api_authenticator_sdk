@@ -36,13 +36,6 @@ class AuthScreenViewModel @Inject constructor(
     val state = _state
 
     private val authenticationProvider = providerRepository.getAuthenticationProvider()
-    private val authenticationStateFlow = authenticationProvider.authenticationStateFlow
-
-    init {
-        viewModelScope.launch {
-            handleAuthenticationState()
-        }
-    }
 
     fun setAuthenticationFlow(authenticationFlow: AuthenticationFlow) {
         _state.update {
@@ -95,6 +88,11 @@ class AuthScreenViewModel @Inject constructor(
         password: String
     ) {
         viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    isLoading = true
+                )
+            }
             authenticationProvider.authenticateWithUsernameAndPassword(
                 applicationContext,
                 username,
@@ -107,42 +105,15 @@ class AuthScreenViewModel @Inject constructor(
         token: String
     ) {
         viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    isLoading = true
+                )
+            }
             authenticationProvider.authenticateWithTotp(
                 applicationContext,
                 token
             )
-        }
-    }
-
-    private suspend fun handleAuthenticationState() {
-        authenticationStateFlow.collect {
-            when (it) {
-                is AuthenticationState.Unauthenticated -> {
-                    setAuthenticationFlow(it.authenticationFlow!!)
-                }
-
-                is AuthenticationState.Error -> {
-                    _state.update { landingScreenState ->
-                        landingScreenState.copy(
-                            error = it.toString(),
-                            isLoading = false
-                        )
-                    }
-                    sendEvent(Event.Toast(it.toString()))
-                }
-
-                is AuthenticationState.Authenticated -> {
-                    NavigationViewModel.navigationEvents.emit(
-                        NavigationViewModel.Companion.NavigationEvent.NavigateToHome
-                    )
-                }
-
-                else -> {
-                    _state.update { landingScreenState ->
-                        landingScreenState.copy(isLoading = true)
-                    }
-                }
-            }
         }
     }
 }

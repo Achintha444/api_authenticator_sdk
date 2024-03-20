@@ -65,8 +65,8 @@ internal object AuthnManagerImplRequestBuilder {
     internal fun authenticateRequestBuilder(
         authnUri: String,
         flowId: String,
-        authenticatorType: io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType,
-        authenticatorAuthParams: io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams,
+        authenticatorType: AuthenticatorType,
+        authenticatorAuthParams: AuthParams,
     ): Request {
         val authBody = LinkedHashMap<String, Any>()
         authBody["flowId"] = flowId
@@ -87,31 +87,26 @@ internal object AuthnManagerImplRequestBuilder {
     }
 
     /**
-     * Build the request to get details of the authenticator type.
+     * Build the request to logout the user.
+     * This request will be used to logout the user from the application.
      *
-     * @param authnUri Authentication next step endpoint
-     * @param flowId Flow id of the authentication flow
-     * @param authenticatorTypeId Authenticator type id of the authenticator
+     * @param logoutUri Logout endpoint
+     * @param idToken Id token of the user
      *
-     * @return [okhttp3.Request] to get details of the authenticator type
+     * @return [okhttp3.Request] to logout the user
      */
-    internal fun getAuthenticatorTypeRequestBuilder(
-        authnUri: String,
-        flowId: String,
-        authenticatorTypeId: String
+    internal fun logoutRequestBuilder(
+        logoutUri: String,
+        idToken: String
     ): Request {
-        val authBody = LinkedHashMap<String, Any>()
-        authBody["flowId"] = flowId
+        val formBody: RequestBody = FormBody.Builder()
+            .add("id_token_hint", idToken)
+            .build()
 
-        val selectedAuthenticator = LinkedHashMap<String, String>()
-        selectedAuthenticator["authenticatorId"] = authenticatorTypeId
+        val requestBuilder: Request.Builder = Request.Builder().url(logoutUri)
+        requestBuilder.addHeader("Accept", "application/json")
+        requestBuilder.addHeader("Content-Type", "application/x-www-form-urlencoded")
 
-        authBody["selectedAuthenticator"] = selectedAuthenticator;
-
-        val formBody: RequestBody =  JsonUtil.getJsonObject(authBody).toString()
-            .toRequestBody("application/json".toMediaTypeOrNull())
-
-        val requestBuilder: Request.Builder = Request.Builder().url(authnUri)
         return requestBuilder.post(formBody).build()
     }
 }

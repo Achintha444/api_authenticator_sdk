@@ -34,8 +34,6 @@ class LandingScreenViewModel @Inject constructor(
     private val authenticationProvider = providerRepository.getAuthenticationProvider()
     private val authenticationStateFlow = authenticationProvider.authenticationStateFlow
 
-    private var authStateJob: Job? = null
-
     init {
         handleAuthenticationState()
         isLoggedInStateFlow()
@@ -81,7 +79,7 @@ class LandingScreenViewModel @Inject constructor(
     }
 
     private fun handleAuthenticationState() {
-        authStateJob = viewModelScope.launch {
+        viewModelScope.launch {
             authenticationStateFlow.collect {
                 when (it) {
                     is AuthenticationState.Initial -> {
@@ -99,7 +97,6 @@ class LandingScreenViewModel @Inject constructor(
                                 URLEncoder.encode(it.authenticationFlow!!.toJsonString(), "utf-8")
                             )
                         )
-                        onCleared()
                     }
 
                     is AuthenticationState.Error -> {
@@ -116,7 +113,6 @@ class LandingScreenViewModel @Inject constructor(
                         NavigationViewModel.navigationEvents.emit(
                             NavigationViewModel.Companion.NavigationEvent.NavigateToHome
                         )
-                        onCleared()
                     }
 
                     else -> {
@@ -127,10 +123,5 @@ class LandingScreenViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        authStateJob?.cancel()
     }
 }

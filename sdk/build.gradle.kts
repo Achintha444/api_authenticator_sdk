@@ -12,10 +12,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-
-        manifestPlaceholders.putIfAbsent(
-            "appAuthRedirectScheme", "https://example-app.com/redirect"
-        )
     }
 
     buildTypes {

@@ -13,7 +13,6 @@ import io.wso2.android.api_authenticator.sdk.util.JsonUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okhttp3.Call
 import okhttp3.Callback
@@ -130,7 +129,7 @@ internal class AuthnManagerImpl private constructor(
                             )
                         }
                     } catch (e: Exception) {
-                        continuation.resumeWithException(AuthnManagerException(e.message))
+                        continuation.resumeWithException(e)
                     }
                 }
             })
@@ -201,7 +200,47 @@ internal class AuthnManagerImpl private constructor(
                             )
                         }
                     } catch (e: Exception) {
-                        continuation.resumeWithException(AuthnManagerException(e.message))
+                        continuation.resumeWithException(e)
+                    }
+                }
+            })
+        }
+    }
+
+    /**
+     * Logout the user from the application.
+     *
+     * @param idToken Id token of the user
+     *
+     * @throws [AuthnManagerException] If the logout fails
+     * @throws [IOException] If the request fails due to a network error
+     */
+    suspend fun logout(
+        idToken: String
+    ): Unit? = withContext(Dispatchers.IO) {
+        suspendCoroutine { continuation ->
+            val request: Request = authenticationCoreRequestBuilder.logoutRequestBuilder(
+                authenticationCoreConfig.getLogoutUrl(),
+                idToken
+            )
+
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    continuation.resumeWithException(e)
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    try {
+                        if (response.code != 200) {
+                            // Throw an [AuthnManagerException] if the request does not return 200 response.message
+                            continuation.resumeWithException(
+                                AuthnManagerException(
+                                    response.message
+                                )
+                            )
+                        }
+                    } catch (e: Exception) {
+                        continuation.resumeWithException(e)
                     }
                 }
             })

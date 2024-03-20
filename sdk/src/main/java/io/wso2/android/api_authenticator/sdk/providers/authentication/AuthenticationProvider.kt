@@ -104,7 +104,7 @@ class AuthenticationProvider private constructor(
         _authenticationStateFlow.tryEmit(AuthenticationState.Loading)
 
         // TODO: Remove this block
-        //authenticationCore.clearTokens(context)
+        authenticationCore.clearTokens(context)
 
         runCatching {
             authenticationCore.validateAccessToken(context)
@@ -129,9 +129,6 @@ class AuthenticationProvider private constructor(
      */
     suspend fun initializeAuthentication(context: Context) {
         _authenticationStateFlow.tryEmit(AuthenticationState.Loading)
-
-//        // TODO: Remove this block
-//        authenticationCore.clearTokens(context)
 
         runCatching {
             authenticationCore.authorize()

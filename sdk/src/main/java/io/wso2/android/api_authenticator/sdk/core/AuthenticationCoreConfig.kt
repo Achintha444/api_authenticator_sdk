@@ -50,6 +50,15 @@ class AuthenticationCoreConfig(
     }
 
     /**
+     * @example https://localhost:9443/oidc/logout
+     *
+     * @return Logout url of the WSO2 identity server.
+     */
+    fun getLogoutUrl(): String {
+        return "$baseUrl/oidc/logout"
+    }
+
+    /**
      * @example https://example-app.com/redirect
      *
      * @return Redirect uri of the application.
