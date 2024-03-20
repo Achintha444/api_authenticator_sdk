@@ -98,6 +98,11 @@ class AuthScreenViewModel @Inject constructor(
                 username,
                 password
             )
+            _state.update {
+                it.copy(
+                    isLoading = false
+                )
+            }
         }
     }
 
@@ -114,6 +119,11 @@ class AuthScreenViewModel @Inject constructor(
                 applicationContext,
                 token
             )
+            _state.update {
+                it.copy(
+                    isLoading = false
+                )
+            }
         }
     }
 }

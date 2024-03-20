@@ -17,7 +17,7 @@ interface AuthenticationCoreDef {
      * This method will call the authorization endpoint and get the authenticators available for the
      * first step in the authentication flow.
      */
-    suspend fun authorize(): io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow?
+    suspend fun authorize(): AuthenticationFlow?
 
     /**
      * Send the authentication parameters to the authentication endpoint and get the next step of the
