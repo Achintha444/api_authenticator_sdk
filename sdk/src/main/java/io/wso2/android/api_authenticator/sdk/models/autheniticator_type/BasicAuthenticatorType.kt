@@ -5,6 +5,7 @@ import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.meta_dat
 /**
  * Basic authenticator type
  */
+@Deprecated("This class is deprecated. Directly use [AuthenticatorType]")
 data class BasicAuthenticatorType(
     /**
      * Authenticator id

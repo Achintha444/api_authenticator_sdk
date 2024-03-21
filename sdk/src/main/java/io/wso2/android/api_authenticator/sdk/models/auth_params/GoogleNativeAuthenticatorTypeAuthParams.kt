@@ -1,9 +1,9 @@
 package io.wso2.android.api_authenticator.sdk.models.auth_params
 
 /**
- * Authenticator parameters class - For Google Authenticator
+ * Authenticator parameters class - For Google Native Authenticator
  */
-data class GoogleAuthenticatorTypeAuthParams(
+data class GoogleNativeAuthenticatorTypeAuthParams(
     /**
      * access token retrieved from the Google authenticator
      */

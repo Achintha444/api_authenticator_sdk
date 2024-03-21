@@ -2,6 +2,7 @@ package io.wso2.android.api_authenticator.sdk.models.autheniticator_type
 
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.meta_data.GoogleAuthenticatorTypeMetaData
 
+@Deprecated("This class is deprecated. Directly use [AuthenticatorType]")
 data class GoogleAuthenticatorType(
     /**
      * Authenticator id

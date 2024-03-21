@@ -15,11 +15,11 @@ abstract class AuthParams(
      */
     open val password: String? = null,
     /**
-     * access token retrieved from the Google authenticator - For Google Authenticator
+     * access token retrieved from the Google authenticator - For Google Native Authenticator
      */
     open val accessToken: String? = null,
     /**
-     * id token retrieved from the Google authenticator - For Google Authenticator
+     * id token retrieved from the Google authenticator - For Google Native Authenticator
      */
     open val idToken: String? = null,
     /**

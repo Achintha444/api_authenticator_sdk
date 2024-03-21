@@ -1,5 +1,6 @@
 package io.wso2.android.api_authenticator.sdk.models.autheniticator_type.meta_data
 
+@Deprecated("This class is deprecated. Directly use [AuthenticatorTypeMetaData]")
 data class GoogleAuthenticatorTypeMetaData(
     /**
      * I18n key of the param
