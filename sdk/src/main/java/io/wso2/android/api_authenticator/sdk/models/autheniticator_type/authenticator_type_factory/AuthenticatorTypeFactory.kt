@@ -28,12 +28,12 @@ internal object AuthenticatorTypeFactory {
      */
     internal fun getAuthenticatorType(
         authenticatorId: String,
-        authenticator: String,
-        idp: String,
+        authenticator: String?,
+        idp: String?,
         metadata: AuthenticatorTypeMetaData?,
         requiredParams: List<String>?
     ): AuthenticatorType {
-        return when (authenticator) {
+        /*return when (authenticator) {
             BasicAuthenticatorType.AUTHENTICATOR_TYPE -> {
                 val authenticatorTypeMetaData = BasicAuthenticatorTypeMetaData(
                     metadata?.promptType,
@@ -42,7 +42,7 @@ internal object AuthenticatorTypeFactory {
                 BasicAuthenticatorType(
                     authenticatorId,
                     authenticator,
-                    idp,
+                    idp!!,
                     authenticatorTypeMetaData,
                     requiredParams
                 )
@@ -54,14 +54,14 @@ internal object AuthenticatorTypeFactory {
                     metadata?.promptType,
                     GoogleAuthenticatorTypeMetaData.GoogleAdditionalData(
                         metadata?.additionalData?.nonce!!,
-                        metadata?.additionalData?.clientId!!,
-                        metadata?.additionalData?.scope!!
+                        metadata.additionalData?.clientId!!,
+                        metadata.additionalData?.scope!!
                     )
                 )
                 GoogleAuthenticatorType(
                     authenticatorId,
                     authenticator,
-                    idp,
+                    idp!!,
                     authenticatorTypeMetaData,
                     requiredParams
                 )
@@ -78,7 +78,7 @@ internal object AuthenticatorTypeFactory {
                 PasskeyAuthenticatorType(
                     authenticatorId,
                     authenticator,
-                    idp,
+                    idp!!,
                     authenticatorTypeMetaData,
                     requiredParams
                 )
@@ -87,13 +87,13 @@ internal object AuthenticatorTypeFactory {
             TotpAuthenticatorType.AUTHENTICATOR_TYPE -> {
                 val authenticatorTypeMetaData = TotpAuthenticatorTypeMetaData(
                     metadata?.i18nKey!!,
-                    metadata?.promptType,
-                    metadata?.params
+                    metadata.promptType,
+                    metadata.params
                 )
                 TotpAuthenticatorType(
                     authenticatorId,
                     authenticator,
-                    idp,
+                    idp!!,
                     authenticatorTypeMetaData,
                     requiredParams
                 )
@@ -102,6 +102,7 @@ internal object AuthenticatorTypeFactory {
             else -> {
                 AuthenticatorType(authenticatorId, authenticator, idp, metadata, requiredParams)
             }
-        }
+        }*/
+        return AuthenticatorType(authenticatorId, authenticator, idp, metadata, requiredParams)
     }
 }

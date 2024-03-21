@@ -10,16 +10,9 @@ import io.wso2.android.api_authenticator.sdk.models.auth_params.TotpAuthenticato
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.BasicAuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.TotpAuthenticatorType
-import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
-import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowNotSuccess
-import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowSuccess
-import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorTypeException
-import io.wso2.android.api_authenticator.sdk.models.flow_status.FlowStatus
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
-import io.wso2.android.api_authenticator.sdk.models.state.TokenState
 import io.wso2.android.api_authenticator.sdk.providers.di.AuthenticationProviderContainer
 import io.wso2.android.api_authenticator.sdk.providers.util.AuthenticatorProviderUtil
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import java.lang.ref.WeakReference
 
@@ -149,44 +142,14 @@ class AuthenticationProvider private constructor(
     }
 
     /**
-     * Handle the state when the authenticator type is not found
-     *
-     * @param authenticators List of authenticators
-     * @param authenticatorTypeString Authenticator type string
-     *
-     * @return Boolean value whether the authenticator type is not found
-     * `true` if the authenticator type is not found, `false` otherwise
-     */
-    private fun handleStateWhenAuthenticatorTypeIsNotFound(
-        authenticators: ArrayList<AuthenticatorType>,
-        authenticatorTypeString: String
-    ): AuthenticatorType? {
-        val authenticatorType: AuthenticatorType? =
-            AuthenticatorProviderUtil.getAuthenticatorTypeFromAuthenticatorTypeList(
-                authenticators,
-                authenticatorTypeString
-            )
-
-        if (authenticatorType == null) {
-            authenticationStateHandler.emitAuthenticationState(
-                AuthenticationState.Error(
-                    AuthenticatorTypeException(
-                        AuthenticatorTypeException.AUTHENTICATOR_NOT_FOUND_OR_MORE_THAN_ONE,
-                        authenticatorTypeString
-                    )
-                )
-            )
-            return null
-        } else {
-            return authenticatorType
-        }
-    }
-
-    /**
      * Common function in all authenticate methods
      *
-     * @param authenticatorTypeString Authenticator type string
-     * @param authParams [AuthParams] object
+     * @param context The context of the application
+     * @param authenticatorTypeString The authenticator type string
+     * @param authenticatorIdString The authenticator id string
+     * @param authParams The authentication parameters of the selected authenticator
+     * @param authParamsAsMap The authentication parameters of the selected authenticator as a LinkedHashMap<String, String>
+     * with the key as the parameter name and the value as the parameter value
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
      * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
@@ -195,30 +158,52 @@ class AuthenticationProvider private constructor(
      */
     private suspend fun commonAuthenticate(
         context: Context,
-        authenticatorTypeString: String,
-        authParams: AuthParams
+        authenticatorTypeString: String? = null,
+        authenticatorIdString: String? = null,
+        authParams: AuthParams? = null,
+        authParamsAsMap: LinkedHashMap<String, String>? = null
     ) {
         authenticationStateHandler.emitAuthenticationState(AuthenticationState.Loading)
 
-        val authenticatorType: AuthenticatorType? =
-            handleStateWhenAuthenticatorTypeIsNotFound(
-                authenticatorsInThisStep!!,
-                authenticatorTypeString
-            )
+        // setting up the authenticator type
+        var authenticatorType: AuthenticatorType? = null
+
+        if (authenticatorIdString != null) {
+            authenticatorType =
+                AuthenticatorProviderUtil.getAuthenticatorTypeFromAuthenticatorTypeList(
+                    authenticatorsInThisStep!!,
+                    authenticatorIdString
+                )
+        } else if (authenticatorTypeString != null) {
+            authenticatorType =
+                AuthenticatorProviderUtil.getAuthenticatorTypeFromAuthenticatorTypeList(
+                    authenticatorsInThisStep!!,
+                    authenticatorTypeString
+                )
+        }
 
         if (authenticatorType != null) {
+            var authParamsMap: LinkedHashMap<String, String>? = authParamsAsMap
+
+            if (authParams != null) {
+                authParamsMap = authParams.getParameterBodyAuthenticator(
+                    authenticatorType.requiredParams!!
+                )
+            }
+
             runCatching {
                 authenticationCore.authenticate(
                     authenticatorType,
-                    authParams
+                    authParamsMap!!
                 )
             }.onSuccess {
-                authenticatorsInThisStep = authenticationStateHandler.handleAuthenticationFlowResult(
-                    it!!,
-                    context,
-                    authenticationCore::exchangeAuthorizationCode,
-                    authenticationCore::saveTokenState
-                )
+                authenticatorsInThisStep =
+                    authenticationStateHandler.handleAuthenticationFlowResult(
+                        it!!,
+                        context,
+                        authenticationCore::exchangeAuthorizationCode,
+                        authenticationCore::saveTokenState
+                    )
             }.onFailure {
                 authenticationStateHandler.emitAuthenticationState(AuthenticationState.Error(it))
             }
@@ -228,6 +213,7 @@ class AuthenticationProvider private constructor(
     /**
      * Authenticate the user with the username and password.
      *
+     * @param context The context of the application
      * @param username The username of the user
      * @param password The password of the user
      *
@@ -243,14 +229,15 @@ class AuthenticationProvider private constructor(
     ) {
         commonAuthenticate(
             context,
-            BasicAuthenticatorType.AUTHENTICATOR_TYPE,
-            BasicAuthenticatorAuthParams(username, password)
+            authenticatorTypeString = BasicAuthenticatorType.AUTHENTICATOR_TYPE,
+            authParams = BasicAuthenticatorAuthParams(username, password)
         )
     }
 
     /**
      * Authenticate the user with the TOTP token.
      *
+     * @param context The context of the application
      * @param token The TOTP token of the user
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
@@ -261,13 +248,45 @@ class AuthenticationProvider private constructor(
     suspend fun authenticateWithTotp(context: Context, token: String) {
         commonAuthenticate(
             context,
-            TotpAuthenticatorType.AUTHENTICATOR_TYPE,
-            TotpAuthenticatorTypeAuthParams(token)
+            authenticatorTypeString = TotpAuthenticatorType.AUTHENTICATOR_TYPE,
+            authParams = TotpAuthenticatorTypeAuthParams(token)
+        )
+    }
+
+    /**
+     * Authenticate the user with the selected authenticator.
+     *
+     * @param context The context of the application
+     * @param authenticatorId The authenticator id of the selected authenticator
+     * @param authParams The authentication parameters of the selected authenticator
+     * as a LinkedHashMap<String, String> with the key as the parameter name and the value as the
+     * parameter value
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     */
+    suspend fun authenticateWithAnyAuthenticator(
+        context: Context,
+        authenticatorId: String,
+        authParams: LinkedHashMap<String, String>
+    ) {
+        commonAuthenticate(
+            context,
+            authenticatorIdString = authenticatorId,
+            authParamsAsMap = authParams
         )
     }
 
     /**
      * Logout the user from the application.
+     *
+     * @param context The context of the application
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     * emit: [AuthenticationState.Initial] - The user is not authenticated to access the application
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     suspend fun logout(context: Context) {
         authenticationStateHandler.emitAuthenticationState(AuthenticationState.Loading)

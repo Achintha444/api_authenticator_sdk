@@ -59,6 +59,7 @@ internal object AuthnManagerImplRequestBuilder {
      * @param flowId Flow id of the authentication flow
      * @param authenticatorType Authenticator type of the selected authenticator
      * @param authenticatorAuthParams Authenticator parameters of the selected authenticator
+     * as a [LinkedHashMap]
      *
      * @return [okhttp3.Request] to get the next step of the authentication flow
      */
@@ -66,16 +67,14 @@ internal object AuthnManagerImplRequestBuilder {
         authnUri: String,
         flowId: String,
         authenticatorType: AuthenticatorType,
-        authenticatorAuthParams: AuthParams,
+        authenticatorAuthParams: LinkedHashMap<String, String>,
     ): Request {
         val authBody = LinkedHashMap<String, Any>()
         authBody["flowId"] = flowId
 
         val selectedAuthenticator = LinkedHashMap<String, Any>()
         selectedAuthenticator["authenticatorId"] = authenticatorType.authenticatorId
-        selectedAuthenticator["params"] = authenticatorAuthParams.getParameterBodyAuthenticator(
-            authenticatorType.requiredParams!!
-        )
+        selectedAuthenticator["params"] = authenticatorAuthParams
 
         authBody["selectedAuthenticator"] = selectedAuthenticator
 

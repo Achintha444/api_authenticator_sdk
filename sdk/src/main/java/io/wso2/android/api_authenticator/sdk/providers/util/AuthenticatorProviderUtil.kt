@@ -40,5 +40,35 @@ object AuthenticatorProviderUtil {
         }
     }
 
+    /**
+     * Get the authenticator type from the authenticator type list
+     *
+     * @param authenticators List of authenticators
+     * @param authenticatorIdString Authenticator id string
+     *
+     * @return [AuthenticatorType] object, `null` if the authenticator type is not found
+     * or if there are duplicates authenticators of the given authenticator type in the given step
+     */
+    fun getAuthenticatorTypeFromAuthenticatorTypeListOnAuthenticatorId(
+        authenticators: ArrayList<AuthenticatorType>,
+        authenticatorIdString: String
+    ): AuthenticatorType? {
+        val authenticatorType: AuthenticatorType =
+            AuthenticatorTypeUtil.getAuthenticatorTypeFromAuthenticatorTypeListOnAuthenticatorId(
+                authenticators,
+                authenticatorIdString
+            ) ?: return null
 
+        val hasDuplicates: Boolean =
+            AuthenticatorTypeUtil.hasDuplicatesAuthenticatorsInGivenStepOnAuthenticatorId(
+                authenticators,
+                authenticatorIdString
+            )
+
+        if (hasDuplicates) {
+            return null
+        } else {
+            return authenticatorType
+        }
+    }
 }

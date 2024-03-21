@@ -105,7 +105,8 @@ class AuthenticationCore private constructor(
      * the success response of the authentication flow if the authentication is successful.
      *
      * @param authenticatorType Authenticator type of the selected authenticator
-     * @param authenticatorParameters Authenticator parameters of the selected authenticator
+     * @param authenticatorParameters Authenticator parameters of the selected authenticator as a
+     * [LinkedHashMap] with the key as the parameter name and the value as the parameter value
      *
      * @throws [AuthenticationCoreException] If the authentication fails
      * @throws [IOException] If the request fails due to a network error
@@ -114,7 +115,7 @@ class AuthenticationCore private constructor(
      */
     override suspend fun authenticate(
         authenticatorType: AuthenticatorType,
-        authenticatorParameters: AuthParams,
+        authenticatorParameters: LinkedHashMap<String, String>
     ): AuthenticationFlow? = authnMangerInstance.authenticate(
         authenticatorType,
         authenticatorParameters

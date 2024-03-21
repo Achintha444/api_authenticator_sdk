@@ -26,12 +26,14 @@ interface AuthenticationCoreDef {
      *
      * @param authenticatorType Authenticator type of the selected authenticator
      * @param authenticatorParameters Authenticator parameters of the selected authenticator
+     * as a LinkedHashMap<String, String> with the key as the parameter name and the value as the
+     * parameter value
      *
      * @return [AuthenticationFlow] with the next step of the authentication flow
      */
     suspend fun authenticate(
         authenticatorType: AuthenticatorType,
-        authenticatorParameters: AuthParams,
+        authenticatorParameters: LinkedHashMap<String, String>
     ): AuthenticationFlow?
 
     /**

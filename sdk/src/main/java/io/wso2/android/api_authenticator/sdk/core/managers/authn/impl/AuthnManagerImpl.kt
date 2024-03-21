@@ -143,6 +143,8 @@ internal class AuthnManagerImpl private constructor(
      *
      * @param authenticatorType Authenticator type of the selected authenticator
      * @param authenticatorParameters Authenticator parameters of the selected authenticator
+     * as a LinkedHashMap<String, String> with the key as the parameter name and the value as the
+     * parameter value
      *
      * @throws [AuthnManagerException] If the authentication fails
      * @throws [AuthenticatorTypeException] If the authenticator type is not valid
@@ -155,7 +157,7 @@ internal class AuthnManagerImpl private constructor(
      */
     override suspend fun authenticate(
         authenticatorType: AuthenticatorType,
-        authenticatorParameters: AuthParams
+        authenticatorParameters: LinkedHashMap<String, String>
     ): AuthenticationFlow? = withContext(Dispatchers.IO) {
         suspendCoroutine { continuation ->
             val request: Request = authenticationCoreRequestBuilder.authenticateRequestBuilder(

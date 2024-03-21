@@ -9,7 +9,7 @@ package io.wso2.android.api_authenticator.sdk.models.exceptions
  */
 internal class AuthenticatorTypeException(
     override val message: String?,
-    private val authenticator: String,
+    private val authenticator: String?,
     private val code: String? = null
 ): Exception(message) {
     companion object {
