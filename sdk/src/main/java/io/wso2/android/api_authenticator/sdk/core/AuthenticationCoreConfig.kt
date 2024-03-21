@@ -1,5 +1,6 @@
 package io.wso2.android.api_authenticator.sdk.core
 
+import io.wso2.android.api_authenticator.sdk.models.prompt_type.PromptTypes
 import okhttp3.OkHttpClient
 
 /**

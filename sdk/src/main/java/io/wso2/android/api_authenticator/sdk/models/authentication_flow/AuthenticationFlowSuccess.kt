@@ -1,5 +1,6 @@
 package io.wso2.android.api_authenticator.sdk.models.authentication_flow
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.JsonNode
 import io.wso2.android.api_authenticator.sdk.util.JsonUtil
@@ -10,6 +11,7 @@ import io.wso2.android.api_authenticator.sdk.util.JsonUtil
  * @property flowStatus Status of the authentication flow
  * @property authData Authentication data of the authentication flow
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class AuthenticationFlowSuccess(
     override val flowStatus: String,
     val authData: AuthData,
@@ -20,6 +22,7 @@ data class AuthenticationFlowSuccess(
      * @property code Code of the authentication flow
      * @property session_state Session state of the authentication flow
      */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class AuthData(
         val code: String,
         val session_state: String

@@ -15,7 +15,7 @@ interface AuthenticationRepository {
 
     suspend fun authenticate(
         authenticatorType: AuthenticatorType,
-        authenticatorParameters: AuthParams,
+        authenticatorParameters: LinkedHashMap<String, String>
     ): Either<AuthenticationError, AuthenticationFlow>
 
     suspend fun getAccessToken(

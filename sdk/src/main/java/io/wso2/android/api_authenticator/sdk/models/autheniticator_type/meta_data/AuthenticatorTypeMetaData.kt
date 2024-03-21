@@ -1,10 +1,12 @@
 package io.wso2.android.api_authenticator.sdk.models.autheniticator_type.meta_data
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import io.wso2.android.api_authenticator.sdk.util.JsonUtil
 
 /**
  * Meta data related to the authenticator type
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 open class AuthenticatorTypeMetaData(
     /**
      * I18n key related to the authenticator type
@@ -26,6 +28,7 @@ open class AuthenticatorTypeMetaData(
     /**
      * Parameters related to the authenticator type
      */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     open class AuthenticatorTypeParam(
         open val param: String? = null,
         open val type: String? = null,
@@ -38,11 +41,14 @@ open class AuthenticatorTypeMetaData(
     /**
      * Additional data related to the authenticator type
      */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     open class AuthenticatorTypeAdditionalData(
         open val nonce: String? = null,
         open val clientId: String? = null,
         open val scope: String? = null,
         open val challengeData: String? = null,
+        open val state: String? = null,
+        open val redirectUrl: String? = null
     )
 
     fun toJsonString(): String {

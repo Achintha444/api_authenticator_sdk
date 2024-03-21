@@ -1,11 +1,13 @@
 package io.wso2.android.api_authenticator.sdk.models.autheniticator_type
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.meta_data.AuthenticatorTypeMetaData
 import io.wso2.android.api_authenticator.sdk.util.JsonUtil
 
 /**
  * AuthenticatorType model class
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 open class AuthenticatorType(
     /**
      * Id of the authenticator type

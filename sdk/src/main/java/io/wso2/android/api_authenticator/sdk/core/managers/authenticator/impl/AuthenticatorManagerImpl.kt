@@ -3,6 +3,7 @@ package io.wso2.android.api_authenticator.sdk.core.managers.authenticator.impl
 import io.wso2.android.api_authenticator.sdk.core.managers.app_auth.impl.AppAuthManagerImpl
 import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.AuthenticatorManager
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorTypes
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.BasicAuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.authenticator_type_factory.AuthenticatorTypeFactory
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowNotSuccess
@@ -92,7 +93,7 @@ internal class AuthenticatorManagerImpl private constructor(
         authenticatorType: AuthenticatorType
     ): AuthenticatorType = withContext(Dispatchers.IO) {
         suspendCoroutine { continuation ->
-            if (authenticatorType.authenticatorId == BasicAuthenticatorType.AUTHENTICATOR_TYPE) {
+            if (authenticatorType.authenticator == AuthenticatorTypes.BASIC_AUTHENTICATOR.authenticatorType) {
                 val detailedAuthenticatorType: AuthenticatorType =
                     authenticatorTypeFactory.getAuthenticatorType(
                         authenticatorType.authenticatorId,

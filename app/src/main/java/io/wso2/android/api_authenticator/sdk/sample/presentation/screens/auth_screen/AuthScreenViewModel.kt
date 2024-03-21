@@ -48,7 +48,7 @@ class AuthScreenViewModel @Inject constructor(
 
     fun authenticate(
         authenticatorType: AuthenticatorType,
-        authenticatorParameters: AuthParams
+            authenticatorParameters: LinkedHashMap<String, String>
     ) {
         viewModelScope.launch {
             _state.update {
