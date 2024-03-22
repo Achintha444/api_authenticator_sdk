@@ -41,23 +41,23 @@ class HomeScreenViewModel @Inject constructor(
             )
         }
         viewModelScope.launch {
-            try {
+            runCatching {
                 tokenProvider.performActionWithFreshTokens(applicationContext) { accessToken, _ ->
                     val user = userRepository.getUserDetails(accessToken!!)
                     _state.update {
                         it.copy(user = user)
                     }
                 }
-
-            } catch (e: Exception) {
+            }.onSuccess {
                 _state.update {
                     it.copy(
-                        error = e.message!!
+                        isLoading = false
                     )
                 }
-            } finally {
+            }.onFailure { e ->
                 _state.update {
                     it.copy(
+                        error = e.message!!,
                         isLoading = false
                     )
                 }

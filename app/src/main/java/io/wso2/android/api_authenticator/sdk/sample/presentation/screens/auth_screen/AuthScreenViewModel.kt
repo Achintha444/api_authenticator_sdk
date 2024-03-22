@@ -5,12 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowNotSuccess
 import io.wso2.android.api_authenticator.sdk.models.flow_status.FlowStatus
-import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
 import io.wso2.android.api_authenticator.sdk.sample.domain.repository.AuthenticationRepository
 import io.wso2.android.api_authenticator.sdk.sample.domain.repository.ProviderRepository
 import io.wso2.android.api_authenticator.sdk.sample.presentation.util.sendEvent
@@ -48,7 +46,7 @@ class AuthScreenViewModel @Inject constructor(
 
     fun authenticate(
         authenticatorType: AuthenticatorType,
-            authenticatorParameters: LinkedHashMap<String, String>
+        authenticatorParameters: LinkedHashMap<String, String>
     ) {
         viewModelScope.launch {
             _state.update {
@@ -118,6 +116,27 @@ class AuthScreenViewModel @Inject constructor(
             authenticationProvider.authenticateWithTotp(
                 applicationContext,
                 token
+            )
+            _state.update {
+                it.copy(
+                    isLoading = false
+                )
+            }
+        }
+    }
+
+    fun authenticateWithRedirectUri(
+        authenticatorId: String,
+    ) {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    isLoading = true
+                )
+            }
+            authenticationProvider.authenticateWithRedirectUri(
+                applicationContext,
+                authenticatorId
             )
             _state.update {
                 it.copy(

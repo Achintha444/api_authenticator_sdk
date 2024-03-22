@@ -3,7 +3,7 @@ package io.wso2.android.api_authenticator.sdk.models.exceptions
 /**
  * Exception to be thrown to the exception related to [FlowManager]
  */
-internal class FlowManagerException (
+class FlowManagerException (
     override val message: String?
 ): Exception(message) {
     companion object {

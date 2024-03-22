@@ -7,7 +7,7 @@ package io.wso2.android.api_authenticator.sdk.models.exceptions
  * @property authenticator Authenticator type
  * @property code Code of the exception
  */
-internal class AuthenticatorTypeException(
+class AuthenticatorTypeException(
     override val message: String?,
     private val authenticator: String?,
     private val code: String? = null

@@ -5,7 +5,7 @@ package io.wso2.android.api_authenticator.sdk.models.exceptions
  *
  * @property message Message related to the exception
  */
-internal class AuthenticationCoreException(
+class AuthenticationCoreException(
     override val message: String?
 ): Exception(message) {
     companion object {

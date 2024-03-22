@@ -1,6 +1,9 @@
 package io.wso2.android.api_authenticator.sdk.providers.authentication_provider
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import androidx.activity.ComponentActivity
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.AuthenticatorManager
@@ -8,11 +11,13 @@ import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.auth_params.BasicAuthenticatorAuthParams
 import io.wso2.android.api_authenticator.sdk.models.auth_params.TotpAuthenticatorTypeAuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.BasicAuthenticatorType
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.TotpAuthenticatorType
+import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorTypes
+import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorProviderException
+import io.wso2.android.api_authenticator.sdk.models.prompt_type.PromptTypes
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
 import io.wso2.android.api_authenticator.sdk.providers.di.AuthenticationProviderContainer
 import io.wso2.android.api_authenticator.sdk.providers.util.AuthenticatorProviderUtil
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.SharedFlow
 import java.lang.ref.WeakReference
 
@@ -49,6 +54,16 @@ class AuthenticationProvider private constructor(
     private var authenticatorsInThisStep: ArrayList<AuthenticatorType>? = null
 
     /**
+     * The selected authenticator for the authentication process.
+     */
+    private var selectedAuthenticator: AuthenticatorType? = null
+
+    /**
+     * Deferred object to wait for the result of the authentication process.
+     */
+    private val redirectAuthenticationResultDeferred: CompletableDeferred<Unit> = CompletableDeferred()
+
+    /**
      * Flow of the authentication state which is exposed to the outside.
      */
     val authenticationStateFlow: SharedFlow<AuthenticationState> =
@@ -65,6 +80,8 @@ class AuthenticationProvider private constructor(
          * Initialize the [AuthenticationProvider] instance and return the instance.
          *
          * @param authenticationCoreConfig The [AuthenticatorManager] instance
+         *
+         * @return The [AuthenticationProvider] instance
          */
         fun getInstance(
             authenticationCoreConfig: AuthenticationCoreConfig
@@ -75,6 +92,15 @@ class AuthenticationProvider private constructor(
                 authenticationProviderInstance = WeakReference(authenticatorProvider)
             }
             return authenticatorProvider
+        }
+
+        /**
+         * Get the [AuthenticationProvider] instance.
+         *
+         * @return The [AuthenticationProvider] instance
+         */
+        fun getInstance(): AuthenticationProvider? {
+            return authenticationProviderInstance.get()
         }
     }
 
@@ -142,6 +168,40 @@ class AuthenticationProvider private constructor(
     }
 
     /**
+     * Get the authenticator type from the authenticator type list.
+     * Done by checking the authenticator id or authenticator type.
+     *
+     * Precedence: authenticatorId > authenticatorType
+     *
+     * @param authenticatorIdString The authenticator id string
+     * @param authenticatorTypeString The authenticator type string
+     */
+    private fun getAuthenticatorTypeFromAuthenticatorTypeList(
+        authenticatorIdString: String? = null,
+        authenticatorTypeString: String? = null
+    ): AuthenticatorType? {
+        // setting up the authenticator type
+        var authenticatorType: AuthenticatorType? = null
+
+        if (authenticatorIdString != null) {
+            authenticatorType =
+                AuthenticatorProviderUtil
+                    .getAuthenticatorTypeFromAuthenticatorTypeListOnAuthenticatorId(
+                        authenticatorsInThisStep!!,
+                        authenticatorIdString
+                    )
+        } else if (authenticatorTypeString != null) {
+            authenticatorType =
+                AuthenticatorProviderUtil.getAuthenticatorTypeFromAuthenticatorTypeList(
+                    authenticatorsInThisStep!!,
+                    authenticatorTypeString
+                )
+        }
+
+        return authenticatorType
+    }
+
+    /**
      * Common function in all authenticate methods
      *
      * @param context The context of the application
@@ -166,23 +226,14 @@ class AuthenticationProvider private constructor(
         authenticationStateHandler.emitAuthenticationState(AuthenticationState.Loading)
 
         // setting up the authenticator type
-        var authenticatorType: AuthenticatorType? = null
-
-        if (authenticatorIdString != null) {
-            authenticatorType =
-                AuthenticatorProviderUtil.getAuthenticatorTypeFromAuthenticatorTypeList(
-                    authenticatorsInThisStep!!,
-                    authenticatorIdString
-                )
-        } else if (authenticatorTypeString != null) {
-            authenticatorType =
-                AuthenticatorProviderUtil.getAuthenticatorTypeFromAuthenticatorTypeList(
-                    authenticatorsInThisStep!!,
-                    authenticatorTypeString
-                )
-        }
+        var authenticatorType: AuthenticatorType? = getAuthenticatorTypeFromAuthenticatorTypeList(
+            authenticatorIdString,
+            authenticatorTypeString
+        )
 
         if (authenticatorType != null) {
+            selectedAuthenticator = authenticatorType
+
             var authParamsMap: LinkedHashMap<String, String>? = authParamsAsMap
 
             if (authParams != null) {
@@ -204,9 +255,19 @@ class AuthenticationProvider private constructor(
                         authenticationCore::exchangeAuthorizationCode,
                         authenticationCore::saveTokenState
                     )
+                selectedAuthenticator = null
             }.onFailure {
                 authenticationStateHandler.emitAuthenticationState(AuthenticationState.Error(it))
+                selectedAuthenticator = null
             }
+        } else {
+            authenticationStateHandler.emitAuthenticationState(
+                AuthenticationState.Error(
+                    AuthenticatorProviderException(
+                        AuthenticatorProviderException.AUTHENTICATOR_NOT_FOUND
+                    )
+                )
+            )
         }
     }
 
@@ -229,7 +290,7 @@ class AuthenticationProvider private constructor(
     ) {
         commonAuthenticate(
             context,
-            authenticatorTypeString = BasicAuthenticatorType.AUTHENTICATOR_TYPE,
+            authenticatorTypeString = AuthenticatorTypes.BASIC_AUTHENTICATOR.authenticatorType,
             authParams = BasicAuthenticatorAuthParams(username, password)
         )
     }
@@ -248,8 +309,152 @@ class AuthenticationProvider private constructor(
     suspend fun authenticateWithTotp(context: Context, token: String) {
         commonAuthenticate(
             context,
-            authenticatorTypeString = TotpAuthenticatorType.AUTHENTICATOR_TYPE,
+            authenticatorTypeString = AuthenticatorTypes.TOTP_AUTHENTICATOR.authenticatorType,
             authParams = TotpAuthenticatorTypeAuthParams(token)
+        )
+    }
+
+    /**
+     * Authenticate the user with the selected authenticator which requires a redirect URI.
+     *
+     * @param context The context of the application
+     * @param authenticatorId The authenticator id of the selected authenticator
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     */
+    suspend fun authenticateWithRedirectUri(
+        context: Context,
+        authenticatorId: String? = null,
+        authenticatorType: String? = null
+    ) {
+        // Setting up the deferred object to wait for the result
+        authenticationStateHandler.emitAuthenticationState(AuthenticationState.Loading)
+
+        // setting up the authenticator type
+        var authenticatorType: AuthenticatorType? = getAuthenticatorTypeFromAuthenticatorTypeList(
+            authenticatorIdString = authenticatorId,
+            authenticatorTypeString = authenticatorType
+        )
+
+        // Retrieving the prompt type of the authenticator
+        val promptType: String? = authenticatorType?.metadata?.promptType
+
+        if (promptType == PromptTypes.REDIRECTION_PROMPT.promptType) {
+            // Retrieving the redirect URI of the authenticator
+            val redirectUri: String? = authenticatorType?.metadata?.additionalData?.redirectUrl
+
+            if (redirectUri.isNullOrEmpty()) {
+                authenticationStateHandler.emitAuthenticationState(
+                    AuthenticationState.Error(
+                        AuthenticatorProviderException(
+                            AuthenticatorProviderException.REDIRECT_URI_NOT_FOUND
+                        )
+                    )
+                )
+            } else {
+                selectedAuthenticator = authenticatorType
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(redirectUri))
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(intent)
+
+                redirectAuthenticationResultDeferred.await()
+            }
+        } else {
+            authenticationStateHandler.emitAuthenticationState(
+                AuthenticationState.Error(
+                    AuthenticatorProviderException(
+                        AuthenticatorProviderException.NOT_REDIRECT_PROMPT
+                    )
+                )
+            )
+        }
+    }
+
+    /**
+     * Handle the redirect URI and authenticate the user with the selected authenticator.
+     *
+     * @param context The context of the application
+     * @param deepLink The deep link URI that is received from the redirect URI
+     *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     */
+    internal suspend fun handleRedirectUri(context: Context, deepLink: Uri) {
+        // Setting up the deferred object to wait for the result
+        if (selectedAuthenticator != null) {
+            val requiredParams: List<String> = selectedAuthenticator!!.requiredParams!!
+
+            // Extract required parameters from the authenticator type
+            val authParamsMap: LinkedHashMap<String, String> = LinkedHashMap()
+
+            for (param in requiredParams) {
+                val paramValue: String? = deepLink.getQueryParameter(param)
+
+                if (paramValue != null) {
+                    authParamsMap[param] = paramValue
+                }
+            }
+
+            // Finish the [RedirectUriReceiverActivity] activity
+            if (context is ComponentActivity) {
+                context.finish()
+            }
+
+            // Authenticate the user with the selected authenticator
+            runCatching {
+                authenticationCore.authenticate(
+                    selectedAuthenticator!!,
+                    authParamsMap
+                )
+            }.onSuccess {
+                authenticatorsInThisStep =
+                    authenticationStateHandler.handleAuthenticationFlowResult(
+                        it!!,
+                        context,
+                        authenticationCore::exchangeAuthorizationCode,
+                        authenticationCore::saveTokenState
+                    )
+                selectedAuthenticator = null
+                // Complete the deferred object and finish the [authenticateWithRedirectUri] method
+                redirectAuthenticationResultDeferred.complete(Unit)
+            }.onFailure {
+                authenticationStateHandler.emitAuthenticationState(AuthenticationState.Error(it))
+                // Complete the deferred object and finish the [authenticateWithRedirectUri] method
+                selectedAuthenticator = null
+                redirectAuthenticationResultDeferred.complete(Unit)
+            }
+        } else {
+            authenticationStateHandler.emitAuthenticationState(
+                AuthenticationState.Error(
+                    AuthenticatorProviderException(
+                        AuthenticatorProviderException.AUTHENTICATOR_NOT_FOUND
+                    )
+                )
+            )
+            selectedAuthenticator = null
+            // Complete the deferred object and finish the [authenticateWithRedirectUri] method
+            redirectAuthenticationResultDeferred.complete(Unit)
+        }
+    }
+
+    /**
+     * Authenticate the user with the OpenID Connect authenticator.
+     *
+     * @param context The context of the application
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     */
+    suspend fun authenticateWithOpenIdConnect(context: Context) {
+        authenticateWithRedirectUri(
+            context,
+            authenticatorType = AuthenticatorTypes.OPENID_CONNECT_AUTHENTICATOR.authenticatorType
         )
     }
 

@@ -276,11 +276,15 @@ internal class AppAuthManagerImpl private constructor(
                         continuation.resumeWithException(exception)
                     } else {
                         CoroutineScope(Dispatchers.IO).launch {
-                            action(accessToken, idToken)
+                            runCatching {
+                                action(accessToken, idToken)
+                            }.onSuccess {
+                                continuation.resume(tokenState)
+                            }.onFailure {
+                                continuation.resumeWithException(it)
+                            }
+                            tokenState.updateAppAuthState(appAuthState)
                         }
-
-                        tokenState.updateAppAuthState(appAuthState)
-                        continuation.resume(tokenState)
                     }
                 }
             } else {

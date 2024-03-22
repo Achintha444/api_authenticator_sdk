@@ -4,22 +4,16 @@ import io.wso2.android.api_authenticator.sdk.core.managers.app_auth.impl.AppAuth
 import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.AuthenticatorManager
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorTypes
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.BasicAuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.authenticator_type_factory.AuthenticatorTypeFactory
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowNotSuccess
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorTypeException
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
-import okhttp3.internal.wait
 import java.io.IOException
 import java.lang.ref.WeakReference
 import kotlin.coroutines.resume
@@ -37,7 +31,7 @@ import kotlin.coroutines.suspendCoroutine
  */
 internal class AuthenticatorManagerImpl private constructor(
     private val client: OkHttpClient,
-    private val authenticatorTypeFactory: io.wso2.android.api_authenticator.sdk.models.autheniticator_type.authenticator_type_factory.AuthenticatorTypeFactory,
+    private val authenticatorTypeFactory: AuthenticatorTypeFactory,
     private val authenticatorManagerImplRequestBuilder: AuthenticatorManagerImplRequestBuilder,
     private val authnUrl: String
 ) : AuthenticatorManager {

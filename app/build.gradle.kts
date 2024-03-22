@@ -23,7 +23,7 @@ android {
             useSupportLibrary = true
         }
         manifestPlaceholders.putIfAbsent(
-            "appAuthRedirectScheme", "https://example-app.com/redirect"
+            "appAuthRedirectScheme", "wso2.apiauth.sample.android://login-callback"
         )
     }
 
@@ -47,7 +47,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
+        kotlinCompilerExtensionVersion = "1.5.1"
     }
     packaging {
         resources {

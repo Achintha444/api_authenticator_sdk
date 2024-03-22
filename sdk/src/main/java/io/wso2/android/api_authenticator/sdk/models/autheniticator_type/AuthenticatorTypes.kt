@@ -15,6 +15,10 @@ enum class AuthenticatorTypes(val authenticatorType: String) {
      */
     GOOGLE_NATIVE_AUTHENTICATOR("Google"),
     /**
+     * Google redirect authenticator type
+     */
+    GOOGLE_REDIRECT_AUTHENTICATOR("Google"),
+    /**
      * TOTP authenticator type
      */
     TOTP_AUTHENTICATOR("TOTP"),
@@ -22,4 +26,8 @@ enum class AuthenticatorTypes(val authenticatorType: String) {
      * Passkey authenticator type
      */
     PASSKEY_AUTHENTICATOR("Passkey"),
+    /**
+     * OpenID Connect authenticator type
+     */
+    OPENID_CONNECT_AUTHENTICATOR("openidconnect")
 }
