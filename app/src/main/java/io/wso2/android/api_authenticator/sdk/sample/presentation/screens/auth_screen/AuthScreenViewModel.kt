@@ -134,10 +134,7 @@ class AuthScreenViewModel @Inject constructor(
                     isLoading = true
                 )
             }
-            authenticationProvider.authenticateWithRedirectUri(
-                applicationContext,
-                authenticatorId
-            )
+            authenticationProvider.authenticateWithOpenIdConnect(applicationContext)
             _state.update {
                 it.copy(
                     isLoading = false
