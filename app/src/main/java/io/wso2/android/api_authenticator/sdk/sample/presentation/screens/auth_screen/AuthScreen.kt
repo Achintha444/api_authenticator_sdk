@@ -1,5 +1,7 @@
 package io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen
 
+import android.content.Intent
+import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,7 +26,7 @@ import io.wso2.android.api_authenticator.sdk.sample.ui.theme.Api_authenticator_s
 @Composable
 internal fun AuthScreen(
     viewModel: AuthScreenViewModel = hiltViewModel(),
-    authenticationFlow: io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
+    authenticationFlow: AuthenticationFlow
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
     LaunchedEffect(key1 = authenticationFlow) {
@@ -34,9 +36,7 @@ internal fun AuthScreen(
 }
 
 @Composable
-fun AuthScreenContent(
-    state: AuthScreenState
-) {
+fun AuthScreenContent(state: AuthScreenState) {
     Column(
         modifier = Modifier
             .fillMaxSize()

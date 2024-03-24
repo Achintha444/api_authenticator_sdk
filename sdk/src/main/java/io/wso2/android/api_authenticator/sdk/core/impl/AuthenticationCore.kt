@@ -28,18 +28,20 @@ class AuthenticationCore private constructor(
     /**
      * Instance of the [AuthnManager] that will be used throughout the application
      */
-    private var authnMangerInstance: AuthnManager =
+    private val authnMangerInstance: AuthnManager by lazy {
         AuthenticationCoreContainer.getAuthMangerInstance(
             authenticationCoreConfig
         )
+    }
 
     /**
      * Instance of the [AppAuthManager] that will be used throughout the application
      */
-    private var appAuthManagerInstance: AppAuthManager =
+    private val appAuthManagerInstance: AppAuthManager by lazy {
         AuthenticationCoreContainer.getAppAuthManagerInstance(
             authenticationCoreConfig
         )
+    }
 
     companion object {
         /**

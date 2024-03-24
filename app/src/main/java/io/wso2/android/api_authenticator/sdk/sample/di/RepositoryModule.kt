@@ -5,9 +5,11 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.wso2.android.api_authenticator.sdk.sample.data.impl.repository.AuthenticationRepositoryImpl
+import io.wso2.android.api_authenticator.sdk.sample.data.impl.repository.GoogleAuthenticationRepositoryImpl
 import io.wso2.android.api_authenticator.sdk.sample.data.impl.repository.ProviderRepositoryImpl
 import io.wso2.android.api_authenticator.sdk.sample.data.impl.repository.UserRepositoryImpl
 import io.wso2.android.api_authenticator.sdk.sample.domain.repository.AuthenticationRepository
+import io.wso2.android.api_authenticator.sdk.sample.domain.repository.GoogleAuthenticationRepository
 import io.wso2.android.api_authenticator.sdk.sample.domain.repository.ProviderRepository
 import io.wso2.android.api_authenticator.sdk.sample.domain.repository.UserRepository
 import javax.inject.Singleton
@@ -33,4 +35,10 @@ abstract class RepositoryModule {
     abstract fun bindUserRepository(
         userRepositoryImpl: UserRepositoryImpl
     ): UserRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindGoogleAuthenticationRepository(
+        googleAuthenticationRepositoryImpl: GoogleAuthenticationRepositoryImpl
+    ): GoogleAuthenticationRepository
 }

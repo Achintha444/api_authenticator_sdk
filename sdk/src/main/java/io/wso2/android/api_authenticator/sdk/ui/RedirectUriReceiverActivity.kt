@@ -13,8 +13,9 @@ import kotlinx.coroutines.launch
  */
 class RedirectUriReceiverActivity : ComponentActivity() {
     // The authentication provider
-    private val authenticationProvider: AuthenticationProvider? =
+    private val authenticationProvider: AuthenticationProvider? by lazy {
         RedirectUriReceiverActivityContainer.getAuthenticatorProvider()
+    }
     // Flag to check if the redirection is handled
     private var redirectionHandled: Boolean = false
 

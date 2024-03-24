@@ -1,6 +1,7 @@
 package io.wso2.android.api_authenticator.sdk.util
 
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+import io.wso2.android.api_authenticator.sdk.providers.util.AuthenticatorProviderUtil
 
 /**
  * Util class to handle the authenticator types
@@ -64,5 +65,42 @@ object AuthenticatorTypeUtil {
         authenticatorIdString: String
     ): AuthenticatorType? {
         return authenticators.find { it.authenticatorId == authenticatorIdString }
+    }
+
+
+    /**
+     * Get the authenticator type from the authenticator type list.
+     * Done by checking the authenticator id or authenticator type.
+     *
+     * Precedence: authenticatorId > authenticatorType
+     *
+     * @param authenticators List of authenticators
+     * @param authenticatorIdString The authenticator id string
+     * @param authenticatorTypeString The authenticator type string
+     */
+     fun getAuthenticatorTypeFromAuthenticatorTypeList(
+        authenticators: ArrayList<AuthenticatorType>,
+        authenticatorIdString: String? = null,
+        authenticatorTypeString: String? = null
+    ): AuthenticatorType? {
+        // setting up the authenticator type
+        var authenticatorType: AuthenticatorType? = null
+
+        if (authenticatorIdString != null) {
+            authenticatorType =
+                AuthenticatorProviderUtil
+                    .getAuthenticatorTypeFromAuthenticatorTypeListOnAuthenticatorId(
+                        authenticators,
+                        authenticatorIdString
+                    )
+        } else if (authenticatorTypeString != null) {
+            authenticatorType =
+                AuthenticatorProviderUtil.getAuthenticatorTypeFromAuthenticatorTypeList(
+                    authenticators,
+                    authenticatorTypeString
+                )
+        }
+
+        return authenticatorType
     }
 }

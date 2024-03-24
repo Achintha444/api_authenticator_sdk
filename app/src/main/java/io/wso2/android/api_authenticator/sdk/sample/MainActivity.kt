@@ -1,9 +1,13 @@
 package io.wso2.android.api_authenticator.sdk.sample
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -14,16 +18,29 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 import dagger.hilt.android.AndroidEntryPoint
+import io.wso2.android.api_authenticator.sdk.providers.authentication_provider.AuthenticationProvider
+import io.wso2.android.api_authenticator.sdk.sample.domain.repository.GoogleAuthenticationRepository
+import io.wso2.android.api_authenticator.sdk.sample.domain.repository.ProviderRepository
+import io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen.AuthScreenViewModel
 import io.wso2.android.api_authenticator.sdk.sample.ui.theme.Api_authenticator_sdkTheme
 import io.wso2.android.api_authenticator.sdk.sample.util.Event
 import io.wso2.android.api_authenticator.sdk.sample.util.EventBus
 import io.wso2.android.api_authenticator.sdk.sample.util.navigation.NavDestination
 import io.wso2.android.api_authenticator.sdk.sample.util.navigation.NavGraph
 import io.wso2.android.api_authenticator.sdk.sample.util.navigation.NavigationViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

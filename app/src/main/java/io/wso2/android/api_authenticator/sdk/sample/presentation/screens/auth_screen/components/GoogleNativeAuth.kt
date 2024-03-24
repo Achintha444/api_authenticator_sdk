@@ -1,10 +1,17 @@
 package io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen.components
 
+import android.app.Activity
+import android.content.Intent
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -12,34 +19,38 @@ import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.Authenti
 import io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen.AuthScreenViewModel
 
 @Composable
-internal fun FacebookRedirectAuth(
+internal fun GoogleNativeAuth(
     viewModel: AuthScreenViewModel = hiltViewModel(),
     authenticatorType: AuthenticatorType
 ) {
-    FacebookRedirectAuthComponent(
+    val launcher: ActivityResultLauncher<Intent> = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        viewModel.handleGoogleSignInResult(result)
+    }
+
+    GoogleNativeAuthComponent(
         onSubmit = {
-            viewModel.authenticateWithRedirectUri(
-                authenticatorType.authenticatorId
-            )
+            viewModel.authenticateWithGoogle(launcher)
         }
     )
 }
 
 @Composable
-fun FacebookRedirectAuthComponent(
+fun GoogleNativeAuthComponent(
     onSubmit: () -> Unit
 ) {
     Button(
         onClick = onSubmit,
         modifier = Modifier.padding(16.dp)
     ) {
-        Text(text = "Sign in with Facebook Redirect")
+        Text(text = "Sign in with Google")
     }
 }
 
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
-fun FacebookRedirectAuthPreview() {
-    FacebookRedirectAuthComponent(onSubmit = {})
+fun GoogleNativeAuthPreview() {
+    GoogleNativeAuthComponent(onSubmit = {})
 }

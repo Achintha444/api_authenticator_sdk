@@ -14,6 +14,7 @@ class ProviderRepositoryImpl @Inject constructor() : ProviderRepository {
             Config.getRedirectUri(),
             Config.getClientId(),
             Config.getScope(),
+            googleWebClientId = Config.getGoogleWebClientId(),
             isDevelopment = true
         )
     )

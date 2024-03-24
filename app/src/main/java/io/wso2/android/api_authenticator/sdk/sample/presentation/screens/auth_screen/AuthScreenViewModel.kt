@@ -1,6 +1,12 @@
 package io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,6 +16,7 @@ import io.wso2.android.api_authenticator.sdk.models.authentication_flow.Authenti
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowNotSuccess
 import io.wso2.android.api_authenticator.sdk.models.flow_status.FlowStatus
 import io.wso2.android.api_authenticator.sdk.sample.domain.repository.AuthenticationRepository
+import io.wso2.android.api_authenticator.sdk.sample.domain.repository.GoogleAuthenticationRepository
 import io.wso2.android.api_authenticator.sdk.sample.domain.repository.ProviderRepository
 import io.wso2.android.api_authenticator.sdk.sample.presentation.util.sendEvent
 import io.wso2.android.api_authenticator.sdk.sample.util.Event
@@ -23,6 +30,7 @@ import javax.inject.Inject
 class AuthScreenViewModel @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
     private val authenticationRepository: AuthenticationRepository,
+    private val googleAuthenticationRepository: GoogleAuthenticationRepository,
     providerRepository: ProviderRepository
 ) : ViewModel() {
 
@@ -125,7 +133,7 @@ class AuthScreenViewModel @Inject constructor(
         }
     }
 
-    fun authenticateWithRedirectUri(
+    fun authenticateWithOpenIdConnect(
         authenticatorId: String,
     ) {
         viewModelScope.launch {
@@ -140,6 +148,34 @@ class AuthScreenViewModel @Inject constructor(
                     isLoading = false
                 )
             }
+        }
+    }
+
+    fun authenticateWithGoogle(googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>) {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    isLoading = true
+                )
+            }
+            authenticationProvider.authenticateWithGoogle(
+                applicationContext,
+                googleAuthenticateResultLauncher
+            )
+            _state.update {
+                it.copy(
+                    isLoading = false
+                )
+            }
+        }
+    }
+
+    fun handleGoogleSignInResult(result: ActivityResult) {
+        viewModelScope.launch {
+            authenticationProvider.handleGoogleAuthenticateResult(
+                applicationContext,
+                result
+            )
         }
     }
 }

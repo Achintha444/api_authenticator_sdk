@@ -10,6 +10,9 @@ import okhttp3.OkHttpClient
  * @property clientId Client id of the application
  * @property scope Scope of the application (ex: openid profile email)
  * @property integrityToken Client attestation integrity token - optional
+ * @property googleWebClientId Google web client id - optional
+ * This is required when the application needs to authenticate with Google, add the client id of the
+ * Google connection that is used to create the connection in the WSO2 identity server.
  * @property isDevelopment The flag to check whether the app is in development mode or not.
  * If true, the [LessSecureHttpClient] instance will be returned. Otherwise, the default
  * [OkHttpClient] instance will be returned. Default value is `false`. It is not recommended to
@@ -21,6 +24,7 @@ class AuthenticationCoreConfig(
     private val clientId: String,
     private val scope: String,
     private val integrityToken: String? = null,
+    private val googleWebClientId: String? = null,
     private val isDevelopment: Boolean? = false
 ) {
     /**
@@ -87,6 +91,13 @@ class AuthenticationCoreConfig(
      */
     fun getIntegrityToken(): String? {
         return integrityToken
+    }
+
+    /**
+     * @return Google web client id.
+     */
+    fun getGoogleWebClientId(): String? {
+        return googleWebClientId
     }
 
     /**

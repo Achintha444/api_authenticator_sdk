@@ -13,8 +13,9 @@ class TokenProvider {
     /**
      * Instance of the [AuthenticationCoreDef] that will be used throughout the application
      */
-    private var authenticationCore: AuthenticationCoreDef? =
+    private val authenticationCore: AuthenticationCoreDef? by lazy {
         TokenProviderContainer.getAuthenticationCoreDef()
+    }
 
     companion object {
         /**

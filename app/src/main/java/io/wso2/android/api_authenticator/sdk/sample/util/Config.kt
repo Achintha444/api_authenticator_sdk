@@ -5,6 +5,7 @@ object Config {
     private const val CLIENT_ID: String = "DemBfWSfjhJO2ieDeI67urt7O_0a"
     private const val REDIRECT_URI: String = "wso2.apiauth.sample.android://login-callback"
     private const val SCOPE: String = "openid internal_login profile email"
+    private const val GOOGLE_WEB_CLIENT_ID = "1064044497616-0326pu24eaael3u9lhs6huarj935pmti.apps.googleusercontent.com"
 
     fun getBaseUrl(): String {
         return BASE_URL
@@ -20,5 +21,9 @@ object Config {
 
     fun getScope(): String {
         return SCOPE
+    }
+
+    fun getGoogleWebClientId(): String {
+        return GOOGLE_WEB_CLIENT_ID
     }
 }
