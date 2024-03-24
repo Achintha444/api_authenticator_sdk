@@ -14,9 +14,9 @@ import io.wso2.android.api_authenticator.sdk.models.authentication_flow.Authenti
  * - [Error]: An error occurred during the authentication process
  */
 sealed class AuthenticationState {
-    object Initial : AuthenticationState()
+    data object Initial : AuthenticationState()
     data class Unauthenticated(val authenticationFlow: AuthenticationFlow?) : AuthenticationState()
-    object Authenticated : AuthenticationState()
-    object Loading : AuthenticationState()
+    data object Authenticated : AuthenticationState()
+    data object Loading : AuthenticationState()
     data class Error(val throwable: Throwable) : AuthenticationState()
 }

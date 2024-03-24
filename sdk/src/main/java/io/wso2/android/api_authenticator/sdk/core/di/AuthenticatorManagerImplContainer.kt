@@ -29,8 +29,8 @@ object AuthenticatorManagerImplContainer {
      *
      * @return [AuthenticatorTypeFactory] instance.
      */
-    internal fun getAuthenticatorTypeFactory(): io.wso2.android.api_authenticator.sdk.models.autheniticator_type.authenticator_type_factory.AuthenticatorTypeFactory {
-        return io.wso2.android.api_authenticator.sdk.models.autheniticator_type.authenticator_type_factory.AuthenticatorTypeFactory
+    internal fun getAuthenticatorTypeFactory(): AuthenticatorTypeFactory {
+        return AuthenticatorTypeFactory
     }
 
     /**

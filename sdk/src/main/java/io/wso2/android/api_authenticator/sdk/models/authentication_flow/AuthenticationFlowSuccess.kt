@@ -40,7 +40,7 @@ data class AuthenticationFlowSuccess(
             val stepTypeReference = object : TypeReference<AuthenticationFlowSuccess>() {}
             val jsonNodeAuthorizeFlow: JsonNode = JsonUtil.getJsonObject(jsonString)
 
-            return JsonUtil.jsonNodeToObject(jsonNodeAuthorizeFlow, stepTypeReference);
+            return JsonUtil.jsonNodeToObject(jsonNodeAuthorizeFlow, stepTypeReference)
         }
     }
 }

@@ -23,7 +23,7 @@ internal class TokenManagerImpl internal constructor(private val context: Contex
      *
      * @param tokenState The [TokenState] instance.
      */
-    override suspend fun saveTokenState(tokenState: TokenState): Unit? =
+    override suspend fun saveTokenState(tokenState: TokenState): Unit =
         tokenDataStore.saveTokenState(tokenState)
 
     /**
@@ -76,7 +76,7 @@ internal class TokenManagerImpl internal constructor(private val context: Contex
     /**
      * Clear the tokens from the token data store.*
      */
-    override suspend fun clearTokens(): Unit? =
+    override suspend fun clearTokens(): Unit =
         tokenDataStore.clearTokens()
 
     /**
@@ -86,7 +86,7 @@ internal class TokenManagerImpl internal constructor(private val context: Contex
      *
      * @return `true` if the access token is valid, `false` otherwise.
      */
-    override suspend fun validateAccessToken(): Boolean? {
+    override suspend fun validateAccessToken(): Boolean {
         return getTokenState()?.getAppAuthState()?.isAuthorized == true
     }
 }

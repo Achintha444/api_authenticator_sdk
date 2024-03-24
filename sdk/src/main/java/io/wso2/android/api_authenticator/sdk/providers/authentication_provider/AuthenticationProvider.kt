@@ -1,14 +1,12 @@
 package io.wso2.android.api_authenticator.sdk.providers.authentication_provider
 
 import android.app.Activity
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.IntentSenderRequest
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -230,7 +228,7 @@ class AuthenticationProvider private constructor(
         authenticationStateHandler.emitAuthenticationState(AuthenticationState.Loading)
 
         // setting up the authenticator type
-        var authenticatorType: AuthenticatorType? =
+        val authenticatorType: AuthenticatorType? =
             AuthenticatorTypeUtil.getAuthenticatorTypeFromAuthenticatorTypeList(
                 authenticatorsInThisStep!!,
                 authenticatorIdString,
@@ -346,7 +344,7 @@ class AuthenticationProvider private constructor(
         authenticationStateHandler.emitAuthenticationState(AuthenticationState.Loading)
 
         // setting up the authenticator type
-        var authenticatorType: AuthenticatorType? =
+        val authenticatorType: AuthenticatorType? =
             AuthenticatorTypeUtil.getAuthenticatorTypeFromAuthenticatorTypeList(
                 authenticatorsInThisStep!!,
                 authenticatorIdString = authenticatorId,
@@ -358,7 +356,7 @@ class AuthenticationProvider private constructor(
 
         if (promptType == PromptTypes.REDIRECTION_PROMPT.promptType) {
             // Retrieving the redirect URI of the authenticator
-            val redirectUri: String? = authenticatorType?.metadata?.additionalData?.redirectUrl
+            val redirectUri: String? = authenticatorType.metadata?.additionalData?.redirectUrl
 
             if (redirectUri.isNullOrEmpty()) {
                 authenticationStateHandler.emitAuthenticationState(
@@ -524,14 +522,14 @@ class AuthenticationProvider private constructor(
         context: Context,
         result: ActivityResult
     ) {
-        if(result.resultCode == Activity.RESULT_OK) {
+        if (result.resultCode == Activity.RESULT_OK) {
             val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(
                 result.data
             )
             try {
                 val account: GoogleSignInAccount = task.getResult(ApiException::class.java)
-                val idToken: String? = account?.idToken
-                val authCode: String? = account?.serverAuthCode
+                val idToken: String? = account.idToken
+                val authCode: String? = account.serverAuthCode
 
                 if (idToken.isNullOrEmpty() || authCode.isNullOrEmpty()) {
                     authenticationStateHandler.emitAuthenticationState(

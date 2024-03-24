@@ -34,7 +34,7 @@ internal object AuthenticatorManagerImplRequestBuilder {
         val selectedAuthenticator = LinkedHashMap<String, String>()
         selectedAuthenticator["authenticatorId"] = authenticatorTypeId
 
-        authBody["selectedAuthenticator"] = selectedAuthenticator;
+        authBody["selectedAuthenticator"] = selectedAuthenticator
 
         val formBody: RequestBody =  JsonUtil.getJsonObject(authBody).toString()
             .toRequestBody("application/json".toMediaTypeOrNull())

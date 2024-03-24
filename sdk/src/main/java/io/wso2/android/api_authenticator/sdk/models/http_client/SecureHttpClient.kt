@@ -70,7 +70,7 @@ class SecureHttpClient private constructor(
             .sslSocketFactory(sslSocketFactory, trustManager)
             .connectTimeout(45, SECONDS)
             .readTimeout(45, SECONDS)
-            .protocols(listOf<Protocol>(Protocol.HTTP_1_1))
+            .protocols(listOf(Protocol.HTTP_1_1))
             .build()
     }
 
@@ -89,9 +89,8 @@ class SecureHttpClient private constructor(
         // Put the certificates a key store.
         val password = "password".toCharArray() // Any password will work.
         val keyStore = newEmptyKeyStore(password)
-        var index = 0
-        for (certificate: Certificate in certificates) {
-            val certificateAlias = (index++).toString()
+        for ((index, certificate: Certificate) in certificates.withIndex()) {
+            val certificateAlias = (index).toString()
             keyStore.setCertificateEntry(certificateAlias, certificate)
         }
 
@@ -105,7 +104,7 @@ class SecureHttpClient private constructor(
         )
         trustManagerFactory.init(keyStore)
         val trustManagers = trustManagerFactory.trustManagers
-        if (trustManagers.size != 1 || trustManagers.get(0) !is X509TrustManager) {
+        if (trustManagers.size != 1 || trustManagers[0] !is X509TrustManager) {
             throw IllegalStateException(
                 "Unexpected default trust managers:"
                         + Arrays.toString(trustManagers)

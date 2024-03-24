@@ -45,8 +45,8 @@ class UserRepositoryImpl @Inject constructor() : UserRepository {
                                 JsonUtil.getJsonObject(response.body!!.string())
                             continuation.resume(UserDetails(
                                 username = responseObject.get("userName").asText(),
-                                firstName = responseObject.get("name").get("givenName").asText(),
-                                lastName = responseObject.get("name").get("familyName").asText()
+                                firstName = responseObject.get("name")?.get("givenName")?.asText(),
+                                lastName = responseObject.get("name")?.get("familyName")?.asText()
                             ))
                         } else {
                             continuation.resumeWithException(

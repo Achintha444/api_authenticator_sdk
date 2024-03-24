@@ -11,9 +11,9 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
         val navigationEvents = MutableSharedFlow<NavigationEvent>()
 
         sealed class NavigationEvent {
-            object NavigateBack : NavigationEvent()
-            object NavigateToLanding : NavigationEvent()
-            object NavigateToHome : NavigationEvent()
+            data object NavigateBack : NavigationEvent()
+            data object NavigateToLanding : NavigationEvent()
+            data object NavigateToHome : NavigationEvent()
             data class NavigateToAuthWithData(val data: String) : NavigationEvent()
         }
     }

@@ -105,7 +105,7 @@ internal class FlowManagerImpl private constructor(
      */
     override suspend fun manageStateOfAuthorizeFlow(
         responseObject: JsonNode
-    ): AuthenticationFlow? {
+    ): AuthenticationFlow {
         return when (responseObject.get("flowStatus").asText()) {
             FlowStatus.FAIL_INCOMPLETE.flowStatus -> {
                 throw FlowManagerException(

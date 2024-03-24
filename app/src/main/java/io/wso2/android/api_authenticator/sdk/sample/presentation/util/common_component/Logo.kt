@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -18,9 +17,7 @@ import io.wso2.android.api_authenticator.sdk.sample.R
 
 @Composable
 private fun Logo(
-    modifier: Modifier = Modifier
-        .height(75.dp)
-        .width(250.dp),
+    modifier: Modifier = Modifier,
     fontSize: TextUnit = 14.sp,
 ) {
     Box(
@@ -55,5 +52,10 @@ fun LogoLarge(
 
 @Composable
 fun LogoSmall() {
-    Logo(fontSize = 10.sp)
+    Logo(
+        modifier = Modifier
+            .height(75.dp)
+            .width(250.dp),
+        fontSize = 10.sp
+    )
 }
