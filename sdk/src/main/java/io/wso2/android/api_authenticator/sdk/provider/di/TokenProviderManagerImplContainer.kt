@@ -1,13 +1,12 @@
-package io.wso2.android.api_authenticator.sdk.providers.di
+package io.wso2.android.api_authenticator.sdk.provider.di
 
-import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.core.impl.AuthenticationCore
 
 /**
- * Dependency Injection container for the [TokenProvider] class.
+ * Dependency Injection container for the [TokenProviderManagerImpl] class.
  */
-internal object TokenProviderContainer {
+internal object TokenProviderManagerImplContainer {
     /**
      * Get the instance of the [AuthenticationCoreDef].
      *

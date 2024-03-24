@@ -32,7 +32,7 @@ class LandingScreenViewModel @Inject constructor(
     val state = _state
 
     private val authenticationProvider = providerRepository.getAuthenticationProvider()
-    private val authenticationStateFlow = authenticationProvider.authenticationStateFlow
+    private val authenticationStateFlow = authenticationProvider.getAuthenticationStateFlow()
 
     init {
         handleAuthenticationState()

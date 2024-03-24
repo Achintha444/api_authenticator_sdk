@@ -75,9 +75,7 @@ class AuthenticationCore private constructor(
          *
          * @throws [AuthenticationCoreException] If the AuthenticationCore instance is not initialized
          */
-        fun getInstance(): AuthenticationCore? {
-            return authenticationCoreInstance.get()
-        }
+        fun getInstance(): AuthenticationCore? = authenticationCoreInstance.get()
     }
 
     /**

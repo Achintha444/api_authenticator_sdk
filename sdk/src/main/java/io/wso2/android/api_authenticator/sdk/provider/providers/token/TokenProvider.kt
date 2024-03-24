@@ -1,8 +1,10 @@
-package io.wso2.android.api_authenticator.sdk.providers.token_provider
+package io.wso2.android.api_authenticator.sdk.provider.providers.token
 
 import android.content.Context
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
-import io.wso2.android.api_authenticator.sdk.providers.di.TokenProviderContainer
+import io.wso2.android.api_authenticator.sdk.provider.di.TokenProviderContainer
+import io.wso2.android.api_authenticator.sdk.provider.di.TokenProviderManagerImplContainer
+import io.wso2.android.api_authenticator.sdk.provider.provider_managers.token.TokenProviderManager
 import java.lang.ref.WeakReference
 
 /**
@@ -15,6 +17,10 @@ class TokenProvider {
      */
     private val authenticationCore: AuthenticationCoreDef? by lazy {
         TokenProviderContainer.getAuthenticationCoreDef()
+    }
+
+    private val tokenProviderManager: TokenProviderManager by lazy {
+        TokenProviderContainer.getTokenProviderManager(authenticationCore!!)
     }
 
     companion object {
@@ -45,7 +51,7 @@ class TokenProvider {
      * @return The access token [String]
      */
     suspend fun getAccessToken(context: Context): String? =
-        authenticationCore?.getAccessToken(context)
+        tokenProviderManager.getAccessToken(context)
 
     /**
      * Get the refresh token from the token.
@@ -55,7 +61,7 @@ class TokenProvider {
      * @return The refresh token [String]
      */
     suspend fun getRefreshToken(context: Context): String? =
-        authenticationCore?.getRefreshToken(context)
+        tokenProviderManager.getRefreshToken(context)
 
     /**
      * Get the ID token from the token.
@@ -64,7 +70,7 @@ class TokenProvider {
      *
      * @return The ID token [String]
      */
-    suspend fun getIDToken(context: Context): String? = authenticationCore?.getIDToken(context)
+    suspend fun getIDToken(context: Context): String? = tokenProviderManager.getIDToken(context)
 
     /**
      * Get the access token expiration time from the token.
@@ -74,7 +80,7 @@ class TokenProvider {
      * @return The access token expiration time [Long]
      */
     suspend fun getAccessTokenExpirationTime(context: Context): Long? =
-        authenticationCore?.getAccessTokenExpirationTime(context)
+        tokenProviderManager.getAccessTokenExpirationTime(context)
 
     /**
      * Get the scope from the token.
@@ -83,7 +89,7 @@ class TokenProvider {
      *
      * @return The scope [String]
      */
-    suspend fun getScope(context: Context): String? = authenticationCore?.getScope(context)
+    suspend fun getScope(context: Context): String? = tokenProviderManager.getScope(context)
 
 
     /**
@@ -94,7 +100,7 @@ class TokenProvider {
      * @return `true` if the access token is valid, `false` otherwise.
      */
     suspend fun validateAccessToken(context: Context): Boolean? =
-        authenticationCore?.validateAccessToken(context)
+        tokenProviderManager.validateAccessToken(context)
 
     /**
      * Perform refresh token grant. This method will perform the refresh token grant and save the
@@ -103,11 +109,8 @@ class TokenProvider {
      *
      * @param context The [Context] instance.
      */
-    suspend fun performRefreshTokenGrant(context: Context) {
-        var tokenState = authenticationCore?.getTokenState(context)
-        tokenState = authenticationCore?.performRefreshTokenGrant(context, tokenState!!)
-        authenticationCore?.saveTokenState(context, tokenState!!)
-    }
+    suspend fun performRefreshTokenGrant(context: Context) =
+        tokenProviderManager.performRefreshTokenGrant(context)
 
     /**
      * Perform an action with fresh tokens. This method will perform the action with fresh tokens
@@ -121,11 +124,7 @@ class TokenProvider {
     suspend fun performActionWithFreshTokens(
         context: Context,
         action: suspend (String?, String?) -> Unit
-    ) {
-        var tokenState = authenticationCore?.getTokenState(context)
-        tokenState = authenticationCore?.performActionWithFreshTokens(context, tokenState!!, action)
-        authenticationCore?.saveTokenState(context, tokenState!!)
-    }
+    ) = tokenProviderManager.performActionWithFreshTokens(context, action)
 
     /**
      * Clear the tokens from the token data store. This method will clear the tokens from the
@@ -134,5 +133,5 @@ class TokenProvider {
      *
      * @param context The [Context] instance.
      */
-    suspend fun clearTokens(context: Context) = authenticationCore?.clearTokens(context)
+    suspend fun clearTokens(context: Context) = tokenProviderManager.clearTokens(context)
 }

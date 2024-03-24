@@ -1,7 +1,7 @@
 package io.wso2.android.api_authenticator.sdk.util
 
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
-import io.wso2.android.api_authenticator.sdk.providers.util.AuthenticatorProviderUtil
+import io.wso2.android.api_authenticator.sdk.provider.util.AuthenticatorProviderUtil
 
 /**
  * Util class to handle the authenticator types

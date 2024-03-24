@@ -2,7 +2,7 @@ package io.wso2.android.api_authenticator.sdk.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import io.wso2.android.api_authenticator.sdk.providers.authentication_provider.AuthenticationProvider
+import io.wso2.android.api_authenticator.sdk.provider.providers.authentication.AuthenticationProvider
 import io.wso2.android.api_authenticator.sdk.ui.di.RedirectUriReceiverActivityContainer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

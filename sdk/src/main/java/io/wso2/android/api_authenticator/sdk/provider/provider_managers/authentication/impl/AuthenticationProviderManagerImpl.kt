@@ -1,4 +1,4 @@
-package io.wso2.android.api_authenticator.sdk.providers.authentication_provider
+package io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication.impl
 
 import android.app.Activity
 import android.content.Context
@@ -24,7 +24,8 @@ import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.Authenti
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorProviderException
 import io.wso2.android.api_authenticator.sdk.models.prompt_type.PromptTypes
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
-import io.wso2.android.api_authenticator.sdk.providers.di.AuthenticationProviderContainer
+import io.wso2.android.api_authenticator.sdk.provider.di.AuthenticationProviderManagerImplContainer
+import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication.AuthenticationProviderManager
 import io.wso2.android.api_authenticator.sdk.util.AuthenticatorTypeUtil
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.SharedFlow
@@ -40,23 +41,14 @@ import java.lang.ref.WeakReference
  * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
  * emit: [AuthenticationState.Error] - An error occurred during the authentication process
  */
-class AuthenticationProvider private constructor(
-    private val authenticationCoreConfig: AuthenticationCoreConfig
-) {
-    /**
-     * Instance of the [AuthenticationCoreDef] that will be used throughout the application
-     */
-    private val authenticationCore: AuthenticationCoreDef by lazy {
-        AuthenticationProviderContainer.getAuthenticationCoreDef(
-            authenticationCoreConfig
-        )
-    }
-
+class AuthenticationProviderManagerImpl private constructor(
+    private val authenticationCore: AuthenticationCoreDef
+) : AuthenticationProviderManager {
     /**
      * Instance of the [AuthenticationStateHandler] that will be used throughout the application
      */
     private val authenticationStateHandler: AuthenticationStateHandler by lazy {
-        AuthenticationProviderContainer.getAuthenticationStateHandler()
+        AuthenticationProviderManagerImplContainer.getAuthenticationStateHandler()
     }
 
     /**
@@ -86,51 +78,61 @@ class AuthenticationProvider private constructor(
     /**
      * Flow of the authentication state which is exposed to the outside.
      */
-    val authenticationStateFlow: SharedFlow<AuthenticationState> by lazy {
+    private val authenticationStateFlow: SharedFlow<AuthenticationState> =
         authenticationStateHandler.authenticationStateFlow
-    }
 
     companion object {
         /**
-         * Instance of the [AuthenticationProvider] that will be used throughout the application
+         * Instance of the [AuthenticationProviderManagerImpl] that will be used throughout the
+         * application
          */
-        private var authenticationProviderInstance: WeakReference<AuthenticationProvider> =
+        private var authenticationProviderManagerInstance:
+                WeakReference<AuthenticationProviderManagerImpl> =
             WeakReference(null)
 
         /**
-         * Initialize the [AuthenticationProvider] instance and return the instance.
+         * Initialize the [AuthenticationProviderManagerImpl] instance and return the instance.
          *
          * @param authenticationCoreConfig The [AuthenticatorManager] instance
          *
-         * @return The [AuthenticationProvider] instance
+         * @return The [AuthenticationProviderManagerImpl] instance
          */
         fun getInstance(
-            authenticationCoreConfig: AuthenticationCoreConfig
-        ): AuthenticationProvider {
-            var authenticatorProvider = authenticationProviderInstance.get()
-            if (authenticatorProvider == null) {
-                authenticatorProvider = AuthenticationProvider(authenticationCoreConfig)
-                authenticationProviderInstance = WeakReference(authenticatorProvider)
+            authenticationCore: AuthenticationCoreDef
+        ): AuthenticationProviderManagerImpl {
+            var authenticatorProviderManager = authenticationProviderManagerInstance.get()
+            if (authenticatorProviderManager == null) {
+                authenticatorProviderManager = AuthenticationProviderManagerImpl(
+                    authenticationCore
+                )
+                authenticationProviderManagerInstance = WeakReference(authenticatorProviderManager)
             }
-            return authenticatorProvider
+            return authenticatorProviderManager
         }
 
         /**
-         * Get the [AuthenticationProvider] instance.
+         * Get the [AuthenticationProviderManagerImpl] instance.
          *
-         * @return The [AuthenticationProvider] instance
+         * @return The [AuthenticationProviderManagerImpl] instance
          */
-        fun getInstance(): AuthenticationProvider? {
-            return authenticationProviderInstance.get()
-        }
+        fun getInstance(): AuthenticationProviderManagerImpl? =
+            authenticationProviderManagerInstance.get()
     }
+
+    /**
+     * Get authentication state flow
+     *
+     * @return authentication state flow [SharedFlow<AuthenticationState>]
+     */
+    override fun getAuthenticationStateFlow():SharedFlow<AuthenticationState> =
+        authenticationStateFlow
 
     /**
      * Check whether the user is logged in or not.
      *
      * @return `true` if the user is logged in, `false` otherwise
      */
-    suspend fun isLoggedIn(context: Context): Boolean {
+    override suspend fun isLoggedIn(context: Context): Boolean {
         return authenticationCore.validateAccessToken(context) ?: false
     }
 
@@ -142,7 +144,7 @@ class AuthenticationProvider private constructor(
      * emit: [AuthenticationState.Initial] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    suspend fun isLoggedInStateFlow(context: Context) {
+    override suspend fun isLoggedInStateFlow(context: Context) {
         authenticationStateHandler.emitAuthenticationState(AuthenticationState.Loading)
 
         // TODO: Remove this block
@@ -171,7 +173,7 @@ class AuthenticationProvider private constructor(
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    suspend fun initializeAuthentication(context: Context) {
+    override suspend fun initializeAuthentication(context: Context) {
         authenticationStateHandler.emitAuthenticationState(AuthenticationState.Loading)
 
         runCatching {
@@ -293,7 +295,7 @@ class AuthenticationProvider private constructor(
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    suspend fun authenticateWithUsernameAndPassword(
+    override suspend fun authenticateWithUsernameAndPassword(
         context: Context,
         username: String,
         password: String
@@ -316,7 +318,7 @@ class AuthenticationProvider private constructor(
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    suspend fun authenticateWithTotp(context: Context, token: String) {
+    override suspend fun authenticateWithTotp(context: Context, token: String) {
         commonAuthenticate(
             context,
             authenticatorTypeString = AuthenticatorTypes.TOTP_AUTHENTICATOR.authenticatorType,
@@ -335,10 +337,10 @@ class AuthenticationProvider private constructor(
      * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      */
-    suspend fun authenticateWithRedirectUri(
+    override suspend fun authenticateWithRedirectUri(
         context: Context,
-        authenticatorId: String? = null,
-        authenticatorType: String? = null
+        authenticatorIdString: String?,
+        authenticatorTypeString: String?
     ) {
         // Setting up the deferred object to wait for the result
         authenticationStateHandler.emitAuthenticationState(AuthenticationState.Loading)
@@ -347,8 +349,8 @@ class AuthenticationProvider private constructor(
         val authenticatorType: AuthenticatorType? =
             AuthenticatorTypeUtil.getAuthenticatorTypeFromAuthenticatorTypeList(
                 authenticatorsInThisStep!!,
-                authenticatorIdString = authenticatorId,
-                authenticatorTypeString = authenticatorType
+                authenticatorIdString = authenticatorIdString,
+                authenticatorTypeString = authenticatorTypeString
             )
 
         // Retrieving the prompt type of the authenticator
@@ -395,7 +397,7 @@ class AuthenticationProvider private constructor(
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    internal suspend fun handleRedirectUri(context: Context, deepLink: Uri) {
+     override suspend fun handleRedirectUri(context: Context, deepLink: Uri) {
         // Setting up the deferred object to wait for the result
         if (selectedAuthenticator != null) {
             val requiredParams: List<String> = selectedAuthenticator!!.requiredParams!!
@@ -440,10 +442,10 @@ class AuthenticationProvider private constructor(
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    suspend fun authenticateWithOpenIdConnect(context: Context) {
+    override suspend fun authenticateWithOpenIdConnect(context: Context) {
         authenticateWithRedirectUri(
             context,
-            authenticatorType = AuthenticatorTypes.OPENID_CONNECT_AUTHENTICATOR.authenticatorType
+            authenticatorTypeString = AuthenticatorTypes.OPENID_CONNECT_AUTHENTICATOR.authenticatorType
         )
     }
 
@@ -451,13 +453,15 @@ class AuthenticationProvider private constructor(
      * Authenticate the user with the Google authenticator.
      *
      * @param context The context of the application
+     * @param googleWebClientId Google web client id
      * @param googleAuthenticateResultLauncher The [ActivityResultLauncher] object to handle the Google authentication result
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    suspend fun authenticateWithGoogle(
+    override suspend fun authenticateWithGoogle(
         context: Context,
+        googleWebClientId: String,
         googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
     ) {
         authenticationStateHandler.emitAuthenticationState(AuthenticationState.Loading)
@@ -470,8 +474,6 @@ class AuthenticationProvider private constructor(
             )
 
         if (authenticatorType != null) {
-            val googleWebClientId: String? = authenticationCoreConfig.getGoogleWebClientId()
-
             if (googleWebClientId.isNullOrEmpty()) {
                 authenticationStateHandler.emitAuthenticationState(
                     AuthenticationState.Error(
@@ -486,8 +488,8 @@ class AuthenticationProvider private constructor(
                 val googleSignInClient = GoogleSignIn.getClient(
                     context,
                     GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestServerAuthCode(authenticationCoreConfig.getGoogleWebClientId()!!)
-                        .requestIdToken(authenticationCoreConfig.getGoogleWebClientId()!!)
+                        .requestServerAuthCode(googleWebClientId)
+                        .requestIdToken(googleWebClientId)
                         .requestEmail()
                         .build()
                 )
@@ -518,7 +520,7 @@ class AuthenticationProvider private constructor(
      * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      */
-    suspend fun handleGoogleAuthenticateResult(
+    override suspend fun handleGoogleAuthenticateResult(
         context: Context,
         result: ActivityResult
     ) {
@@ -573,7 +575,7 @@ class AuthenticationProvider private constructor(
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    suspend fun authenticateWithAnyAuthenticator(
+    override suspend fun authenticateWithAnyAuthenticator(
         context: Context,
         authenticatorId: String,
         authParams: LinkedHashMap<String, String>
@@ -589,16 +591,16 @@ class AuthenticationProvider private constructor(
      * Logout the user from the application.
      *
      * @param context The context of the application
+     * @param clientId Client id of the application created in WSO2 identity server
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
      * emit: [AuthenticationState.Initial] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    suspend fun logout(context: Context) {
+    override suspend fun logout(context: Context, clientId: String) {
         authenticationStateHandler.emitAuthenticationState(AuthenticationState.Loading)
 
         runCatching {
-            val clientId: String = authenticationCoreConfig.getClientId()
             val idToken: String? = authenticationCore.getIDToken(context)
             // Call the logout endpoint
             authenticationCore.logout(
