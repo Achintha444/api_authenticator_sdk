@@ -9,7 +9,7 @@ import java.io.IOException
 /**
  * Interface which has the methods to initiate the authorization and authentication flows.
  */
-interface AuthnManager {
+internal interface AuthnManager {
 
     /**
      * Authorize the application.

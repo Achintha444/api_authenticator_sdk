@@ -1,106 +1,31 @@
 package io.wso2.android.api_authenticator.sdk.provider.providers.authentication
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
-import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
-import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
-import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.AuthenticatorManager
-import io.wso2.android.api_authenticator.sdk.models.auth_params.GoogleNativeAuthenticatorTypeAuthParams
-import io.wso2.android.api_authenticator.sdk.models.auth_params.TotpAuthenticatorTypeAuthParams
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorTypes
-import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorProviderException
-import io.wso2.android.api_authenticator.sdk.models.prompt_type.PromptTypes
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
-import io.wso2.android.api_authenticator.sdk.provider.di.AuthenticationProviderContainer
-import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication.AuthenticationProviderManager
-import io.wso2.android.api_authenticator.sdk.provider.provider_managers.token.TokenProviderManager
-import io.wso2.android.api_authenticator.sdk.util.AuthenticatorTypeUtil
 import kotlinx.coroutines.flow.SharedFlow
-import java.lang.ref.WeakReference
 
 /**
- * Authentication provider class that is used to manage the authentication process.
- *
- * @property authenticationCoreConfig [AuthenticationCoreConfig] object
- *
- * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
- * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
- * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
- * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+ * Interface for the authentication provider to be implemented by the application.
+ * This has the methods to handle the authentication process.
  */
-class AuthenticationProvider private constructor(
-    private val authenticationCoreConfig: AuthenticationCoreConfig
-) {
-    /**
-     * Instance of the [AuthenticationCoreDef] that will be used throughout the application
-     */
-    private val authenticationCore: AuthenticationCoreDef by lazy {
-        AuthenticationProviderContainer.getAuthenticationCoreDef(authenticationCoreConfig)
-    }
-
-    private val authenticationProviderManager: AuthenticationProviderManager by lazy {
-        AuthenticationProviderContainer.getAuthenticationProviderManager(authenticationCore)
-    }
-
-    companion object {
-        /**
-         * Instance of the [AuthenticationProvider] that will be used throughout the application
-         */
-        private var authenticationProviderInstance: WeakReference<AuthenticationProvider> =
-            WeakReference(null)
-
-        /**
-         * Initialize the [AuthenticationProvider] instance and return the instance.
-         *
-         * @param authenticationCoreConfig The [AuthenticatorManager] instance
-         *
-         * @return The [AuthenticationProvider] instance
-         */
-        fun getInstance(
-            authenticationCoreConfig: AuthenticationCoreConfig
-        ): AuthenticationProvider {
-            var authenticatorProvider = authenticationProviderInstance.get()
-            if (authenticatorProvider == null) {
-                authenticatorProvider = AuthenticationProvider(authenticationCoreConfig)
-                authenticationProviderInstance = WeakReference(authenticatorProvider)
-            }
-            return authenticatorProvider
-        }
-
-        /**
-         * Get the [AuthenticationProvider] instance.
-         *
-         * @return The [AuthenticationProvider] instance
-         */
-        fun getInstance(): AuthenticationProvider? = authenticationProviderInstance.get()
-    }
-
+interface AuthenticationProvider {
     /**
      * Get authentication state flow
      *
      * @return authentication state flow [SharedFlow<AuthenticationState>]
      */
-    fun getAuthenticationStateFlow(): SharedFlow<AuthenticationState> =
-        authenticationProviderManager.getAuthenticationStateFlow()
+    fun getAuthenticationStateFlow(): SharedFlow<AuthenticationState>
 
     /**
      * Check whether the user is logged in or not.
      *
      * @return `true` if the user is logged in, `false` otherwise
      */
-    suspend fun isLoggedIn(context: Context): Boolean =
-        authenticationProviderManager.isLoggedIn(context)
+    suspend fun isLoggedIn(context: Context): Boolean
 
     /**
      * Handle the authentication flow initially to check whether the user is authenticated or not.
@@ -110,8 +35,7 @@ class AuthenticationProvider private constructor(
      * emit: [AuthenticationState.Initial] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    suspend fun isLoggedInStateFlow(context: Context) =
-        authenticationProviderManager.isLoggedInStateFlow(context)
+    suspend fun isLoggedInStateFlow(context: Context)
 
     /**
      * Initialize the authentication process.
@@ -121,8 +45,7 @@ class AuthenticationProvider private constructor(
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    suspend fun initializeAuthentication(context: Context) =
-        authenticationProviderManager.initializeAuthentication(context)
+    suspend fun initializeAuthentication(context: Context)
 
     /**
      * Authenticate the user with the username and password.
@@ -140,8 +63,7 @@ class AuthenticationProvider private constructor(
         context: Context,
         username: String,
         password: String
-    ) = authenticationProviderManager
-        .authenticateWithUsernameAndPassword(context, username, password)
+    )
 
     /**
      * Authenticate the user with the TOTP token.
@@ -154,8 +76,7 @@ class AuthenticationProvider private constructor(
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    suspend fun authenticateWithTotp(context: Context, token: String) =
-        authenticationProviderManager.authenticateWithTotp(context, token)
+    suspend fun authenticateWithTotp(context: Context, token: String)
 
     /**
      * Authenticate the user with the selected authenticator which requires a redirect URI.
@@ -172,8 +93,7 @@ class AuthenticationProvider private constructor(
         context: Context,
         authenticatorId: String? = null,
         authenticatorType: String? = null
-    ) = authenticationProviderManager
-        .authenticateWithRedirectUri(context, authenticatorId, authenticatorType)
+    )
 
     /**
      * Handle the redirect URI and authenticate the user with the selected authenticator.
@@ -185,8 +105,7 @@ class AuthenticationProvider private constructor(
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    internal suspend fun handleRedirectUri(context: Context, deepLink: Uri) =
-        authenticationProviderManager.handleRedirectUri(context, deepLink)
+    suspend fun handleRedirectUri(context: Context, deepLink: Uri)
 
     /**
      * Authenticate the user with the OpenID Connect authenticator.
@@ -198,8 +117,7 @@ class AuthenticationProvider private constructor(
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    suspend fun authenticateWithOpenIdConnect(context: Context) =
-        authenticationProviderManager.authenticateWithOpenIdConnect(context)
+    suspend fun authenticateWithOpenIdConnect(context: Context)
 
     /**
      * Authenticate the user with the Google authenticator.
@@ -213,12 +131,7 @@ class AuthenticationProvider private constructor(
     suspend fun authenticateWithGoogle(
         context: Context,
         googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
-    ) = authenticationProviderManager
-        .authenticateWithGoogle(
-            context,
-            authenticationCoreConfig.getGoogleWebClientId()!!,
-            googleAuthenticateResultLauncher
-        )
+    )
 
     /**
      * Handle the Google authentication result.
@@ -233,7 +146,7 @@ class AuthenticationProvider private constructor(
     suspend fun handleGoogleAuthenticateResult(
         context: Context,
         result: ActivityResult
-    ) = authenticationProviderManager.handleGoogleAuthenticateResult(context, result)
+    )
 
     /**
      * Authenticate the user with the selected authenticator.
@@ -253,8 +166,7 @@ class AuthenticationProvider private constructor(
         context: Context,
         authenticatorId: String,
         authParams: LinkedHashMap<String, String>
-    ) = authenticationProviderManager
-        .authenticateWithAnyAuthenticator(context, authenticatorId, authParams)
+    )
 
     /**
      * Logout the user from the application.
@@ -265,8 +177,5 @@ class AuthenticationProvider private constructor(
      * emit: [AuthenticationState.Initial] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    suspend fun logout(context: Context) = authenticationProviderManager.logout(
-        context,
-        authenticationCoreConfig.getClientId()
-    )
+    suspend fun logout(context: Context)
 }

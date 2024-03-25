@@ -32,16 +32,16 @@ import kotlinx.coroutines.flow.SharedFlow
 import java.lang.ref.WeakReference
 
 /**
- * Authentication provider class that is used to manage the authentication process.
+ * Authentication provider manager that is used to manage the authentication process.
  *
- * @property authenticationCoreConfig [AuthenticationCoreConfig] object
+ * @property authenticationCore The [AuthenticationCoreDef] instance
  *
  * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
  * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
  * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
  * emit: [AuthenticationState.Error] - An error occurred during the authentication process
  */
-class AuthenticationProviderManagerImpl private constructor(
+internal class AuthenticationProviderManagerImpl private constructor(
     private val authenticationCore: AuthenticationCoreDef
 ) : AuthenticationProviderManager {
     /**

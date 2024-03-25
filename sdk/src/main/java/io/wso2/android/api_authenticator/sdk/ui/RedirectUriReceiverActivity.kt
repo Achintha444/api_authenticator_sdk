@@ -16,6 +16,7 @@ class RedirectUriReceiverActivity : ComponentActivity() {
     private val authenticationProvider: AuthenticationProvider? by lazy {
         RedirectUriReceiverActivityContainer.getAuthenticatorProvider()
     }
+
     // Flag to check if the redirection is handled
     private var redirectionHandled: Boolean = false
 

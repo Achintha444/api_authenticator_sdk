@@ -4,7 +4,10 @@ import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.AuthenticatorManager
 import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.impl.AuthenticatorManagerImpl
 
-object FlowManagerImplContainer {
+/**
+ * Dependency Injection container for the [FlowManagerImpl] class.
+ */
+internal object FlowManagerImplContainer {
     /**
      * Returns an instance of the [AuthenticatorManager] object, based on the given parameters.
      *

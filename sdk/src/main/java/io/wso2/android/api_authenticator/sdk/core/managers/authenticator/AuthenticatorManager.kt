@@ -7,7 +7,7 @@ import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorType
  * Authenticator manager interface.
  * This interface is responsible for handling the authenticator related operations.
  */
-interface AuthenticatorManager {
+internal interface AuthenticatorManager {
     /**
      * Get full details of the authenticator type.
      *

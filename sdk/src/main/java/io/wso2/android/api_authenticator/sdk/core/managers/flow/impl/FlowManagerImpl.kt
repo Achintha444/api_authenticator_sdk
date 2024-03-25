@@ -12,6 +12,12 @@ import io.wso2.android.api_authenticator.sdk.models.exceptions.FlowManagerExcept
 import io.wso2.android.api_authenticator.sdk.models.flow_status.FlowStatus
 import java.lang.ref.WeakReference
 
+/**
+ * [FlowManager] implementation class
+ * This class is responsible for handling the state of the authorization flow.
+ *
+ * @property authenticatorManager The [AuthenticatorManager] instance
+ */
 internal class FlowManagerImpl private constructor(
     private val authenticatorManager: AuthenticatorManager
 ) : FlowManager {

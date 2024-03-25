@@ -2,12 +2,12 @@ package io.wso2.android.api_authenticator.sdk.core.di
 
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.AuthenticatorManager
+import io.wso2.android.api_authenticator.sdk.core.managers.authn.impl.AuthnManagerImpl
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.impl.AuthnManagerImplRequestBuilder
 import io.wso2.android.api_authenticator.sdk.core.managers.flow.FlowManager
 import io.wso2.android.api_authenticator.sdk.core.managers.flow.impl.FlowManagerImpl
 import io.wso2.android.api_authenticator.sdk.models.http_client.http_client_builder.HttpClientBuilder
 import okhttp3.OkHttpClient
-import java.io.InputStream
 
 /**
  * Dependency Injection container for the [AuthnManagerImpl] class.

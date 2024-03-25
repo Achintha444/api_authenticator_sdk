@@ -7,7 +7,11 @@ import io.wso2.android.api_authenticator.sdk.models.authentication_flow.Authenti
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorTypeException
 import io.wso2.android.api_authenticator.sdk.models.exceptions.FlowManagerException
 
-interface FlowManager {
+/**
+ * Flow manager interface
+ * This interface is responsible for handling the state of the authorization flow.
+ */
+internal interface FlowManager {
     /**
      * Set the flow id of the authorization flow
      *

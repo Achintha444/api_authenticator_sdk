@@ -1,13 +1,14 @@
 package io.wso2.android.api_authenticator.sdk.provider.provider_managers.token
 
 import android.content.Context
+import io.wso2.android.api_authenticator.sdk.provider.provider_managers.token.impl.TokenProviderManagerImpl
 
 /**
  * The [TokenProviderManager] interface provides the functionality to get the tokens, validate the tokens,
  * refresh the tokens, and clear the tokens. This interface should be implemented by the
  * [TokenProviderManagerImpl] class.
  */
-interface TokenProviderManager {
+internal interface TokenProviderManager {
     /**
      * Get the access token from the token.
      *

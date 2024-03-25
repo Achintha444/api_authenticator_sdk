@@ -33,11 +33,7 @@ object AuthenticatorProviderUtil {
             authenticatorTypeString
         )
 
-        if (hasDuplicates) {
-            return null
-        } else {
-            return authenticatorType
-        }
+        return if (hasDuplicates) null else authenticatorType
     }
 
     /**
@@ -65,10 +61,6 @@ object AuthenticatorProviderUtil {
                 authenticatorIdString
             )
 
-        if (hasDuplicates) {
-            return null
-        } else {
-            return authenticatorType
-        }
+        return if (hasDuplicates) null else authenticatorType
     }
 }

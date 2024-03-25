@@ -5,8 +5,7 @@ import io.wso2.android.api_authenticator.sdk.models.state.TokenState
 /**
  * Interface which has the methods to manage the token data store.
  */
-interface TokenDataStore {
-
+internal interface TokenDataStore {
     /**
      * Save the [TokenState] to the data store.
      *

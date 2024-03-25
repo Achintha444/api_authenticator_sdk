@@ -7,7 +7,7 @@ import net.openid.appauth.TokenResponse
 /**
  * Interface which has the methods to manage the tokens.
  */
-interface TokenManager {
+internal interface TokenManager {
 
     /**
      * Save the [TokenState] to the data store.

@@ -7,7 +7,7 @@ import io.wso2.android.api_authenticator.sdk.models.state.TokenState
 /**
  * Interface which has the methods to manage the AppAuth SDK.
  */
-interface AppAuthManager {
+internal interface AppAuthManager {
     /**
      * Use to exchange the authorization code for the access token.
      *

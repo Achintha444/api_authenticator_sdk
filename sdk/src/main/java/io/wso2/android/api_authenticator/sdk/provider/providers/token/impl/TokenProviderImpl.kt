@@ -1,35 +1,49 @@
-package io.wso2.android.api_authenticator.sdk.provider.provider_managers.token.impl
+package io.wso2.android.api_authenticator.sdk.provider.providers.token.impl
 
 import android.content.Context
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
+import io.wso2.android.api_authenticator.sdk.provider.di.TokenProviderImplContainer
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.token.TokenProviderManager
+import io.wso2.android.api_authenticator.sdk.provider.providers.token.TokenProvider
 import java.lang.ref.WeakReference
 
 /**
- * The [TokenProviderManagerImpl] class provides the functionality to get the tokens, validate the
- * tokens, refresh the tokens, and clear the tokens. This class uses the functionality provided by
- * the [AuthenticationCoreDef] class.
+ * The [TokenProviderImpl] class provides the functionality to get the tokens, validate the tokens,
+ * refresh the tokens, and clear the tokens.
+ *
+ * @property authenticationCore The [AuthenticationCoreDef] instance
  */
-internal class TokenProviderManagerImpl private constructor(
+internal class TokenProviderImpl private constructor(
     private val authenticationCore: AuthenticationCoreDef
-) : TokenProviderManager {
+): TokenProvider {
+    /**
+     * Instance of the [TokenProviderManager] that will be used throughout the application
+     */
+    private val tokenProviderManager: TokenProviderManager by lazy {
+        TokenProviderImplContainer.getTokenProviderManager(authenticationCore)
+    }
+
     companion object {
         /**
-         * Instance of the [TokenProviderManagerImpl] that will be used throughout the application
+         * Instance of the [TokenProviderImpl] that will be used throughout the application
          */
-        private var tokenProviderManagerInstance: WeakReference<TokenProviderManagerImpl> =
+        private var tokenProviderImplInstance: WeakReference<TokenProviderImpl> =
             WeakReference(null)
 
         /**
-         * Initialize the [TokenProviderManagerImpl] instance and return the instance.
+         * Initialize the [TokenProviderImpl] instance and return the instance.
+         *
+         * @param authenticationCore The [AuthenticationCoreDef] instance
+         *
+         * @return Initialized [TokenProviderImpl] instance
          */
-        fun getInstance(authenticationCore: AuthenticationCoreDef): TokenProviderManagerImpl {
-            var tokenProviderManager = tokenProviderManagerInstance.get()
-            if (tokenProviderManager == null) {
-                tokenProviderManager = TokenProviderManagerImpl(authenticationCore)
-                tokenProviderManagerInstance = WeakReference(tokenProviderManager)
+        fun getInstance(authenticationCore: AuthenticationCoreDef): TokenProviderImpl {
+            var tokenProvider = tokenProviderImplInstance.get()
+            if (tokenProvider == null) {
+                tokenProvider = TokenProviderImpl(authenticationCore)
+                tokenProviderImplInstance = WeakReference(tokenProvider)
             }
-            return tokenProviderManager
+            return tokenProvider
         }
     }
 
@@ -41,7 +55,7 @@ internal class TokenProviderManagerImpl private constructor(
      * @return The access token [String]
      */
     override suspend fun getAccessToken(context: Context): String? =
-        authenticationCore.getAccessToken(context)
+        tokenProviderManager.getAccessToken(context)
 
     /**
      * Get the refresh token from the token.
@@ -51,7 +65,7 @@ internal class TokenProviderManagerImpl private constructor(
      * @return The refresh token [String]
      */
     override suspend fun getRefreshToken(context: Context): String? =
-        authenticationCore.getRefreshToken(context)
+        tokenProviderManager.getRefreshToken(context)
 
     /**
      * Get the ID token from the token.
@@ -60,8 +74,7 @@ internal class TokenProviderManagerImpl private constructor(
      *
      * @return The ID token [String]
      */
-    override suspend fun getIDToken(context: Context): String? =
-        authenticationCore.getIDToken(context)
+    override suspend fun getIDToken(context: Context): String? = tokenProviderManager.getIDToken(context)
 
     /**
      * Get the access token expiration time from the token.
@@ -71,7 +84,7 @@ internal class TokenProviderManagerImpl private constructor(
      * @return The access token expiration time [Long]
      */
     override suspend fun getAccessTokenExpirationTime(context: Context): Long? =
-        authenticationCore.getAccessTokenExpirationTime(context)
+        tokenProviderManager.getAccessTokenExpirationTime(context)
 
     /**
      * Get the scope from the token.
@@ -80,7 +93,7 @@ internal class TokenProviderManagerImpl private constructor(
      *
      * @return The scope [String]
      */
-    override suspend fun getScope(context: Context): String? = authenticationCore.getScope(context)
+    override suspend fun getScope(context: Context): String? = tokenProviderManager.getScope(context)
 
 
     /**
@@ -91,7 +104,7 @@ internal class TokenProviderManagerImpl private constructor(
      * @return `true` if the access token is valid, `false` otherwise.
      */
     override suspend fun validateAccessToken(context: Context): Boolean? =
-        authenticationCore.validateAccessToken(context)
+        tokenProviderManager.validateAccessToken(context)
 
     /**
      * Perform refresh token grant. This method will perform the refresh token grant and save the
@@ -100,11 +113,8 @@ internal class TokenProviderManagerImpl private constructor(
      *
      * @param context The [Context] instance.
      */
-    override suspend fun performRefreshTokenGrant(context: Context) {
-        var tokenState = authenticationCore.getTokenState(context)
-        tokenState = authenticationCore.performRefreshTokenGrant(context, tokenState!!)
-        authenticationCore.saveTokenState(context, tokenState!!)
-    }
+    override suspend fun performRefreshTokenGrant(context: Context) =
+        tokenProviderManager.performRefreshTokenGrant(context)
 
     /**
      * Perform an action with fresh tokens. This method will perform the action with fresh tokens
@@ -118,11 +128,7 @@ internal class TokenProviderManagerImpl private constructor(
     override suspend fun performActionWithFreshTokens(
         context: Context,
         action: suspend (String?, String?) -> Unit
-    ) {
-        var tokenState = authenticationCore.getTokenState(context)
-        tokenState = authenticationCore.performActionWithFreshTokens(context, tokenState!!, action)
-        authenticationCore.saveTokenState(context, tokenState!!)
-    }
+    ) = tokenProviderManager.performActionWithFreshTokens(context, action)
 
     /**
      * Clear the tokens from the token data store. This method will clear the tokens from the
@@ -131,6 +137,5 @@ internal class TokenProviderManagerImpl private constructor(
      *
      * @param context The [Context] instance.
      */
-    override suspend fun clearTokens(context: Context): Unit? =
-        authenticationCore.clearTokens(context)
+    override suspend fun clearTokens(context: Context): Unit? = tokenProviderManager.clearTokens(context)
 }
