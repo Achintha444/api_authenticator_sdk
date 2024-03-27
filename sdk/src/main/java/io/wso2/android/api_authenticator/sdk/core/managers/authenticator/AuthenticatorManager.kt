@@ -32,6 +32,9 @@ internal interface AuthenticatorManager {
      * @return List of authenticator types with full details [ArrayList<AuthenticatorType>]
      *
      * @throws AuthenticatorTypeException
+     *
+     * @deprecated This method is deprecated. It is not recommended to bring all the authenticator types at once.
+     * this can cause unforeseen issues.
      */
     suspend fun getDetailsOfAllAuthenticatorTypesGivenFlow(
         flowId: String,

@@ -4,6 +4,8 @@ import io.wso2.android.api_authenticator.sdk.api_auth.di.ApiAuthContainer
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.core.impl.AuthenticationCore
+import io.wso2.android.api_authenticator.sdk.provider.di.AuthenticationProviderImplContainer
+import io.wso2.android.api_authenticator.sdk.provider.di.TokenProviderImplContainer
 import io.wso2.android.api_authenticator.sdk.provider.providers.authentication.AuthenticationProvider
 import io.wso2.android.api_authenticator.sdk.provider.providers.authentication.impl.AuthenticationProviderImpl
 import io.wso2.android.api_authenticator.sdk.provider.providers.token.TokenProvider
@@ -64,8 +66,7 @@ class ApiAuth private constructor(private val authenticationCoreConfig: Authenti
      */
     fun getAuthenticationProvider(): AuthenticationProvider =
         AuthenticationProviderImpl.getInstance(
-            authenticationCoreConfig = authenticationCoreConfig,
-            authenticationCore = authenticationCore
+            AuthenticationProviderImplContainer.getAuthenticationProviderManager(authenticationCore)
         )
 
     /**
@@ -73,5 +74,7 @@ class ApiAuth private constructor(private val authenticationCoreConfig: Authenti
      *
      * @return [TokenProvider] instance
      */
-    fun getTokenProvider(): TokenProvider = TokenProviderImpl.getInstance(authenticationCore)
+    fun getTokenProvider(): TokenProvider = TokenProviderImpl.getInstance(
+        TokenProviderImplContainer.getTokenProviderManager(authenticationCore)
+    )
 }

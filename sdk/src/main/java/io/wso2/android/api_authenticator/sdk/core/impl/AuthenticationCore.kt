@@ -5,7 +5,9 @@ import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.core.di.AuthenticationCoreContainer
 import io.wso2.android.api_authenticator.sdk.core.managers.app_auth.AppAuthManager
+import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.AuthenticatorManager
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.AuthnManager
+import io.wso2.android.api_authenticator.sdk.core.managers.flow.FlowManager
 import io.wso2.android.api_authenticator.sdk.core.managers.token.TokenManager
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
@@ -26,21 +28,31 @@ class AuthenticationCore private constructor(
     private val authenticationCoreConfig: AuthenticationCoreConfig
 ) : AuthenticationCoreDef {
     /**
+     * Instance of the [AuthenticatorManager] that will be used throughout the application
+     */
+    private val authenticatorManager: AuthenticatorManager by lazy {
+        AuthenticationCoreContainer.getAuthenticatorManagerInstance(authenticationCoreConfig)
+    }
+
+    /**
+     * Instance of the [FlowManager] that will be used throughout the application
+     */
+    private val flowManager: FlowManager by lazy {
+        AuthenticationCoreContainer.getFlowManagerInstance(authenticationCoreConfig)
+    }
+
+    /**
      * Instance of the [AuthnManager] that will be used throughout the application
      */
     private val authnMangerInstance: AuthnManager by lazy {
-        AuthenticationCoreContainer.getAuthMangerInstance(
-            authenticationCoreConfig
-        )
+        AuthenticationCoreContainer.getAuthMangerInstance(authenticationCoreConfig)
     }
 
     /**
      * Instance of the [AppAuthManager] that will be used throughout the application
      */
     private val appAuthManagerInstance: AppAuthManager by lazy {
-        AuthenticationCoreContainer.getAppAuthManagerInstance(
-            authenticationCoreConfig
-        )
+        AuthenticationCoreContainer.getAppAuthManagerInstance(authenticationCoreConfig)
     }
 
     companion object {
@@ -56,11 +68,10 @@ class AuthenticationCore private constructor(
          *
          * @return Initialized [AuthenticationCore] instance
          */
-        fun getInstance(
-            authenticationCoreConfig: AuthenticationCoreConfig
-        ): AuthenticationCore {
+        fun getInstance(authenticationCoreConfig: AuthenticationCoreConfig): AuthenticationCore {
             var authenticationCore = authenticationCoreInstance.get()
-            if (authenticationCore == null) {
+            if (authenticationCore == null ||
+                authenticationCore?.authenticationCoreConfig != authenticationCoreConfig) {
                 authenticationCore = AuthenticationCore(authenticationCoreConfig)
                 authenticationCoreInstance = WeakReference(authenticationCore)
             }
@@ -120,6 +131,22 @@ class AuthenticationCore private constructor(
         authenticatorType,
         authenticatorParameters
     )
+
+    /**
+     * Get the authenticator details of the given authenticator type.
+     * This should call before authenticating with the any authenticator.
+     *
+     * @param authenticatorType Authenticator type
+     *
+     * @return Authenticator details [AuthParams]
+     */
+    override suspend fun getDetailsOfAuthenticatorType(
+        authenticatorType: AuthenticatorType
+    ): AuthenticatorType {
+        val flowId: String = flowManager.getFlowId()
+
+        return authenticatorManager.getDetailsOfAuthenticatorType(flowId, authenticatorType)
+    }
 
     /**
      * Exchange the authorization code for the access token.
@@ -256,14 +283,23 @@ class AuthenticationCore private constructor(
         getTokenManagerInstance(context).validateAccessToken()
 
     /**
+     * Get the authentication core configuration.
+     * This configuration is used to configure the authentication core.
+     *
+     * @return [AuthenticationCoreConfig] instance
+     */
+    override fun getAuthenticationCoreConfig(): AuthenticationCoreConfig = authenticationCoreConfig
+
+    /**
      * Logout the user from the application.
      *
-     * @param clientId Client id of the application
      * @param idToken Id token of the user
      *
      * @throws [AuthnManagerException] If the logout fails
      * @throws [IOException] If the request fails due to a network error
      */
-    override suspend fun logout(clientId: String, idToken: String): Unit? =
+    override suspend fun logout(idToken: String) {
+        val clientId: String = authenticationCoreConfig.getClientId()
         authnMangerInstance.logout(clientId, idToken)
+    }
 }

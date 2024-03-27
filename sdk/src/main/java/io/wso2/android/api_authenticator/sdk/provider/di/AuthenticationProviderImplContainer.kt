@@ -12,16 +12,6 @@ import io.wso2.android.api_authenticator.sdk.provider.providers.authentication.i
  */
 internal object AuthenticationProviderImplContainer {
     /**
-     * Get the instance of the [AuthenticationCoreDef].
-     *
-     * @param authenticationCoreConfig Configuration of the [AuthenticationCoreDef]
-     *
-     * @return [AuthenticationCoreDef] instance
-     */
-    internal fun getAuthenticationCoreDef(authenticationCoreConfig: AuthenticationCoreConfig)
-            : AuthenticationCoreDef = AuthenticationCore.getInstance(authenticationCoreConfig)
-
-    /**
      * Get the instance of the [AuthenticationProviderManager].
      *
      * @param authenticationCore [AuthenticationCoreDef] instance
@@ -30,5 +20,10 @@ internal object AuthenticationProviderImplContainer {
      */
     internal fun getAuthenticationProviderManager(authenticationCore: AuthenticationCoreDef)
             : AuthenticationProviderManager =
-        AuthenticationProviderManagerImpl.getInstance(authenticationCore)
+        AuthenticationProviderManagerImpl.getInstance(
+            authenticationCore,
+            AuthenticationProviderManagerImplContainer.getAuthenticationStateProviderManager(
+                authenticationCore
+            )
+        )
 }

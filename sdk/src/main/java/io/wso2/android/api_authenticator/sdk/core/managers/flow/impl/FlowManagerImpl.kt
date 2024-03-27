@@ -32,9 +32,7 @@ internal class FlowManagerImpl private constructor(
          *
          * @param authenticatorManager The [AuthenticatorManager] instance
          */
-        fun getInstance(
-            authenticatorManager: AuthenticatorManager
-        ): FlowManagerImpl {
+        fun getInstance(authenticatorManager: AuthenticatorManager): FlowManagerImpl {
             var flowManagerImpl = flowManagerImplInstance.get()
             if (flowManagerImpl == null) {
                 flowManagerImpl = FlowManagerImpl(authenticatorManager)
@@ -85,13 +83,13 @@ internal class FlowManagerImpl private constructor(
                 responseBodyString
             )
 
-        val authenticatorTypes: ArrayList<AuthenticatorType> =
-            authenticatorManager.getDetailsOfAllAuthenticatorTypesGivenFlow(
-                authenticationFlow.flowId,
-                authenticationFlow.nextStep.authenticators
-            )
-
-        authenticationFlow.nextStep.authenticators = authenticatorTypes
+//        val authenticatorTypes: ArrayList<AuthenticatorType> =
+//            authenticatorManager.getDetailsOfAllAuthenticatorTypesGivenFlow(
+//                authenticationFlow.flowId,
+//                authenticationFlow.nextStep.authenticators
+//            )
+//
+//        authenticationFlow.nextStep.authenticators = authenticatorTypes
 
         return authenticationFlow
     }
@@ -141,7 +139,4 @@ internal class FlowManagerImpl private constructor(
     override fun dispose() {
         flowManagerImplInstance.clear()
     }
-
 }
-
-

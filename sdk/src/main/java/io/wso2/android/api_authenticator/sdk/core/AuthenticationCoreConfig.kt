@@ -1,10 +1,10 @@
 package io.wso2.android.api_authenticator.sdk.core
 
-import io.wso2.android.api_authenticator.sdk.models.prompt_type.PromptTypes
+import io.wso2.android.api_authenticator.sdk.models.http_client.LessSecureHttpClient
 import okhttp3.OkHttpClient
 
 /**
- * Holds the configuration related to the [AuthenticationCore].
+ * Holds the configuration related to the [AuthenticationCoreDef].
  *
  * @property baseUrl Base url of the WSO2 identity server
  * @property clientId Client id of the application
@@ -105,5 +105,23 @@ class AuthenticationCoreConfig(
      */
     fun getIsDevelopment(): Boolean? {
         return isDevelopment
+    }
+
+    /**
+     * Checks the equality of the passed object with the current object.
+     *
+     * @param other The object to compare with the current object.
+     *
+     * @return `true` if the objects are equal, `false` otherwise.
+     */
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || other !is AuthenticationCoreConfig) return false
+
+        // Compare the properties of the objects
+        return baseUrl == other.baseUrl && redirectUri == other.redirectUri &&
+                clientId == other.clientId && scope == other.scope &&
+                integrityToken == other.integrityToken &&
+                googleWebClientId == other.googleWebClientId && isDevelopment == other.isDevelopment
     }
 }

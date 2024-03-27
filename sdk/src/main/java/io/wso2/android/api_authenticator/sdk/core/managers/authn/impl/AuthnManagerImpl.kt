@@ -235,9 +235,7 @@ internal class AuthnManagerImpl private constructor(
                             if (response.code != 200) {
                                 // Throw an [AuthnManagerException] if the request does not return 200 response.message
                                 continuation.resumeWithException(
-                                    AuthnManagerException(
-                                        response.message
-                                    )
+                                    AuthnManagerException(response.message)
                                 )
                             } else {
                                 continuation.resume(Unit)

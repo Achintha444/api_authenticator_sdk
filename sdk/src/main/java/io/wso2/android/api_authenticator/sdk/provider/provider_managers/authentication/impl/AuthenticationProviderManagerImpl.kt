@@ -35,6 +35,7 @@ import java.lang.ref.WeakReference
  * Authentication provider manager that is used to manage the authentication process.
  *
  * @property authenticationCore The [AuthenticationCoreDef] instance
+ * @property authenticationStateProviderManager The [AuthenticationStateProviderManager] instance
  *
  * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
  * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
@@ -42,17 +43,9 @@ import java.lang.ref.WeakReference
  * emit: [AuthenticationState.Error] - An error occurred during the authentication process
  */
 internal class AuthenticationProviderManagerImpl private constructor(
-    private val authenticationCore: AuthenticationCoreDef
+    private val authenticationCore: AuthenticationCoreDef,
+    private val authenticationStateProviderManager: AuthenticationStateProviderManager
 ) : AuthenticationProviderManager {
-    /**
-     * Instance of the [AuthenticationStateHandler] that will be used throughout the application
-     */
-    private val authenticationStateProviderManager: AuthenticationStateProviderManager by lazy {
-        AuthenticationProviderManagerImplContainer.getAuthenticationStateProviderManager(
-            authenticationCore
-        )
-    }
-
     /**
      * List of authenticators in this step of the authentication flow.
      */
@@ -89,17 +82,20 @@ internal class AuthenticationProviderManagerImpl private constructor(
         /**
          * Initialize the [AuthenticationProviderManagerImpl] instance and return the instance.
          *
-         * @param authenticationCoreConfig The [AuthenticatorManager] instance
+         * @param authenticationCore The [AuthenticationCoreDef] instance
+         * @param authenticationStateProviderManager The [AuthenticationStateProviderManager] instance
          *
          * @return The [AuthenticationProviderManagerImpl] instance
          */
         fun getInstance(
-            authenticationCore: AuthenticationCoreDef
+            authenticationCore: AuthenticationCoreDef,
+            authenticationStateProviderManager: AuthenticationStateProviderManager
         ): AuthenticationProviderManagerImpl {
             var authenticatorProviderManager = authenticationProviderManagerInstance.get()
             if (authenticatorProviderManager == null) {
                 authenticatorProviderManager = AuthenticationProviderManagerImpl(
-                    authenticationCore
+                    authenticationCore,
+                    authenticationStateProviderManager
                 )
                 authenticationProviderManagerInstance = WeakReference(authenticatorProviderManager)
             }
@@ -200,12 +196,60 @@ internal class AuthenticationProviderManagerImpl private constructor(
         }
     }
 
+    private suspend fun authenticateWithAuthenticator(
+        authenticatorTypeString: String? = null,
+        authenticatorIdString: String? = null,
+        afterGetAuthenticatorType: suspend (AuthenticatorType) -> Unit
+    ) {
+        authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Loading)
+
+        var authenticatorType: AuthenticatorType? =
+            AuthenticatorTypeUtil.getAuthenticatorTypeFromAuthenticatorTypeList(
+                authenticatorsInThisStep!!,
+                authenticatorIdString,
+                authenticatorTypeString
+            ) ?: selectedAuthenticator
+
+        if (authenticatorType != null) {
+            runCatching {
+                authenticationCore.getDetailsOfAuthenticatorType(authenticatorType)
+            }.onSuccess {
+                if (it != null) {
+                    afterGetAuthenticatorType(it)
+                } else {
+                    authenticationStateProviderManager.emitAuthenticationState(
+                        AuthenticationState.Error(
+                            AuthenticatorProviderException(
+                                AuthenticatorProviderException.AUTHENTICATOR_NOT_FOUND
+                            )
+                        )
+                    )
+
+                    selectedAuthenticator = null
+                }
+            }.onFailure {
+                authenticationStateProviderManager.emitAuthenticationState(
+                    AuthenticationState.Error(it)
+                )
+
+                selectedAuthenticator = null
+            }
+        } else {
+            authenticationStateProviderManager.emitAuthenticationState(
+                AuthenticationState.Error(
+                    AuthenticatorProviderException(
+                        AuthenticatorProviderException.AUTHENTICATOR_NOT_FOUND
+                    )
+                )
+            )
+        }
+    }
+
     /**
      * Common function in all authenticate methods
      *
      * @param context The context of the application
-     * @param authenticatorTypeString The authenticator type string
-     * @param authenticatorIdString The authenticator id string
+     * @param userSelectedAuthenticatorType The selected authenticator type
      * @param authParams The authentication parameters of the selected authenticator
      * @param authParamsAsMap The authentication parameters of the selected authenticator as a LinkedHashMap<String, String>
      * with the key as the parameter name and the value as the parameter value
@@ -217,20 +261,15 @@ internal class AuthenticationProviderManagerImpl private constructor(
      */
     private suspend fun commonAuthenticate(
         context: Context,
-        authenticatorTypeString: String? = null,
-        authenticatorIdString: String? = null,
+        userSelectedAuthenticatorType: AuthenticatorType? = null,
         authParams: AuthParams? = null,
         authParamsAsMap: LinkedHashMap<String, String>? = null
     ) {
         authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Loading)
 
         // setting up the authenticator type
-        val authenticatorType: AuthenticatorType? =
-            AuthenticatorTypeUtil.getAuthenticatorTypeFromAuthenticatorTypeList(
-                authenticatorsInThisStep!!,
-                authenticatorIdString,
-                authenticatorTypeString
-            ) ?: selectedAuthenticator
+        var authenticatorType: AuthenticatorType? =
+            userSelectedAuthenticatorType ?: selectedAuthenticator
 
         if (authenticatorType != null) {
             selectedAuthenticator = authenticatorType
@@ -244,26 +283,19 @@ internal class AuthenticationProviderManagerImpl private constructor(
             }
 
             runCatching {
-                authenticationCore.authenticate(
-                    authenticatorType,
-                    authParamsMap!!
-                )
+                authenticationCore.authenticate(authenticatorType, authParamsMap!!)
             }.onSuccess {
                 authenticatorsInThisStep =
                     authenticationStateProviderManager.handleAuthenticationFlowResult(it!!, context)
-                selectedAuthenticator = null
-
                 completeDeferred()
             }.onFailure {
                 authenticationStateProviderManager.emitAuthenticationState(
-                    AuthenticationState.Error(
-                        it
-                    )
+                    AuthenticationState.Error(it)
                 )
-                selectedAuthenticator = null
-
                 completeDeferred()
             }
+
+            selectedAuthenticator = null
         } else {
             authenticationStateProviderManager.emitAuthenticationState(
                 AuthenticationState.Error(
@@ -272,6 +304,8 @@ internal class AuthenticationProviderManagerImpl private constructor(
                     )
                 )
             )
+
+            selectedAuthenticator = null
 
             completeDeferred()
         }
@@ -294,11 +328,15 @@ internal class AuthenticationProviderManagerImpl private constructor(
         username: String,
         password: String
     ) {
-        commonAuthenticate(
-            context,
-            authenticatorTypeString = AuthenticatorTypes.BASIC_AUTHENTICATOR.authenticatorType,
-            authParams = BasicAuthenticatorAuthParams(username, password)
-        )
+        authenticateWithAuthenticator(
+            authenticatorTypeString = AuthenticatorTypes.BASIC_AUTHENTICATOR.authenticatorType
+        ) {
+            commonAuthenticate(
+                context,
+                userSelectedAuthenticatorType = it,
+                authParams = BasicAuthenticatorAuthParams(username, password)
+            )
+        }
     }
 
     /**
@@ -313,11 +351,15 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     override suspend fun authenticateWithTotp(context: Context, token: String) {
-        commonAuthenticate(
-            context,
-            authenticatorTypeString = AuthenticatorTypes.TOTP_AUTHENTICATOR.authenticatorType,
-            authParams = TotpAuthenticatorTypeAuthParams(token)
-        )
+        authenticateWithAuthenticator(
+            authenticatorTypeString = AuthenticatorTypes.TOTP_AUTHENTICATOR.authenticatorType
+        ) {
+            commonAuthenticate(
+                context,
+                userSelectedAuthenticatorType = it,
+                authParams = TotpAuthenticatorTypeAuthParams(token)
+            )
+        }
     }
 
     /**
@@ -337,48 +379,46 @@ internal class AuthenticationProviderManagerImpl private constructor(
         authenticatorIdString: String?,
         authenticatorTypeString: String?
     ) {
-        // Setting up the deferred object to wait for the result
-        authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Loading)
+        authenticateWithAuthenticator(
+            authenticatorTypeString = authenticatorTypeString,
+            authenticatorIdString = authenticatorIdString
+        ) {
+            // Retrieving the prompt type of the authenticator
+            val promptType: String? = it.metadata?.promptType
 
-        // setting up the authenticator type
-        val authenticatorType: AuthenticatorType? =
-            AuthenticatorTypeUtil.getAuthenticatorTypeFromAuthenticatorTypeList(
-                authenticatorsInThisStep!!,
-                authenticatorIdString = authenticatorIdString,
-                authenticatorTypeString = authenticatorTypeString
-            )
+            if (promptType == PromptTypes.REDIRECTION_PROMPT.promptType) {
+                // Retrieving the redirect URI of the authenticator
+                val redirectUri: String? = it.metadata?.additionalData?.redirectUrl
 
-        // Retrieving the prompt type of the authenticator
-        val promptType: String? = authenticatorType?.metadata?.promptType
+                if (redirectUri.isNullOrEmpty()) {
+                    authenticationStateProviderManager.emitAuthenticationState(
+                        AuthenticationState.Error(
+                            AuthenticatorProviderException(
+                                AuthenticatorProviderException.REDIRECT_URI_NOT_FOUND
+                            )
+                        )
+                    )
 
-        if (promptType == PromptTypes.REDIRECTION_PROMPT.promptType) {
-            // Retrieving the redirect URI of the authenticator
-            val redirectUri: String? = authenticatorType.metadata?.additionalData?.redirectUrl
+                    selectedAuthenticator = null
+                } else {
+                    selectedAuthenticator = it
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(redirectUri))
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(intent)
 
-            if (redirectUri.isNullOrEmpty()) {
+                    redirectAuthenticationResultDeferred.await()
+                }
+            } else {
                 authenticationStateProviderManager.emitAuthenticationState(
                     AuthenticationState.Error(
                         AuthenticatorProviderException(
-                            AuthenticatorProviderException.REDIRECT_URI_NOT_FOUND
+                            AuthenticatorProviderException.NOT_REDIRECT_PROMPT
                         )
                     )
                 )
-            } else {
-                selectedAuthenticator = authenticatorType
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(redirectUri))
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                context.startActivity(intent)
 
-                redirectAuthenticationResultDeferred.await()
+                selectedAuthenticator = null
             }
-        } else {
-            authenticationStateProviderManager.emitAuthenticationState(
-                AuthenticationState.Error(
-                    AuthenticatorProviderException(
-                        AuthenticatorProviderException.NOT_REDIRECT_PROMPT
-                    )
-                )
-            )
         }
     }
 
@@ -465,7 +505,6 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * Authenticate the user with the Google authenticator.
      *
      * @param context The context of the application
-     * @param googleWebClientId Google web client id
      * @param googleAuthenticateResultLauncher The [ActivityResultLauncher] object to handle the Google authentication result
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
@@ -473,19 +512,17 @@ internal class AuthenticationProviderManagerImpl private constructor(
      */
     override suspend fun authenticateWithGoogle(
         context: Context,
-        googleWebClientId: String,
         googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
     ) {
-        authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Loading)
 
-        // setting up the authenticator type
-        val authenticatorType: AuthenticatorType? =
-            AuthenticatorTypeUtil.getAuthenticatorTypeFromAuthenticatorTypeList(
-                authenticatorsInThisStep!!,
-                authenticatorTypeString = AuthenticatorTypes.GOOGLE_AUTHENTICATOR.authenticatorType
-            )
+        authenticateWithAuthenticator(
+            authenticatorTypeString = AuthenticatorTypes.GOOGLE_AUTHENTICATOR.authenticatorType
+        ) {
 
-        if (authenticatorType != null) {
+            // Get the Google Web Client ID
+            val googleWebClientId: String? =
+                authenticationCore.getAuthenticationCoreConfig().getGoogleWebClientId()
+
             if (googleWebClientId.isNullOrEmpty()) {
                 authenticationStateProviderManager.emitAuthenticationState(
                     AuthenticationState.Error(
@@ -494,8 +531,10 @@ internal class AuthenticationProviderManagerImpl private constructor(
                         )
                     )
                 )
+
+               selectedAuthenticator = null
             } else {
-                selectedAuthenticator = authenticatorType
+                selectedAuthenticator = it
 
                 val googleSignInClient = GoogleSignIn.getClient(
                     context,
@@ -511,14 +550,6 @@ internal class AuthenticationProviderManagerImpl private constructor(
 
                 googleAuthenticationResultDeferred.await()
             }
-        } else {
-            authenticationStateProviderManager.emitAuthenticationState(
-                AuthenticationState.Error(
-                    AuthenticatorProviderException(
-                        AuthenticatorProviderException.AUTHENTICATOR_NOT_FOUND
-                    )
-                )
-            )
         }
     }
 
@@ -553,10 +584,11 @@ internal class AuthenticationProviderManagerImpl private constructor(
                             )
                         )
                     )
+
+                    selectedAuthenticator = null
                 } else {
                     commonAuthenticate(
                         context,
-                        authenticatorTypeString = AuthenticatorTypes.GOOGLE_AUTHENTICATOR.authenticatorType,
                         authParams = GoogleNativeAuthenticatorTypeAuthParams(
                             accessToken = authCode,
                             idToken = idToken
@@ -594,33 +626,33 @@ internal class AuthenticationProviderManagerImpl private constructor(
         authenticatorId: String,
         authParams: LinkedHashMap<String, String>
     ) {
-        commonAuthenticate(
-            context,
-            authenticatorIdString = authenticatorId,
-            authParamsAsMap = authParams
-        )
+        authenticateWithAuthenticator(
+            authenticatorIdString = authenticatorId
+        ) {
+            commonAuthenticate(
+                context,
+                userSelectedAuthenticatorType = it,
+                authParamsAsMap = authParams
+            )
+        }
     }
 
     /**
      * Logout the user from the application.
      *
      * @param context The context of the application
-     * @param clientId Client id of the application created in WSO2 identity server
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
      * emit: [AuthenticationState.Initial] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    override suspend fun logout(context: Context, clientId: String) {
+    override suspend fun logout(context: Context) {
         authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Loading)
 
         runCatching {
             val idToken: String? = authenticationCore.getIDToken(context)
             // Call the logout endpoint
-            authenticationCore.logout(
-                clientId,
-                idToken!!
-            )
+            authenticationCore.logout(idToken!!)
 
             // Sign out from google if the user is signed in from google
             GoogleSignIn.getClient(

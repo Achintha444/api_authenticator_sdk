@@ -37,6 +37,17 @@ interface AuthenticationCoreDef {
     ): AuthenticationFlow?
 
     /**
+     * Get the authenticator details of the given authenticator type.
+     * This should call before authenticating with the any authenticator.
+     *
+     * @param authenticatorType Authenticator type
+     *
+     * @return Authenticator details [AuthParams]
+     */
+    suspend fun getDetailsOfAuthenticatorType(authenticatorType: AuthenticatorType)
+            : AuthenticatorType?
+
+    /**
      * Exchange the authorization code for the access token.
      *
      * @param authorizationCode Authorization code
@@ -157,13 +168,20 @@ interface AuthenticationCoreDef {
     suspend fun validateAccessToken(context: Context): Boolean?
 
     /**
+     * Get the authentication core configuration.
+     * This configuration is used to configure the authentication core.
+     *
+     * @return [AuthenticationCoreConfig] instance
+     */
+    fun getAuthenticationCoreConfig(): AuthenticationCoreConfig
+
+    /**
      * Logout the user from the application.
      *
-     * @param clientId Client id of the application
      * @param idToken Id token of the user
      *
      * @throws [AuthnManagerException] If the logout fails
      * @throws [IOException] If the request fails due to a network error
      */
-    suspend fun logout(clientId: String, idToken: String): Unit?
+    suspend fun logout(idToken: String)
 }

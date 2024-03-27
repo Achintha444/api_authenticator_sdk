@@ -6,6 +6,7 @@ import io.wso2.android.api_authenticator.sdk.core.managers.authn.impl.AuthnManag
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.impl.AuthnManagerImplRequestBuilder
 import io.wso2.android.api_authenticator.sdk.core.managers.flow.FlowManager
 import io.wso2.android.api_authenticator.sdk.core.managers.flow.impl.FlowManagerImpl
+import io.wso2.android.api_authenticator.sdk.models.http_client.LessSecureHttpClient
 import io.wso2.android.api_authenticator.sdk.models.http_client.http_client_builder.HttpClientBuilder
 import okhttp3.OkHttpClient
 
@@ -24,34 +25,27 @@ internal object AuthnManagerImplContainer {
      *
      * @return [OkHttpClient] instance.
      */
-    internal fun getClient(isDevelopment: Boolean?): OkHttpClient {
-        return HttpClientBuilder.getHttpClientInstance(isDevelopment)
-    }
+    internal fun getClient(isDevelopment: Boolean?): OkHttpClient =
+        HttpClientBuilder.getHttpClientInstance(isDevelopment)
 
     /**
      * Returns an instance of the [AuthnManagerImplRequestBuilder] class.
      *
      * @return [AuthnManagerImplRequestBuilder] instance.
      */
-    internal fun getAuthenticationCoreRequestBuilder(): AuthnManagerImplRequestBuilder {
-        return AuthnManagerImplRequestBuilder
-    }
+    internal fun getAuthenticationCoreRequestBuilder(): AuthnManagerImplRequestBuilder =
+        AuthnManagerImplRequestBuilder
 
     /**
      * Returns an instance of the [FlowManager] class.
      *
-     * @property authenticatorManager The [AuthenticatorManager] instance.
+     * @property authenticationCoreConfig The [AuthenticationCoreConfig] instance.
      *
      * @return [FlowManager] instance.
      *
      */
-    internal fun getFlowManager(
-        authenticationCoreConfig: AuthenticationCoreConfig
-    ): FlowManager {
-        return FlowManagerImpl.getInstance(
-            FlowManagerImplContainer.getAuthenticatorManagerInstance(
-                authenticationCoreConfig
-            )
+    internal fun getFlowManager(authenticationCoreConfig: AuthenticationCoreConfig): FlowManager =
+        FlowManagerImpl.getInstance(
+            FlowManagerImplContainer.getAuthenticatorManagerInstance(authenticationCoreConfig)
         )
-    }
 }

@@ -11,18 +11,11 @@ import java.lang.ref.WeakReference
  * The [TokenProviderImpl] class provides the functionality to get the tokens, validate the tokens,
  * refresh the tokens, and clear the tokens.
  *
- * @property authenticationCore The [AuthenticationCoreDef] instance
+ * @property tokenProviderManager The [TokenProviderManager] instance
  */
 internal class TokenProviderImpl private constructor(
-    private val authenticationCore: AuthenticationCoreDef
+    private val tokenProviderManager: TokenProviderManager
 ): TokenProvider {
-    /**
-     * Instance of the [TokenProviderManager] that will be used throughout the application
-     */
-    private val tokenProviderManager: TokenProviderManager by lazy {
-        TokenProviderImplContainer.getTokenProviderManager(authenticationCore)
-    }
-
     companion object {
         /**
          * Instance of the [TokenProviderImpl] that will be used throughout the application
@@ -33,14 +26,14 @@ internal class TokenProviderImpl private constructor(
         /**
          * Initialize the [TokenProviderImpl] instance and return the instance.
          *
-         * @param authenticationCore The [AuthenticationCoreDef] instance
+         * @param tokenProviderManager The [TokenProviderManager] instance
          *
          * @return Initialized [TokenProviderImpl] instance
          */
-        fun getInstance(authenticationCore: AuthenticationCoreDef): TokenProviderImpl {
+        fun getInstance(tokenProviderManager: TokenProviderManager): TokenProviderImpl {
             var tokenProvider = tokenProviderImplInstance.get()
             if (tokenProvider == null) {
-                tokenProvider = TokenProviderImpl(authenticationCore)
+                tokenProvider = TokenProviderImpl(tokenProviderManager)
                 tokenProviderImplInstance = WeakReference(tokenProvider)
             }
             return tokenProvider

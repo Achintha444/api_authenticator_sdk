@@ -5,11 +5,14 @@ import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.managers.app_auth.AppAuthManager
 import io.wso2.android.api_authenticator.sdk.core.managers.app_auth.impl.AppAuthManagerImpl
 import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.AuthenticatorManager
+import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.impl.AuthenticatorManagerImpl
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.AuthnManager
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.impl.AuthnManagerImpl
 import io.wso2.android.api_authenticator.sdk.core.managers.token.TokenManager
 import io.wso2.android.api_authenticator.sdk.core.managers.token.TokenManagerFactory
-import io.wso2.android.api_authenticator.sdk.core.managers.token.impl.TokenManagerImpl
+import io.wso2.android.api_authenticator.sdk.core.impl.AuthenticationCore
+import io.wso2.android.api_authenticator.sdk.core.managers.flow.FlowManager
+import io.wso2.android.api_authenticator.sdk.core.managers.flow.impl.FlowManagerImpl
 
 /**
  * Dependency Injection container for the [AuthenticationCore]
@@ -24,7 +27,7 @@ internal object AuthenticationCoreContainer {
      * @return [AuthnManager] instance.
      */
     internal fun getAuthMangerInstance(
-        authenticationCoreConfig: AuthenticationCoreConfig
+        authenticationCoreConfig: AuthenticationCoreConfig,
     ): AuthnManager {
         return AuthnManagerImpl.getInstance(
             authenticationCoreConfig,
@@ -60,6 +63,41 @@ internal object AuthenticationCoreContainer {
                 authenticationCoreConfig.getAuthorizeUrl(),
                 authenticationCoreConfig.getTokenUrl()
             )
+        )
+    }
+
+    /**
+     * Returns an instance of the [AuthenticatorManager] object, based on the given parameters.
+     *
+     * @property authenticationCoreConfig The [AuthenticationCoreConfig] instance.
+     *
+     * @return [AuthenticatorManager] instance.
+     */
+    internal fun getAuthenticatorManagerInstance(
+        authenticationCoreConfig: AuthenticationCoreConfig
+    ): AuthenticatorManager {
+        return AuthenticatorManagerImpl.getInstance(
+            AuthenticatorManagerImplContainer.getClient(
+                authenticationCoreConfig.getIsDevelopment()
+            ),
+            AuthenticatorManagerImplContainer.getAuthenticatorTypeFactory(),
+            AuthenticatorManagerImplContainer.getAuthenticatorManagerImplRequestBuilder(),
+            AuthenticatorManagerImplContainer.getAuthnUrl(
+                authenticationCoreConfig.getAuthnUrl()
+            )
+        )
+    }
+
+    /**
+     * Returns an instance of the [FlowManager] object, based on the given parameters.
+     *
+     * @return [FlowManager] instance.
+     */
+    internal fun getFlowManagerInstance(
+        authenticationCoreConfig: AuthenticationCoreConfig
+    ): FlowManager {
+        return FlowManagerImpl.getInstance(
+            FlowManagerImplContainer.getAuthenticatorManagerInstance(authenticationCoreConfig)
         )
     }
 

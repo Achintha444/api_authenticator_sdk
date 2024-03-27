@@ -17,8 +17,7 @@ import java.lang.ref.WeakReference
 /**
  * Authentication provider class that is used to manage the authentication process.
  *
- * @param authenticationCoreConfig The [AuthenticationCoreConfig] instance
- * @property authenticationCore The [AuthenticationCoreDef] instance
+ * @param authenticationProviderManager The [AuthenticationProviderManager] instance
  *
  * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
  * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
@@ -26,12 +25,8 @@ import java.lang.ref.WeakReference
  * emit: [AuthenticationState.Error] - An error occurred during the authentication process
  */
 internal class AuthenticationProviderImpl private constructor(
-    private val authenticationCoreConfig: AuthenticationCoreConfig,
-    private val authenticationCore: AuthenticationCoreDef
+    private val authenticationProviderManager: AuthenticationProviderManager
 ) : AuthenticationProvider {
-    private val authenticationProviderManager: AuthenticationProviderManager by lazy {
-        AuthenticationProviderImplContainer.getAuthenticationProviderManager(authenticationCore)
-    }
 
     companion object {
         /**
@@ -43,20 +38,16 @@ internal class AuthenticationProviderImpl private constructor(
         /**
          * Initialize the [AuthenticationProviderImpl] instance and return the instance.
          *
-         * @param authenticationCore The [AuthenticationCoreDef] instance
+         * @param authenticationProviderManager The [AuthenticationProviderManager] instance
          *
          * @return The [AuthenticationProviderImpl] instance
          */
         fun getInstance(
-            authenticationCoreConfig: AuthenticationCoreConfig,
-            authenticationCore: AuthenticationCoreDef
+            authenticationProviderManager: AuthenticationProviderManager,
         ): AuthenticationProviderImpl {
             var authenticatorProvider = authenticationProviderImplInstance.get()
             if (authenticatorProvider == null) {
-                authenticatorProvider = AuthenticationProviderImpl(
-                    authenticationCoreConfig,
-                    authenticationCore
-                )
+                authenticatorProvider = AuthenticationProviderImpl(authenticationProviderManager)
                 authenticationProviderImplInstance = WeakReference(authenticatorProvider)
             }
             return authenticatorProvider
@@ -211,11 +202,7 @@ internal class AuthenticationProviderImpl private constructor(
         context: Context,
         googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
     ) = authenticationProviderManager
-        .authenticateWithGoogle(
-            context,
-            authenticationCoreConfig.getGoogleWebClientId()!!,
-            googleAuthenticateResultLauncher
-        )
+        .authenticateWithGoogle(context, googleAuthenticateResultLauncher)
 
     /**
      * Handle the Google authentication result.
@@ -262,8 +249,5 @@ internal class AuthenticationProviderImpl private constructor(
      * emit: [AuthenticationState.Initial] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    override suspend fun logout(context: Context) = authenticationProviderManager.logout(
-        context,
-        authenticationCoreConfig.getClientId()
-    )
+    override suspend fun logout(context: Context) = authenticationProviderManager.logout(context)
 }

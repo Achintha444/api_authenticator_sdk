@@ -140,7 +140,6 @@ internal interface AuthenticationProviderManager {
      * Authenticate the user with the Google authenticator.
      *
      * @param context The context of the application
-     * @param googleWebClientId Google web client id
      * @param googleAuthenticateResultLauncher The [ActivityResultLauncher] object to handle the Google authentication result
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
@@ -148,7 +147,6 @@ internal interface AuthenticationProviderManager {
      */
     suspend fun authenticateWithGoogle(
         context: Context,
-        googleWebClientId: String,
         googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
     )
 
@@ -191,11 +189,10 @@ internal interface AuthenticationProviderManager {
      * Logout the user from the application.
      *
      * @param context The context of the application
-     * @param clientId Client id of the application created in WSO2 identity server
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
      * emit: [AuthenticationState.Initial] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
     */
-    suspend fun logout(context: Context, clientId: String)
+    suspend fun logout(context: Context)
 }
