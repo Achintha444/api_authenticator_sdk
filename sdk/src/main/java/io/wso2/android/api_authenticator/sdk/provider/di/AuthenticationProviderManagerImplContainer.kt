@@ -1,20 +1,21 @@
 package io.wso2.android.api_authenticator.sdk.provider.di
 
-import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
-import io.wso2.android.api_authenticator.sdk.core.impl.AuthenticationCore
-import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication.impl.AuthenticationStateHandler
+import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication.impl.AuthenticationProviderManagerImpl
+import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication_state.AuthenticationStateProviderManager
+import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication_state.impl.AuthenticationStateProviderManagerImpl
 
 /**
  * Dependency Injection container for the [AuthenticationProviderManagerImpl] class.
  */
 internal object AuthenticationProviderManagerImplContainer {
+
     /**
-     * Get the instance of the [AuthenticationStateHandler].
+     * Get the instance of the [AuthenticationStateProviderManager].
      *
-     * @return [AuthenticationStateHandler] instance
+     * @return [AuthenticationStateProviderManager] instance
      */
-    internal fun getAuthenticationStateHandler(): AuthenticationStateHandler {
-        return AuthenticationStateHandler
-    }
+    internal fun getAuthenticationStateProviderManager(authenticationCore: AuthenticationCoreDef)
+            : AuthenticationStateProviderManager =
+        AuthenticationStateProviderManagerImpl.getInstance(authenticationCore)
 }

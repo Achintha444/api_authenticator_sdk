@@ -12,7 +12,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.AuthenticatorManager
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
@@ -26,6 +25,7 @@ import io.wso2.android.api_authenticator.sdk.models.prompt_type.PromptTypes
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
 import io.wso2.android.api_authenticator.sdk.provider.di.AuthenticationProviderManagerImplContainer
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication.AuthenticationProviderManager
+import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication_state.AuthenticationStateProviderManager
 import io.wso2.android.api_authenticator.sdk.util.AuthenticatorTypeUtil
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.SharedFlow
@@ -47,8 +47,10 @@ internal class AuthenticationProviderManagerImpl private constructor(
     /**
      * Instance of the [AuthenticationStateHandler] that will be used throughout the application
      */
-    private val authenticationStateHandler: AuthenticationStateHandler by lazy {
-        AuthenticationProviderManagerImplContainer.getAuthenticationStateHandler()
+    private val authenticationStateProviderManager: AuthenticationStateProviderManager by lazy {
+        AuthenticationProviderManagerImplContainer.getAuthenticationStateProviderManager(
+            authenticationCore
+        )
     }
 
     /**
@@ -74,12 +76,6 @@ internal class AuthenticationProviderManagerImpl private constructor(
     private val googleAuthenticationResultDeferred: CompletableDeferred<Unit> by lazy {
         CompletableDeferred()
     }
-
-    /**
-     * Flow of the authentication state which is exposed to the outside.
-     */
-    private val authenticationStateFlow: SharedFlow<AuthenticationState> =
-        authenticationStateHandler.authenticationStateFlow
 
     companion object {
         /**
@@ -120,12 +116,12 @@ internal class AuthenticationProviderManagerImpl private constructor(
     }
 
     /**
-     * Get authentication state flow
+     * Get authentication state flow of the authentication state which is exposed to the outside.
      *
      * @return authentication state flow [SharedFlow<AuthenticationState>]
      */
-    override fun getAuthenticationStateFlow():SharedFlow<AuthenticationState> =
-        authenticationStateFlow
+    override fun getAuthenticationStateFlow(): SharedFlow<AuthenticationState> =
+        authenticationStateProviderManager.getAuthenticationStateFlow()
 
     /**
      * Check whether the user is logged in or not.
@@ -145,7 +141,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     override suspend fun isLoggedInStateFlow(context: Context) {
-        authenticationStateHandler.emitAuthenticationState(AuthenticationState.Loading)
+        authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Loading)
 
         // TODO: Remove this block
         authenticationCore.clearTokens(context)
@@ -154,14 +150,14 @@ internal class AuthenticationProviderManagerImpl private constructor(
             authenticationCore.validateAccessToken(context)
         }.onSuccess { isAccessTokenValid ->
             if (isAccessTokenValid == true) {
-                authenticationStateHandler.emitAuthenticationState(
+                authenticationStateProviderManager.emitAuthenticationState(
                     AuthenticationState.Authenticated
                 )
             } else {
-                authenticationStateHandler.emitAuthenticationState(AuthenticationState.Initial)
+                authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Initial)
             }
         }.onFailure {
-            authenticationStateHandler.emitAuthenticationState(AuthenticationState.Initial)
+            authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Initial)
         }
     }
 
@@ -174,19 +170,18 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     override suspend fun initializeAuthentication(context: Context) {
-        authenticationStateHandler.emitAuthenticationState(AuthenticationState.Loading)
+        authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Loading)
 
         runCatching {
             authenticationCore.authorize()
         }.onSuccess {
-            authenticatorsInThisStep = authenticationStateHandler.handleAuthenticationFlowResult(
-                it!!,
-                context,
-                authenticationCore::exchangeAuthorizationCode,
-                authenticationCore::saveTokenState
-            )
+            authenticatorsInThisStep =
+                authenticationStateProviderManager.handleAuthenticationFlowResult(
+                    it!!,
+                    context
+                )
         }.onFailure {
-            authenticationStateHandler.emitAuthenticationState(AuthenticationState.Error(it))
+            authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Error(it))
         }
     }
 
@@ -227,7 +222,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
         authParams: AuthParams? = null,
         authParamsAsMap: LinkedHashMap<String, String>? = null
     ) {
-        authenticationStateHandler.emitAuthenticationState(AuthenticationState.Loading)
+        authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Loading)
 
         // setting up the authenticator type
         val authenticatorType: AuthenticatorType? =
@@ -255,23 +250,22 @@ internal class AuthenticationProviderManagerImpl private constructor(
                 )
             }.onSuccess {
                 authenticatorsInThisStep =
-                    authenticationStateHandler.handleAuthenticationFlowResult(
-                        it!!,
-                        context,
-                        authenticationCore::exchangeAuthorizationCode,
-                        authenticationCore::saveTokenState
-                    )
+                    authenticationStateProviderManager.handleAuthenticationFlowResult(it!!, context)
                 selectedAuthenticator = null
 
                 completeDeferred()
             }.onFailure {
-                authenticationStateHandler.emitAuthenticationState(AuthenticationState.Error(it))
+                authenticationStateProviderManager.emitAuthenticationState(
+                    AuthenticationState.Error(
+                        it
+                    )
+                )
                 selectedAuthenticator = null
 
                 completeDeferred()
             }
         } else {
-            authenticationStateHandler.emitAuthenticationState(
+            authenticationStateProviderManager.emitAuthenticationState(
                 AuthenticationState.Error(
                     AuthenticatorProviderException(
                         AuthenticatorProviderException.AUTHENTICATOR_NOT_FOUND
@@ -344,7 +338,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
         authenticatorTypeString: String?
     ) {
         // Setting up the deferred object to wait for the result
-        authenticationStateHandler.emitAuthenticationState(AuthenticationState.Loading)
+        authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Loading)
 
         // setting up the authenticator type
         val authenticatorType: AuthenticatorType? =
@@ -362,7 +356,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
             val redirectUri: String? = authenticatorType.metadata?.additionalData?.redirectUrl
 
             if (redirectUri.isNullOrEmpty()) {
-                authenticationStateHandler.emitAuthenticationState(
+                authenticationStateProviderManager.emitAuthenticationState(
                     AuthenticationState.Error(
                         AuthenticatorProviderException(
                             AuthenticatorProviderException.REDIRECT_URI_NOT_FOUND
@@ -378,7 +372,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
                 redirectAuthenticationResultDeferred.await()
             }
         } else {
-            authenticationStateHandler.emitAuthenticationState(
+            authenticationStateProviderManager.emitAuthenticationState(
                 AuthenticationState.Error(
                     AuthenticatorProviderException(
                         AuthenticatorProviderException.NOT_REDIRECT_PROMPT
@@ -398,7 +392,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-     override suspend fun handleRedirectUri(context: Context, deepLink: Uri) {
+    override suspend fun handleRedirectUri(context: Context, deepLink: Uri) {
         // Setting up the deferred object to wait for the result
         if (selectedAuthenticator != null) {
             val requiredParams: List<String> = selectedAuthenticator!!.requiredParams!!
@@ -421,7 +415,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
 
             commonAuthenticate(context, authParamsAsMap = authParamsMap)
         } else {
-            authenticationStateHandler.emitAuthenticationState(
+            authenticationStateProviderManager.emitAuthenticationState(
                 AuthenticationState.Error(
                     AuthenticatorProviderException(
                         AuthenticatorProviderException.AUTHENTICATOR_NOT_FOUND
@@ -482,7 +476,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
         googleWebClientId: String,
         googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
     ) {
-        authenticationStateHandler.emitAuthenticationState(AuthenticationState.Loading)
+        authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Loading)
 
         // setting up the authenticator type
         val authenticatorType: AuthenticatorType? =
@@ -493,7 +487,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
 
         if (authenticatorType != null) {
             if (googleWebClientId.isNullOrEmpty()) {
-                authenticationStateHandler.emitAuthenticationState(
+                authenticationStateProviderManager.emitAuthenticationState(
                     AuthenticationState.Error(
                         AuthenticatorProviderException(
                             AuthenticatorProviderException.GOOGLE_WEB_CLIENT_ID_NOT_FOUND
@@ -518,7 +512,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
                 googleAuthenticationResultDeferred.await()
             }
         } else {
-            authenticationStateHandler.emitAuthenticationState(
+            authenticationStateProviderManager.emitAuthenticationState(
                 AuthenticationState.Error(
                     AuthenticatorProviderException(
                         AuthenticatorProviderException.AUTHENTICATOR_NOT_FOUND
@@ -552,7 +546,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
                 val authCode: String? = account.serverAuthCode
 
                 if (idToken.isNullOrEmpty() || authCode.isNullOrEmpty()) {
-                    authenticationStateHandler.emitAuthenticationState(
+                    authenticationStateProviderManager.emitAuthenticationState(
                         AuthenticationState.Error(
                             AuthenticatorProviderException(
                                 AuthenticatorProviderException.GOOGLE_AUTH_CODE_OR_ID_TOKEN_NOT_FOUND
@@ -570,7 +564,9 @@ internal class AuthenticationProviderManagerImpl private constructor(
                     )
                 }
             } catch (e: ApiException) {
-                authenticationStateHandler.emitAuthenticationState(AuthenticationState.Error(e))
+                authenticationStateProviderManager.emitAuthenticationState(
+                    AuthenticationState.Error(e)
+                )
                 selectedAuthenticator = null
 
                 // Complete the deferred object and finish the [authenticateWithGoogle] method
@@ -616,7 +612,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     override suspend fun logout(context: Context, clientId: String) {
-        authenticationStateHandler.emitAuthenticationState(AuthenticationState.Loading)
+        authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Loading)
 
         runCatching {
             val idToken: String? = authenticationCore.getIDToken(context)
@@ -635,9 +631,11 @@ internal class AuthenticationProviderManagerImpl private constructor(
             // clear the tokens
             authenticationCore.clearTokens(context)
         }.onSuccess {
-            authenticationStateHandler.emitAuthenticationState(AuthenticationState.Initial)
+            authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Initial)
         }.onFailure {
-            authenticationStateHandler.emitAuthenticationState(AuthenticationState.Error(it))
+            authenticationStateProviderManager.emitAuthenticationState(
+                AuthenticationState.Error(it)
+            )
         }
     }
 }
