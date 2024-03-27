@@ -13,7 +13,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
-import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.AuthenticatorManager
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.auth_params.BasicAuthenticatorAuthParams
 import io.wso2.android.api_authenticator.sdk.models.auth_params.GoogleNativeAuthenticatorTypeAuthParams
@@ -23,7 +22,6 @@ import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.Authenti
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorProviderException
 import io.wso2.android.api_authenticator.sdk.models.prompt_type.PromptTypes
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
-import io.wso2.android.api_authenticator.sdk.provider.di.AuthenticationProviderManagerImplContainer
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication.AuthenticationProviderManager
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication_state.AuthenticationStateProviderManager
 import io.wso2.android.api_authenticator.sdk.util.AuthenticatorTypeUtil
@@ -203,7 +201,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
     ) {
         authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Loading)
 
-        var authenticatorType: AuthenticatorType? =
+        val authenticatorType: AuthenticatorType? =
             AuthenticatorTypeUtil.getAuthenticatorTypeFromAuthenticatorTypeList(
                 authenticatorsInThisStep!!,
                 authenticatorIdString,
@@ -268,7 +266,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
         authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Loading)
 
         // setting up the authenticator type
-        var authenticatorType: AuthenticatorType? =
+        val authenticatorType: AuthenticatorType? =
             userSelectedAuthenticatorType ?: selectedAuthenticator
 
         if (authenticatorType != null) {
@@ -532,7 +530,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
                     )
                 )
 
-               selectedAuthenticator = null
+                selectedAuthenticator = null
             } else {
                 selectedAuthenticator = it
 

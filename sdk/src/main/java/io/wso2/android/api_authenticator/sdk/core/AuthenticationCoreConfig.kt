@@ -124,4 +124,20 @@ class AuthenticationCoreConfig(
                 integrityToken == other.integrityToken &&
                 googleWebClientId == other.googleWebClientId && isDevelopment == other.isDevelopment
     }
+
+    /**
+     * Generates a hash code for the current object.
+     *
+     * @return The hash code of the object.
+     */
+    override fun hashCode(): Int {
+        var result = baseUrl.hashCode()
+        result = 31 * result + redirectUri.hashCode()
+        result = 31 * result + clientId.hashCode()
+        result = 31 * result + scope.hashCode()
+        result = 31 * result + (integrityToken?.hashCode() ?: 0)
+        result = 31 * result + (googleWebClientId?.hashCode() ?: 0)
+        result = 31 * result + (isDevelopment?.hashCode() ?: 0)
+        return result
+    }
 }

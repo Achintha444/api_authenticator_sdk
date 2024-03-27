@@ -111,15 +111,10 @@ internal class AuthnManagerImpl private constructor(
                             // set the flow id of the authorization flow
                             flowManager.setFlowId(responseObject.get("flowId").asText())
 
-                            CoroutineScope(Dispatchers.IO).launch {
-                                runCatching {
-                                    flowManager.manageStateOfAuthorizeFlow(responseObject)
-                                }.onSuccess {
-                                    continuation.resume(it)
-                                }.onFailure {
-                                    continuation.resumeWithException(it)
-                                }
-                            }
+                            // manage the state of the authorization flow
+                            continuation.resume(
+                                flowManager.manageStateOfAuthorizeFlow(responseObject)
+                            )
                         } else {
                             // throw an `AuthnManagerException` if the request does not return 200
                             continuation.resumeWithException(
@@ -184,15 +179,10 @@ internal class AuthnManagerImpl private constructor(
                             val responseObject: JsonNode =
                                 JsonUtil.getJsonObject(response.body!!.string())
 
-                            CoroutineScope(Dispatchers.IO).launch {
-                                runCatching {
-                                    flowManager.manageStateOfAuthorizeFlow(responseObject)
-                                }.onSuccess {
-                                    continuation.resume(it)
-                                }.onFailure {
-                                    continuation.resumeWithException(it)
-                                }
-                            }
+                            // manage the state of the authorization flow
+                            continuation.resume(
+                                flowManager.manageStateOfAuthorizeFlow(responseObject)
+                            )
                         } else {
                             // Throw an [AuthnManagerException] if the request does not return 200 response.message
                             continuation.resumeWithException(

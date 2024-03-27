@@ -13,7 +13,7 @@ import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticationCoreException
-import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticationCoreException.Companion.AUTHORIZATION_SERVICE_NOT_INITIALIZED
+import io.wso2.android.api_authenticator.sdk.models.exceptions.AppAuthManagerException
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthnManagerException
 import io.wso2.android.api_authenticator.sdk.models.state.TokenState
 import java.io.IOException
@@ -71,7 +71,7 @@ class AuthenticationCore private constructor(
         fun getInstance(authenticationCoreConfig: AuthenticationCoreConfig): AuthenticationCore {
             var authenticationCore = authenticationCoreInstance.get()
             if (authenticationCore == null ||
-                authenticationCore?.authenticationCoreConfig != authenticationCoreConfig) {
+                authenticationCore.authenticationCoreConfig != authenticationCoreConfig) {
                 authenticationCore = AuthenticationCore(authenticationCoreConfig)
                 authenticationCoreInstance = WeakReference(authenticationCore)
             }

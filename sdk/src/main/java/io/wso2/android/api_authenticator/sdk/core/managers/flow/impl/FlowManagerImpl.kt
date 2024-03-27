@@ -3,7 +3,6 @@ package io.wso2.android.api_authenticator.sdk.core.managers.flow.impl
 import com.fasterxml.jackson.databind.JsonNode
 import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.AuthenticatorManager
 import io.wso2.android.api_authenticator.sdk.core.managers.flow.FlowManager
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowNotSuccess
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowSuccess
@@ -75,24 +74,9 @@ internal class FlowManagerImpl private constructor(
      *
      * @throws [AuthenticatorTypeException]
      */
-    private suspend fun handleAuthorizeFlow(
+    private fun handleAuthorizeFlow(
         responseBodyString: String
-    ): AuthenticationFlowNotSuccess {
-        val authenticationFlow: AuthenticationFlowNotSuccess =
-            AuthenticationFlowNotSuccess.fromJson(
-                responseBodyString
-            )
-
-//        val authenticatorTypes: ArrayList<AuthenticatorType> =
-//            authenticatorManager.getDetailsOfAllAuthenticatorTypesGivenFlow(
-//                authenticationFlow.flowId,
-//                authenticationFlow.nextStep.authenticators
-//            )
-//
-//        authenticationFlow.nextStep.authenticators = authenticatorTypes
-
-        return authenticationFlow
-    }
+    ): AuthenticationFlowNotSuccess = AuthenticationFlowNotSuccess.fromJson(responseBodyString)
 
     /**
      * Manage the state of the authorization flow.
@@ -107,9 +91,7 @@ internal class FlowManagerImpl private constructor(
      *
      * TODO: Need to check additional check to flowid to check if the flow is the same as the current flow
      */
-    override suspend fun manageStateOfAuthorizeFlow(
-        responseObject: JsonNode
-    ): AuthenticationFlow {
+    override fun manageStateOfAuthorizeFlow(responseObject: JsonNode): AuthenticationFlow {
         return when (responseObject.get("flowStatus").asText()) {
             FlowStatus.FAIL_INCOMPLETE.flowStatus -> {
                 throw FlowManagerException(
