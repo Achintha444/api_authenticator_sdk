@@ -1,8 +1,8 @@
-package io.wso2.android.api_authenticator.sdk.core.impl
+package io.wso2.android.api_authenticator.sdk.core.core_types.authentication.impl
 
 import android.content.Context
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
-import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
+import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.core.di.AuthenticationCoreContainer
 import io.wso2.android.api_authenticator.sdk.core.managers.app_auth.AppAuthManager
 import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.AuthenticatorManager

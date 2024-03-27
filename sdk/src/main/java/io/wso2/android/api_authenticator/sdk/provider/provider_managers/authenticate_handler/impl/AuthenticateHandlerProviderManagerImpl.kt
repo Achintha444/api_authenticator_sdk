@@ -12,7 +12,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
+import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.auth_params.GoogleNativeAuthenticatorTypeAuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType

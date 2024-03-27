@@ -6,7 +6,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
+import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.models.auth_params.BasicAuthenticatorAuthParams
 import io.wso2.android.api_authenticator.sdk.models.auth_params.TotpAuthenticatorTypeAuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorTypes

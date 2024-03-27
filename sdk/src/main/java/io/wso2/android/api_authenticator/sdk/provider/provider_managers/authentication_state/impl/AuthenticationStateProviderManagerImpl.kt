@@ -1,7 +1,7 @@
 package io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication_state.impl
 
 import android.content.Context
-import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
+import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowNotSuccess

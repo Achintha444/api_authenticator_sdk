@@ -1,6 +1,6 @@
 package io.wso2.android.api_authenticator.sdk.provider.di
 
-import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
+import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authenticate_handler.AuthenticateHandlerProviderManager
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authenticate_handler.impl.AuthenticateHandlerProviderManagerImpl
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication_state.AuthenticationStateProviderManager

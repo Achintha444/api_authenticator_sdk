@@ -10,7 +10,7 @@ import io.wso2.android.api_authenticator.sdk.core.managers.authn.AuthnManager
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.impl.AuthnManagerImpl
 import io.wso2.android.api_authenticator.sdk.core.managers.token.TokenManager
 import io.wso2.android.api_authenticator.sdk.core.managers.token.TokenManagerFactory
-import io.wso2.android.api_authenticator.sdk.core.impl.AuthenticationCore
+import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.impl.AuthenticationCore
 import io.wso2.android.api_authenticator.sdk.core.managers.flow.FlowManager
 import io.wso2.android.api_authenticator.sdk.core.managers.flow.impl.FlowManagerImpl
 
