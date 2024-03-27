@@ -1,10 +1,6 @@
 package io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication_state
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultLauncher
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
@@ -19,7 +15,7 @@ import kotlinx.coroutines.flow.SharedFlow
  * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
  * emit: [AuthenticationState.Error] - An error occurred during the authentication process
  */
-internal interface AuthenticationStateProviderManager {
+interface AuthenticationStateProviderManager {
     /**
      * Get authentication state flow
      *

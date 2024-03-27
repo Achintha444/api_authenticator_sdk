@@ -2,7 +2,6 @@ package io.wso2.android.api_authenticator.sdk.provider.providers.authentication
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
@@ -94,18 +93,6 @@ interface AuthenticationProvider {
         authenticatorId: String? = null,
         authenticatorType: String? = null
     )
-
-    /**
-     * Handle the redirect URI and authenticate the user with the selected authenticator.
-     *
-     * @param context The context of the application
-     * @param deepLink The deep link URI that is received from the redirect URI
-     *
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
-     */
-    suspend fun handleRedirectUri(context: Context, deepLink: Uri)
 
     /**
      * Authenticate the user with the OpenID Connect authenticator.

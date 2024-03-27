@@ -1,9 +1,7 @@
 package io.wso2.android.api_authenticator.sdk.models.http_client.http_client_builder
 
 import io.wso2.android.api_authenticator.sdk.models.http_client.LessSecureHttpClient
-import io.wso2.android.api_authenticator.sdk.models.http_client.SecureHttpClient
 import okhttp3.OkHttpClient
-import java.io.InputStream
 
 /**
  * Use to create the [OkHttpClient] for API calls in the SDK.

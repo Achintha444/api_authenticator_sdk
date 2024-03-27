@@ -1,8 +1,6 @@
 package io.wso2.android.api_authenticator.sdk.provider.providers.token.impl
 
 import android.content.Context
-import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
-import io.wso2.android.api_authenticator.sdk.provider.di.TokenProviderImplContainer
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.token.TokenProviderManager
 import io.wso2.android.api_authenticator.sdk.provider.providers.token.TokenProvider
 import java.lang.ref.WeakReference

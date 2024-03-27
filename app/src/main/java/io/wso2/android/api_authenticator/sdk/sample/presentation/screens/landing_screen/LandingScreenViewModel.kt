@@ -11,7 +11,6 @@ import io.wso2.android.api_authenticator.sdk.sample.domain.repository.ProviderRe
 import io.wso2.android.api_authenticator.sdk.sample.presentation.util.sendEvent
 import io.wso2.android.api_authenticator.sdk.sample.util.Event
 import io.wso2.android.api_authenticator.sdk.sample.util.navigation.NavigationViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch

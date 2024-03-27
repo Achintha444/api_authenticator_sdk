@@ -1,7 +1,5 @@
 package io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen
 
-import android.content.Intent
-import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

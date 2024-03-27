@@ -4,13 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode
 import io.wso2.android.api_authenticator.sdk.sample.domain.model.UserDetails
 import io.wso2.android.api_authenticator.sdk.sample.domain.repository.UserRepository
 import io.wso2.android.api_authenticator.sdk.sample.util.Config
-import io.wso2.android.api_authenticator.sdk.sample.util.LessSecureHttpClient
 import io.wso2.android.api_authenticator.sdk.sample.util.JsonUtil
+import io.wso2.android.api_authenticator.sdk.sample.util.LessSecureHttpClient
 import okhttp3.Call
 import okhttp3.Callback
-import okhttp3.FormBody
 import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.Response
 import java.io.IOException
 import javax.inject.Inject

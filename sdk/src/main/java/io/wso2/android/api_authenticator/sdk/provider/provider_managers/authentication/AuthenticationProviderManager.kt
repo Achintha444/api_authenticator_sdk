@@ -2,10 +2,8 @@ package io.wso2.android.api_authenticator.sdk.provider.provider_managers.authent
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
-import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
 import kotlinx.coroutines.flow.SharedFlow
 
@@ -113,18 +111,6 @@ internal interface AuthenticationProviderManager {
      suspend fun authenticateWithGithubRedirect(context: Context)
 
     /**
-     * Handle the redirect URI and authenticate the user with the selected authenticator.
-     *
-     * @param context The context of the application
-     * @param deepLink The deep link URI that is received from the redirect URI
-     *
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
-     */
-     suspend fun handleRedirectUri(context: Context, deepLink: Uri)
-
-    /**
      * Authenticate the user with the OpenID Connect authenticator.
      *
      * @param context The context of the application
@@ -160,10 +146,7 @@ internal interface AuthenticationProviderManager {
      * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      */
-    suspend fun handleGoogleAuthenticateResult(
-        context: Context,
-        result: ActivityResult
-    )
+    suspend fun handleGoogleAuthenticateResult(context: Context, result: ActivityResult)
 
     /**
      * Authenticate the user with the selected authenticator.

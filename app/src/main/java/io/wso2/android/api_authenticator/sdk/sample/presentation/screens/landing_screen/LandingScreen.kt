@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.wso2.android.api_authenticator.sdk.sample.R
-import io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen.components.TotpAuth
 import io.wso2.android.api_authenticator.sdk.sample.presentation.util.common_component.LoadingDialog
 import io.wso2.android.api_authenticator.sdk.sample.presentation.util.common_component.LogoLarge
 import io.wso2.android.api_authenticator.sdk.sample.ui.theme.Api_authenticator_sdkTheme

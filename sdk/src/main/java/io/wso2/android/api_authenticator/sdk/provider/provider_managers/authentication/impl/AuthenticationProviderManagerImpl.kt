@@ -1,31 +1,19 @@
 package io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication.impl
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreDef
-import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.auth_params.BasicAuthenticatorAuthParams
-import io.wso2.android.api_authenticator.sdk.models.auth_params.GoogleNativeAuthenticatorTypeAuthParams
 import io.wso2.android.api_authenticator.sdk.models.auth_params.TotpAuthenticatorTypeAuthParams
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorTypes
-import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorProviderException
-import io.wso2.android.api_authenticator.sdk.models.prompt_type.PromptTypes
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
+import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authenticate_handler.AuthenticateHandlerProviderManager
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication.AuthenticationProviderManager
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication_state.AuthenticationStateProviderManager
-import io.wso2.android.api_authenticator.sdk.util.AuthenticatorTypeUtil
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.SharedFlow
 import java.lang.ref.WeakReference
 
@@ -42,32 +30,9 @@ import java.lang.ref.WeakReference
  */
 internal class AuthenticationProviderManagerImpl private constructor(
     private val authenticationCore: AuthenticationCoreDef,
-    private val authenticationStateProviderManager: AuthenticationStateProviderManager
+    private val authenticationStateProviderManager: AuthenticationStateProviderManager,
+    private val authenticateHandlerProviderManager: AuthenticateHandlerProviderManager
 ) : AuthenticationProviderManager {
-    /**
-     * List of authenticators in this step of the authentication flow.
-     */
-    private var authenticatorsInThisStep: ArrayList<AuthenticatorType>? = null
-
-    /**
-     * The selected authenticator for the authentication process.
-     */
-    private var selectedAuthenticator: AuthenticatorType? = null
-
-    /**
-     * Deferred object to wait for the result of the redirect authentication process.
-     */
-    private val redirectAuthenticationResultDeferred: CompletableDeferred<Unit> by lazy {
-        CompletableDeferred()
-    }
-
-    /**
-     * Deferred object to wait for the result of the Google authentication process.
-     */
-    private val googleAuthenticationResultDeferred: CompletableDeferred<Unit> by lazy {
-        CompletableDeferred()
-    }
-
     companion object {
         /**
          * Instance of the [AuthenticationProviderManagerImpl] that will be used throughout the
@@ -87,13 +52,15 @@ internal class AuthenticationProviderManagerImpl private constructor(
          */
         fun getInstance(
             authenticationCore: AuthenticationCoreDef,
-            authenticationStateProviderManager: AuthenticationStateProviderManager
+            authenticationStateProviderManager: AuthenticationStateProviderManager,
+            authenticateHandlerProviderManager: AuthenticateHandlerProviderManager
         ): AuthenticationProviderManagerImpl {
             var authenticatorProviderManager = authenticationProviderManagerInstance.get()
             if (authenticatorProviderManager == null) {
                 authenticatorProviderManager = AuthenticationProviderManagerImpl(
                     authenticationCore,
-                    authenticationStateProviderManager
+                    authenticationStateProviderManager,
+                    authenticateHandlerProviderManager
                 )
                 authenticationProviderManagerInstance = WeakReference(authenticatorProviderManager)
             }
@@ -122,9 +89,8 @@ internal class AuthenticationProviderManagerImpl private constructor(
      *
      * @return `true` if the user is logged in, `false` otherwise
      */
-    override suspend fun isLoggedIn(context: Context): Boolean {
-        return authenticationCore.validateAccessToken(context) ?: false
-    }
+    override suspend fun isLoggedIn(context: Context): Boolean =
+        authenticationCore.validateAccessToken(context) ?: false
 
     /**
      * Handle the authentication flow initially to check whether the user is authenticated or not.
@@ -169,143 +135,14 @@ internal class AuthenticationProviderManagerImpl private constructor(
         runCatching {
             authenticationCore.authorize()
         }.onSuccess {
-            authenticatorsInThisStep =
+            authenticateHandlerProviderManager.setAuthenticatorsInThisStep(
                 authenticationStateProviderManager.handleAuthenticationFlowResult(
                     it!!,
                     context
                 )
+            )
         }.onFailure {
             authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Error(it))
-        }
-    }
-
-    /**
-     * Complete the deferred objects.
-     */
-    private fun completeDeferred() {
-        if (!redirectAuthenticationResultDeferred.isCompleted) {
-            // Complete the deferred object and finish the [authenticateWithRedirectUri] method
-            redirectAuthenticationResultDeferred.complete(Unit)
-        }
-
-        if (!googleAuthenticationResultDeferred.isCompleted) {
-            // Complete the deferred object and finish the [authenticateWithGoogle] method
-            googleAuthenticationResultDeferred.complete(Unit)
-        }
-    }
-
-    private suspend fun authenticateWithAuthenticator(
-        authenticatorTypeString: String? = null,
-        authenticatorIdString: String? = null,
-        afterGetAuthenticatorType: suspend (AuthenticatorType) -> Unit
-    ) {
-        authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Loading)
-
-        val authenticatorType: AuthenticatorType? =
-            AuthenticatorTypeUtil.getAuthenticatorTypeFromAuthenticatorTypeList(
-                authenticatorsInThisStep!!,
-                authenticatorIdString,
-                authenticatorTypeString
-            ) ?: selectedAuthenticator
-
-        if (authenticatorType != null) {
-            runCatching {
-                authenticationCore.getDetailsOfAuthenticatorType(authenticatorType)
-            }.onSuccess {
-                if (it != null) {
-                    afterGetAuthenticatorType(it)
-                } else {
-                    authenticationStateProviderManager.emitAuthenticationState(
-                        AuthenticationState.Error(
-                            AuthenticatorProviderException(
-                                AuthenticatorProviderException.AUTHENTICATOR_NOT_FOUND
-                            )
-                        )
-                    )
-
-                    selectedAuthenticator = null
-                }
-            }.onFailure {
-                authenticationStateProviderManager.emitAuthenticationState(
-                    AuthenticationState.Error(it)
-                )
-
-                selectedAuthenticator = null
-            }
-        } else {
-            authenticationStateProviderManager.emitAuthenticationState(
-                AuthenticationState.Error(
-                    AuthenticatorProviderException(
-                        AuthenticatorProviderException.AUTHENTICATOR_NOT_FOUND
-                    )
-                )
-            )
-        }
-    }
-
-    /**
-     * Common function in all authenticate methods
-     *
-     * @param context The context of the application
-     * @param userSelectedAuthenticatorType The selected authenticator type
-     * @param authParams The authentication parameters of the selected authenticator
-     * @param authParamsAsMap The authentication parameters of the selected authenticator as a LinkedHashMap<String, String>
-     * with the key as the parameter name and the value as the parameter value
-     *
-     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
-     */
-    private suspend fun commonAuthenticate(
-        context: Context,
-        userSelectedAuthenticatorType: AuthenticatorType? = null,
-        authParams: AuthParams? = null,
-        authParamsAsMap: LinkedHashMap<String, String>? = null
-    ) {
-        authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Loading)
-
-        // setting up the authenticator type
-        val authenticatorType: AuthenticatorType? =
-            userSelectedAuthenticatorType ?: selectedAuthenticator
-
-        if (authenticatorType != null) {
-            selectedAuthenticator = authenticatorType
-
-            var authParamsMap: LinkedHashMap<String, String>? = authParamsAsMap
-
-            if (authParams != null) {
-                authParamsMap = authParams.getParameterBodyAuthenticator(
-                    authenticatorType.requiredParams!!
-                )
-            }
-
-            runCatching {
-                authenticationCore.authenticate(authenticatorType, authParamsMap!!)
-            }.onSuccess {
-                authenticatorsInThisStep =
-                    authenticationStateProviderManager.handleAuthenticationFlowResult(it!!, context)
-                completeDeferred()
-            }.onFailure {
-                authenticationStateProviderManager.emitAuthenticationState(
-                    AuthenticationState.Error(it)
-                )
-                completeDeferred()
-            }
-
-            selectedAuthenticator = null
-        } else {
-            authenticationStateProviderManager.emitAuthenticationState(
-                AuthenticationState.Error(
-                    AuthenticatorProviderException(
-                        AuthenticatorProviderException.AUTHENTICATOR_NOT_FOUND
-                    )
-                )
-            )
-
-            selectedAuthenticator = null
-
-            completeDeferred()
         }
     }
 
@@ -326,10 +163,10 @@ internal class AuthenticationProviderManagerImpl private constructor(
         username: String,
         password: String
     ) {
-        authenticateWithAuthenticator(
+        authenticateHandlerProviderManager.authenticateWithAuthenticator(
             authenticatorTypeString = AuthenticatorTypes.BASIC_AUTHENTICATOR.authenticatorType
         ) {
-            commonAuthenticate(
+            authenticateHandlerProviderManager.commonAuthenticate(
                 context,
                 userSelectedAuthenticatorType = it,
                 authParams = BasicAuthenticatorAuthParams(username, password)
@@ -349,10 +186,10 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     override suspend fun authenticateWithTotp(context: Context, token: String) {
-        authenticateWithAuthenticator(
+        authenticateHandlerProviderManager.authenticateWithAuthenticator(
             authenticatorTypeString = AuthenticatorTypes.TOTP_AUTHENTICATOR.authenticatorType
         ) {
-            commonAuthenticate(
+            authenticateHandlerProviderManager.commonAuthenticate(
                 context,
                 userSelectedAuthenticatorType = it,
                 authParams = TotpAuthenticatorTypeAuthParams(token)
@@ -377,91 +214,11 @@ internal class AuthenticationProviderManagerImpl private constructor(
         authenticatorIdString: String?,
         authenticatorTypeString: String?
     ) {
-        authenticateWithAuthenticator(
+        authenticateHandlerProviderManager.authenticateWithAuthenticator(
             authenticatorTypeString = authenticatorTypeString,
             authenticatorIdString = authenticatorIdString
         ) {
-            // Retrieving the prompt type of the authenticator
-            val promptType: String? = it.metadata?.promptType
-
-            if (promptType == PromptTypes.REDIRECTION_PROMPT.promptType) {
-                // Retrieving the redirect URI of the authenticator
-                val redirectUri: String? = it.metadata?.additionalData?.redirectUrl
-
-                if (redirectUri.isNullOrEmpty()) {
-                    authenticationStateProviderManager.emitAuthenticationState(
-                        AuthenticationState.Error(
-                            AuthenticatorProviderException(
-                                AuthenticatorProviderException.REDIRECT_URI_NOT_FOUND
-                            )
-                        )
-                    )
-
-                    selectedAuthenticator = null
-                } else {
-                    selectedAuthenticator = it
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(redirectUri))
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    context.startActivity(intent)
-
-                    redirectAuthenticationResultDeferred.await()
-                }
-            } else {
-                authenticationStateProviderManager.emitAuthenticationState(
-                    AuthenticationState.Error(
-                        AuthenticatorProviderException(
-                            AuthenticatorProviderException.NOT_REDIRECT_PROMPT
-                        )
-                    )
-                )
-
-                selectedAuthenticator = null
-            }
-        }
-    }
-
-    /**
-     * Handle the redirect URI and authenticate the user with the selected authenticator.
-     *
-     * @param context The context of the application
-     * @param deepLink The deep link URI that is received from the redirect URI
-     *
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
-     */
-    override suspend fun handleRedirectUri(context: Context, deepLink: Uri) {
-        // Setting up the deferred object to wait for the result
-        if (selectedAuthenticator != null) {
-            val requiredParams: List<String> = selectedAuthenticator!!.requiredParams!!
-
-            // Extract required parameters from the authenticator type
-            val authParamsMap: LinkedHashMap<String, String> = LinkedHashMap()
-
-            for (param in requiredParams) {
-                val paramValue: String? = deepLink.getQueryParameter(param)
-
-                if (paramValue != null) {
-                    authParamsMap[param] = paramValue
-                }
-            }
-
-            // Finish the [RedirectUriReceiverActivity] activity
-            if (context is ComponentActivity) {
-                context.finish()
-            }
-
-            commonAuthenticate(context, authParamsAsMap = authParamsMap)
-        } else {
-            authenticationStateProviderManager.emitAuthenticationState(
-                AuthenticationState.Error(
-                    AuthenticatorProviderException(
-                        AuthenticatorProviderException.AUTHENTICATOR_NOT_FOUND
-                    )
-                )
-            )
-            // Complete the deferred object and finish the [authenticateWithRedirectUri] method
-            redirectAuthenticationResultDeferred.complete(Unit)
+            authenticateHandlerProviderManager.redirectAuthenticate(context, it)
         }
     }
 
@@ -512,45 +269,16 @@ internal class AuthenticationProviderManagerImpl private constructor(
         context: Context,
         googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
     ) {
-
-        authenticateWithAuthenticator(
+        authenticateHandlerProviderManager.authenticateWithAuthenticator(
             authenticatorTypeString = AuthenticatorTypes.GOOGLE_AUTHENTICATOR.authenticatorType
         ) {
-
-            // Get the Google Web Client ID
-            val googleWebClientId: String? =
-                authenticationCore.getAuthenticationCoreConfig().getGoogleWebClientId()
-
-            if (googleWebClientId.isNullOrEmpty()) {
-                authenticationStateProviderManager.emitAuthenticationState(
-                    AuthenticationState.Error(
-                        AuthenticatorProviderException(
-                            AuthenticatorProviderException.GOOGLE_WEB_CLIENT_ID_NOT_FOUND
-                        )
-                    )
-                )
-
-                selectedAuthenticator = null
-            } else {
-                selectedAuthenticator = it
-
-                val googleSignInClient = GoogleSignIn.getClient(
-                    context,
-                    GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestServerAuthCode(googleWebClientId)
-                        .requestIdToken(googleWebClientId)
-                        .requestEmail()
-                        .build()
-                )
-                val signInIntent = googleSignInClient.signInIntent
-
-                googleAuthenticateResultLauncher.launch(signInIntent)
-
-                googleAuthenticationResultDeferred.await()
-            }
+            authenticateHandlerProviderManager.googleAuthenticate(
+                context,
+                it,
+                googleAuthenticateResultLauncher
+            )
         }
     }
-
     /**
      * Handle the Google authentication result.
      *
@@ -561,48 +289,8 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      */
-    override suspend fun handleGoogleAuthenticateResult(
-        context: Context,
-        result: ActivityResult
-    ) {
-        if (result.resultCode == Activity.RESULT_OK) {
-            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(
-                result.data
-            )
-            try {
-                val account: GoogleSignInAccount = task.getResult(ApiException::class.java)
-                val idToken: String? = account.idToken
-                val authCode: String? = account.serverAuthCode
-
-                if (idToken.isNullOrEmpty() || authCode.isNullOrEmpty()) {
-                    authenticationStateProviderManager.emitAuthenticationState(
-                        AuthenticationState.Error(
-                            AuthenticatorProviderException(
-                                AuthenticatorProviderException.GOOGLE_AUTH_CODE_OR_ID_TOKEN_NOT_FOUND
-                            )
-                        )
-                    )
-
-                    selectedAuthenticator = null
-                } else {
-                    commonAuthenticate(
-                        context,
-                        authParams = GoogleNativeAuthenticatorTypeAuthParams(
-                            accessToken = authCode,
-                            idToken = idToken
-                        )
-                    )
-                }
-            } catch (e: ApiException) {
-                authenticationStateProviderManager.emitAuthenticationState(
-                    AuthenticationState.Error(e)
-                )
-                selectedAuthenticator = null
-
-                // Complete the deferred object and finish the [authenticateWithGoogle] method
-                googleAuthenticationResultDeferred.complete(Unit)
-            }
-        }
+    override suspend fun handleGoogleAuthenticateResult(context: Context, result: ActivityResult) {
+        authenticateHandlerProviderManager.handleGoogleAuthenticateResult(context, result)
     }
 
     /**
@@ -624,10 +312,10 @@ internal class AuthenticationProviderManagerImpl private constructor(
         authenticatorId: String,
         authParams: LinkedHashMap<String, String>
     ) {
-        authenticateWithAuthenticator(
+        authenticateHandlerProviderManager.authenticateWithAuthenticator(
             authenticatorIdString = authenticatorId
         ) {
-            commonAuthenticate(
+            authenticateHandlerProviderManager.commonAuthenticate(
                 context,
                 userSelectedAuthenticatorType = it,
                 authParamsAsMap = authParams

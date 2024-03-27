@@ -5,8 +5,6 @@ import io.wso2.android.api_authenticator.sdk.core.di.TokenManagerImplContainer
 import io.wso2.android.api_authenticator.sdk.core.managers.token.TokenManager
 import io.wso2.android.api_authenticator.sdk.data.token.TokenDataStore
 import io.wso2.android.api_authenticator.sdk.models.state.TokenState
-import net.openid.appauth.AuthState
-import net.openid.appauth.TokenResponse
 
 /**
  * Use to manage the tokens.

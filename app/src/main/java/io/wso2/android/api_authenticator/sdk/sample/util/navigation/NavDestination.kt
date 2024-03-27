@@ -1,7 +1,5 @@
 package io.wso2.android.api_authenticator.sdk.sample.util.navigation
 
-import android.content.Intent
-import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost

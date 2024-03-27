@@ -1,7 +1,6 @@
 package io.wso2.android.api_authenticator.sdk.core.di
 
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
-import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.AuthenticatorManager
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.impl.AuthnManagerImpl
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.impl.AuthnManagerImplRequestBuilder
 import io.wso2.android.api_authenticator.sdk.core.managers.flow.FlowManager

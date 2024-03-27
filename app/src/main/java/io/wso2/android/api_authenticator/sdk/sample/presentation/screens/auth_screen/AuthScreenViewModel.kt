@@ -1,10 +1,7 @@
 package io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.ViewModel

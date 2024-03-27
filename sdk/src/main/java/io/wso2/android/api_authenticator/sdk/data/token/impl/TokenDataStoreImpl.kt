@@ -11,8 +11,6 @@ import io.wso2.android.api_authenticator.sdk.models.state.TokenState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
-import net.openid.appauth.AuthState
-import net.openid.appauth.TokenResponse
 
 private const val DATA_STORE_NAME = "token_data_store"
 
