@@ -149,6 +149,18 @@ interface AuthenticationProvider {
     )
 
     /**
+     * Authenticate the user with the Github authenticator (Redirect).
+     *
+     * @param context The context of the application
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     */
+     suspend fun authenticateWithGithubRedirect(context: Context)
+
+    /**
      * Authenticate the user with the selected authenticator.
      *
      * @param context The context of the application

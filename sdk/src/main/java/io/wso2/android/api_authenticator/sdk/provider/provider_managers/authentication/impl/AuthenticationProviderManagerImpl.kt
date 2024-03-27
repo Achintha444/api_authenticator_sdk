@@ -330,7 +330,8 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * Authenticate the user with the selected authenticator which requires a redirect URI.
      *
      * @param context The context of the application
-     * @param authenticatorId The authenticator id of the selected authenticator
+     * @param authenticatorIdString The authenticator id of the selected authenticator
+     * @param authenticatorTypeString The authenticator type of the selected authenticator
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
@@ -446,6 +447,23 @@ internal class AuthenticationProviderManagerImpl private constructor(
         authenticateWithRedirectUri(
             context,
             authenticatorTypeString = AuthenticatorTypes.OPENID_CONNECT_AUTHENTICATOR.authenticatorType
+        )
+    }
+
+    /**
+     * Authenticate the user with the Github authenticator (Redirect).
+     *
+     * @param context The context of the application
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     */
+    override suspend fun authenticateWithGithubRedirect(context: Context) {
+        authenticateWithRedirectUri(
+            context,
+            authenticatorTypeString = AuthenticatorTypes.GITHUB_REDIRECT_AUTHENTICATOR.authenticatorType
         )
     }
 
