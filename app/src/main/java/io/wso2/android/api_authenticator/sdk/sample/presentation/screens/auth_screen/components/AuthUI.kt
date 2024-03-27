@@ -24,6 +24,10 @@ internal fun AuthUI(authenticationFlow: AuthenticationFlowNotSuccess) {
                 OpenIdRedirectAuth(authenticatorType = it)
             }
 
+            AuthenticatorTypes.GITHUB_REDIRECT_AUTHENTICATOR.authenticatorType -> {
+                GithubNativeAuth(authenticatorType = it)
+            }
+
             else -> {
                 TotpAuth(authenticatorType = it)
             }

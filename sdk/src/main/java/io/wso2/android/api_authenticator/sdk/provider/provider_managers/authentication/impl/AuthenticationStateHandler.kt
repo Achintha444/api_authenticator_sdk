@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.StateFlow
 
 /**
  * [AuthenticationStateHandler] is responsible for handling the authentication state changes.
+ *
+ * TODO: Make this a Provider Manager
  */
 internal object AuthenticationStateHandler {
     // The authentication state flow

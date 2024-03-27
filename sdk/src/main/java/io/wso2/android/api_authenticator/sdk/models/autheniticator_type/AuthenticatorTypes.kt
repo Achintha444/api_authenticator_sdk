@@ -26,4 +26,8 @@ enum class AuthenticatorTypes(val authenticatorType: String) {
      * OpenID Connect authenticator type
      */
     OPENID_CONNECT_AUTHENTICATOR("openidconnect"),
+    /**
+     * Github authenticator type
+     */
+    GITHUB_REDIRECT_AUTHENTICATOR("Github")
 }

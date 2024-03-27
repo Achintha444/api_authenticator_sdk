@@ -1,9 +1,5 @@
 package io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen.components
 
-import android.content.Intent
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -16,38 +12,34 @@ import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.Authenti
 import io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen.AuthScreenViewModel
 
 @Composable
-internal fun GoogleNativeAuth(
+internal fun GithubNativeAuth(
     viewModel: AuthScreenViewModel = hiltViewModel(),
     authenticatorType: AuthenticatorType
 ) {
-    val launcher: ActivityResultLauncher<Intent> = rememberLauncherForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        viewModel.handleGoogleSignInResult(result)
-    }
-
-    GoogleNativeAuthComponent(
+    GithubNativeAuthComponent(
         onSubmit = {
-            viewModel.authenticateWithGoogle(launcher)
+            viewModel.authenticateWithGithubRedirect(
+                authenticatorType.authenticatorId
+            )
         }
     )
 }
 
 @Composable
-fun GoogleNativeAuthComponent(
+fun GithubNativeAuthComponent(
     onSubmit: () -> Unit
 ) {
     Button(
         onClick = onSubmit,
         modifier = Modifier.padding(16.dp)
     ) {
-        Text(text = "Sign in with Google")
+        Text(text = "Sign in with Github")
     }
 }
 
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
-fun GoogleNativeAuthPreview() {
-    GoogleNativeAuthComponent(onSubmit = {})
+fun GithubNativeAuthPreview() {
+    GithubNativeAuthComponent(onSubmit = {})
 }

@@ -178,4 +178,25 @@ class AuthScreenViewModel @Inject constructor(
             )
         }
     }
+
+    fun authenticateWithGithubRedirect(
+        authenticatorId: String,
+    ) {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    isLoading = true
+                )
+            }
+            authenticationProvider.authenticateWithRedirectUri(
+                applicationContext,
+                authenticatorId = authenticatorId
+            )
+            _state.update {
+                it.copy(
+                    isLoading = false
+                )
+            }
+        }
+    }
 }
