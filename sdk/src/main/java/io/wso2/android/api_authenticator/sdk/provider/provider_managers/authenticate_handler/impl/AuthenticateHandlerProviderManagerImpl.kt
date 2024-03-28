@@ -4,15 +4,17 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.RequiresApi
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.AuthenticationCoreDef
+import io.wso2.android.api_authenticator.sdk.core.core_types.native_authentication_handler.NativeAuthenticationHandlerCoreDef
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.auth_params.GoogleNativeAuthenticatorTypeAuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
@@ -20,9 +22,11 @@ import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorProv
 import io.wso2.android.api_authenticator.sdk.models.prompt_type.PromptTypes
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authenticate_handler.AuthenticateHandlerProviderManager
+import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication.impl.AuthenticationProviderManagerImpl
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication_state.AuthenticationStateProviderManager
 import io.wso2.android.api_authenticator.sdk.util.AuthenticatorTypeUtil
 import kotlinx.coroutines.CompletableDeferred
+import java.lang.ref.WeakReference
 
 /**
  * Implementation of the [AuthenticateHandlerProviderManager] interface.
@@ -33,6 +37,7 @@ import kotlinx.coroutines.CompletableDeferred
  */
 class AuthenticateHandlerProviderManagerImpl private constructor(
     private val authenticationCore: AuthenticationCoreDef,
+    private val nativeAuthenticationHandlerCore: NativeAuthenticationHandlerCoreDef,
     private val authenticationStateProviderManager: AuthenticationStateProviderManager,
 ) : AuthenticateHandlerProviderManager {
 
@@ -40,27 +45,33 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
         /**
          * Instance of the [AuthenticateHandlerProviderManagerImpl] to use in the application
          */
-        private var authenticateHandlerProviderManagerInstance: AuthenticateHandlerProviderManager? = null
+        private var authenticateHandlerProviderManagerInstance: WeakReference<AuthenticateHandlerProviderManagerImpl> =
+            WeakReference(null)
 
         /**
          * Initialize the [AuthenticateHandlerProviderManagerImpl] instance and return the instance.
          *
          * @param authenticationCore The [AuthenticationCoreDef] instance
+         * @param nativeAuthenticationHandlerCore The [NativeAuthenticationHandlerCoreDef] instance
          * @param authenticationStateProviderManager The [AuthenticationStateProviderManager] instance
          *
          * @return The [AuthenticateHandlerProviderManagerImpl] instance
          */
         fun getInstance(
             authenticationCore: AuthenticationCoreDef,
+            nativeAuthenticationHandlerCore: NativeAuthenticationHandlerCoreDef,
             authenticationStateProviderManager: AuthenticationStateProviderManager
-        ): AuthenticateHandlerProviderManager {
-            if (authenticateHandlerProviderManagerInstance == null) {
-                authenticateHandlerProviderManagerInstance = AuthenticateHandlerProviderManagerImpl(
+        ): AuthenticateHandlerProviderManagerImpl {
+            var authenticateHandlerProviderManager = authenticateHandlerProviderManagerInstance.get()
+            if (authenticateHandlerProviderManager == null) {
+                authenticateHandlerProviderManager = AuthenticateHandlerProviderManagerImpl(
                     authenticationCore,
+                    nativeAuthenticationHandlerCore,
                     authenticationStateProviderManager
                 )
+                authenticateHandlerProviderManagerInstance = WeakReference(authenticateHandlerProviderManager)
             }
-            return authenticateHandlerProviderManagerInstance!!
+            return authenticateHandlerProviderManager
         }
 
         /**
@@ -68,9 +79,8 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
          *
          * @return The [AuthenticateHandlerProviderManagerImpl] instance
          */
-        fun getInstance(): AuthenticateHandlerProviderManager? {
-            return authenticateHandlerProviderManagerInstance
-        }
+        fun getInstance(): AuthenticateHandlerProviderManagerImpl? =
+            authenticateHandlerProviderManagerInstance.get()
     }
 
     /**
@@ -259,7 +269,7 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
     override suspend fun redirectAuthenticate(
         context: Context,
         authenticatorType: AuthenticatorType
-    ){
+    ) {
         // Retrieving the prompt type of the authenticator
         val promptType: String? = authenticatorType.metadata?.promptType
 
@@ -353,44 +363,44 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
      *
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override suspend fun googleAuthenticate(
         context: Context,
         authenticatorType: AuthenticatorType,
         googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
-    ){
+    ): String? = nativeAuthenticationHandlerCore.handleGoogleNativeAuthentication(context)
 
-        // Get the Google Web Client ID
-        val googleWebClientId: String? =
-            authenticationCore.getAuthenticationCoreConfig().getGoogleWebClientId()
-
-        if (googleWebClientId.isNullOrEmpty()) {
-            authenticationStateProviderManager.emitAuthenticationState(
-                AuthenticationState.Error(
-                    AuthenticatorProviderException(
-                        AuthenticatorProviderException.GOOGLE_WEB_CLIENT_ID_NOT_FOUND
-                    )
-                )
-            )
-
-            selectedAuthenticator = null
-        } else {
-            selectedAuthenticator = authenticatorType
-
-            val googleSignInClient = GoogleSignIn.getClient(
-                context,
-                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestServerAuthCode(googleWebClientId)
-                    .requestIdToken(googleWebClientId)
-                    .requestEmail()
-                    .build()
-            )
-            val signInIntent = googleSignInClient.signInIntent
-
-            googleAuthenticateResultLauncher.launch(signInIntent)
-
-            googleAuthenticationResultDeferred.await()
-        }
-    }
+//        // Get the Google Web Client ID
+//        val googleWebClientId: String? =
+//            authenticationCore.getAuthenticationCoreConfig().getGoogleWebClientId()
+//
+//        if (googleWebClientId.isNullOrEmpty()) {
+//            authenticationStateProviderManager.emitAuthenticationState(
+//                AuthenticationState.Error(
+//                    AuthenticatorProviderException(
+//                        AuthenticatorProviderException.GOOGLE_WEB_CLIENT_ID_NOT_FOUND
+//                    )
+//                )
+//            )
+//
+//            selectedAuthenticator = null
+//        } else {
+//            selectedAuthenticator = authenticatorType
+//
+//            val googleSignInClient = GoogleSignIn.getClient(
+//                context,
+//                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                    .requestServerAuthCode(googleWebClientId)
+//                    .requestIdToken(googleWebClientId)
+//                    .requestEmail()
+//                    .build()
+//            )
+//            val signInIntent = googleSignInClient.signInIntent
+//
+//            googleAuthenticateResultLauncher.launch(signInIntent)
+//
+//            googleAuthenticationResultDeferred.await()
+    //}
 
     /**
      * Handle the Google authentication result.

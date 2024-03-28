@@ -2,8 +2,10 @@ package io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_s
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -148,6 +150,7 @@ class AuthScreenViewModel @Inject constructor(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     fun authenticateWithGoogle(googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>) {
         viewModelScope.launch {
             _state.update {

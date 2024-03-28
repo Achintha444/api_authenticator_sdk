@@ -2,8 +2,10 @@ package io.wso2.android.api_authenticator.sdk.provider.providers.authentication
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.RequiresApi
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
 import kotlinx.coroutines.flow.SharedFlow
 
@@ -115,6 +117,7 @@ interface AuthenticationProvider {
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     suspend fun authenticateWithGoogle(
         context: Context,
         googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>

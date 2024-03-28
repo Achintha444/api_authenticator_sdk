@@ -95,7 +95,7 @@ interface AuthenticateHandlerProviderManager {
         context: Context,
         authenticatorType: AuthenticatorType,
         googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
-    )
+    ): String?
 
     /**
      * Handle the Google authentication result.

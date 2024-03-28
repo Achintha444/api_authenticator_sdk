@@ -1,10 +1,11 @@
 package io.wso2.android.api_authenticator.sdk.provider.di
 
 import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.AuthenticationCoreDef
+import io.wso2.android.api_authenticator.sdk.core.core_types.native_authentication_handler.NativeAuthenticationHandlerCoreDef
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authenticate_handler.AuthenticateHandlerProviderManager
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authenticate_handler.impl.AuthenticateHandlerProviderManagerImpl
-import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication_state.AuthenticationStateProviderManager
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication.impl.AuthenticationProviderManagerImpl
+import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication_state.AuthenticationStateProviderManager
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication_state.impl.AuthenticationStateProviderManagerImpl
 
 /**
@@ -27,13 +28,17 @@ internal object AuthenticationProviderManagerImplContainer {
      * Get the instance of the [AuthenticateHandlerProviderManager].
      *
      * @param authenticationCore The [AuthenticationCoreDef] instance
+     * @param nativeAuthenticationHandlerCore The [NativeAuthenticationHandlerCoreDef] instance
      *
      * @return [AuthenticateHandlerProviderManager] instance
      */
-    internal fun getAuthenticationHandlerProviderManager(authenticationCore: AuthenticationCoreDef)
-            : AuthenticateHandlerProviderManager =
+    internal fun getAuthenticationHandlerProviderManager(
+        authenticationCore: AuthenticationCoreDef,
+        nativeAuthenticationHandlerCore: NativeAuthenticationHandlerCoreDef
+    ): AuthenticateHandlerProviderManager =
         AuthenticateHandlerProviderManagerImpl.getInstance(
             authenticationCore,
+            nativeAuthenticationHandlerCore,
             AuthenticateHandlerProviderManagerImplContainer.getAuthenticateStateProviderManager(
                 authenticationCore
             )

@@ -11,13 +11,6 @@ import io.wso2.android.api_authenticator.sdk.provider.provider_managers.token.im
  */
 internal object TokenProviderImplContainer {
     /**
-     * Get the instance of the [AuthenticationCoreDef].
-     *
-     * @return [AuthenticationCoreDef] instance
-     */
-    internal fun getAuthenticationCoreDef(): AuthenticationCoreDef? =
-        AuthenticationCore.getInstance()
-    /**
      * Get the instance of the [TokenProviderManager].
      *
      * @param authenticationCore [AuthenticationCoreDef] instance

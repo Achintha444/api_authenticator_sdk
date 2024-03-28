@@ -1,12 +1,15 @@
 package io.wso2.android.api_authenticator.sdk.core.di
 
-import io.wso2.android.api_authenticator.sdk.core.managers.authn.impl.AuthnManagerImplRequestBuilder
+import io.wso2.android.api_authenticator.sdk.core.managers.logout.impl.LogoutManagerImpl
 import io.wso2.android.api_authenticator.sdk.core.managers.logout.impl.LogoutManagerImplRequestBuilder
 import io.wso2.android.api_authenticator.sdk.models.http_client.LessSecureHttpClient
 import io.wso2.android.api_authenticator.sdk.models.http_client.http_client_builder.HttpClientBuilder
 import okhttp3.OkHttpClient
 
-object LogoutManagerImplContainer {
+/**
+ * Container for the [LogoutManagerImpl] class.
+ */
+internal object LogoutManagerImplContainer {
     /**
      * Returns an instance of the [OkHttpClient] class, based on the given parameters.
      *

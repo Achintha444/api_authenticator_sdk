@@ -69,18 +69,17 @@ class LogoutManagerImpl private constructor(
     /**
      * Logout the user from the application.
      *
-     * @param clientId Client id of the application
      * @param idToken Id token of the user
      *
      * @throws [LogoutException] If the logout fails
      * @throws [IOException] If the request fails due to a network error
      */
-    override suspend fun logout(clientId: String, idToken: String): Unit? =
+    override suspend fun logout(idToken: String): Unit? =
         withContext(Dispatchers.IO) {
             suspendCoroutine { continuation ->
                 val request: Request = logoutRequestBuilder.logoutRequestBuilder(
                     authenticationCoreConfig.getLogoutUrl(),
-                    clientId,
+                    authenticationCoreConfig.getClientId(),
                     idToken
                 )
 

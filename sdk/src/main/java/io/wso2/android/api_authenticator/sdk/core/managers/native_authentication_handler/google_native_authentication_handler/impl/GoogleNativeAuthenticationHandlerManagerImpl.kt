@@ -1,5 +1,146 @@
 package io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native_authentication_handler.impl
 
-class GoogleNativeAuthenticationHandlerManagerImpl {
+import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
+import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native_authentication_handler.GoogleNativeAuthenticationHandlerManager
+import io.wso2.android.api_authenticator.sdk.models.exceptions.GoogleNativeAuthenticationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.lang.ref.WeakReference
 
+/**
+ * Implementation of [GoogleNativeAuthenticationHandlerManager]
+ * This manager is responsible for handling the Google Native Authentication using the
+ * Credential Manager API
+ *
+ * @property authenticationCoreConfig [AuthenticationCoreConfig] to get the Google Web Client ID
+ * @property googleNativeAuthenticationHandlerManagerImplRequestBuilder [GoogleNativeAuthenticationHandlerManagerImplRequestBuilder] to build the requests
+ */
+class GoogleNativeAuthenticationHandlerManagerImpl private constructor(
+    private val authenticationCoreConfig: AuthenticationCoreConfig,
+    private val googleNativeAuthenticationHandlerManagerImplRequestBuilder: GoogleNativeAuthenticationHandlerManagerImplRequestBuilder
+) : GoogleNativeAuthenticationHandlerManager {
+    companion object {
+        /**
+         * Instance of the [GoogleNativeAuthenticationHandlerManagerImpl] that will be used throughout the application
+         */
+        private var googleNativeAuthenticationHandlerManagerImplInstance:
+                WeakReference<GoogleNativeAuthenticationHandlerManagerImpl> = WeakReference(null)
+
+        /**
+         * Initialize the [GoogleNativeAuthenticationHandlerManagerImpl] instance and return the instance.
+         *
+         * @param authenticationCoreConfig Configuration of the Authenticator [AuthenticationCoreConfig]
+         * @param googleNativeAuthenticationHandlerManagerImplRequestBuilder Request builder class to build the requests
+         *
+         * @return Initialized [GoogleNativeAuthenticationHandlerManagerImpl] instance
+         */
+        fun getInstance(
+            authenticationCoreConfig: AuthenticationCoreConfig,
+            googleNativeAuthenticationHandlerManagerImplRequestBuilder: GoogleNativeAuthenticationHandlerManagerImplRequestBuilder
+        ): GoogleNativeAuthenticationHandlerManagerImpl {
+            var googleNativeAuthenticationHandlerImpl =
+                googleNativeAuthenticationHandlerManagerImplInstance.get()
+            if (googleNativeAuthenticationHandlerImpl == null) {
+                googleNativeAuthenticationHandlerImpl =
+                    GoogleNativeAuthenticationHandlerManagerImpl(
+                        authenticationCoreConfig,
+                        googleNativeAuthenticationHandlerManagerImplRequestBuilder
+                    )
+                googleNativeAuthenticationHandlerManagerImplInstance =
+                    WeakReference(googleNativeAuthenticationHandlerImpl)
+            }
+            return googleNativeAuthenticationHandlerImpl
+        }
+    }
+
+    /**
+     * Get the [CredentialManager] instance
+     *
+     * @param context [Context] of the application
+     *
+     * @return [CredentialManager] instance
+     */
+    private fun getCredentialManager(context: Context) = CredentialManager.create(context)
+
+    /**
+     * Get the [GetGoogleIdOption] instance
+     *
+     * @param googleWebClientId Google Web Client ID
+     *
+     * @return [GetGoogleIdOption] instance
+     */
+    private fun getGoogleIdOptions(googleWebClientId: String): GetGoogleIdOption =
+        GetGoogleIdOption.Builder()
+            .setFilterByAuthorizedAccounts(true)
+            .setServerClientId(googleWebClientId)
+            .setNonce("nonce")
+            .build()
+
+    /**
+     * Authenticate the user with Google using the Credential Manager API
+     *
+     * @param context [Context] of the application
+     *
+     * @return Google ID Token of the authenticated user
+     */
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    override suspend fun authenticateWithGoogleNative(context: Context): String? {
+        val googleWebClientId: String? = authenticationCoreConfig.getGoogleWebClientId()
+
+        if (googleWebClientId.isNullOrEmpty()) {
+            throw GoogleNativeAuthenticationException(
+                GoogleNativeAuthenticationException.GOOGLE_WEB_CLIENT_ID_NOT_SET
+            )
+        } else {
+            val credentialManager: CredentialManager = getCredentialManager(context)
+            val googleIdOptions: GetGoogleIdOption = getGoogleIdOptions(googleWebClientId)
+
+            val request: GetCredentialRequest =
+                googleNativeAuthenticationHandlerManagerImplRequestBuilder
+                    .getAuthenticateWithGoogleNativeRequestBuilder(googleIdOptions)
+
+//            return withContext(Dispatchers.IO) {
+//                val result: GetCredentialResponse = credentialManager.getCredential(
+//                    request = request,
+//                    context = context,
+//                )
+//
+//                val googleIdTokenCredential =
+//                    GoogleIdTokenCredential.createFrom(result.credential.data)
+//
+//                return@withContext googleIdTokenCredential.idToken
+//            }
+            val result: GetCredentialResponse = credentialManager.getCredential(
+                request = request,
+                context = context,
+            )
+
+            val googleIdTokenCredential =
+                GoogleIdTokenCredential.createFrom(result.credential.data)
+
+            return googleIdTokenCredential.idToken
+        }
+    }
+
+    /**
+     * Logout the user from the google account
+     *
+     * @param context [Context] of the application
+     */
+    override suspend fun logout(context: Context) {
+        withContext(Dispatchers.IO) {
+            getCredentialManager(context).clearCredentialState(
+                googleNativeAuthenticationHandlerManagerImplRequestBuilder
+                    .getGoogleLoginRequestBuilder()
+            )
+        }
+    }
 }

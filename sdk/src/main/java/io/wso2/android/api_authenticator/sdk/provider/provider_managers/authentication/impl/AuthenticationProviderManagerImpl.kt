@@ -2,8 +2,10 @@ package io.wso2.android.api_authenticator.sdk.provider.provider_managers.authent
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.RequiresApi
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.AuthenticationCoreDef
@@ -265,6 +267,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override suspend fun authenticateWithGoogle(
         context: Context,
         googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>

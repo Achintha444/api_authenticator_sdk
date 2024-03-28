@@ -4,6 +4,7 @@ import io.wso2.android.api_authenticator.sdk.api_auth.di.ApiAuthContainer
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.impl.AuthenticationCore
+import io.wso2.android.api_authenticator.sdk.core.core_types.native_authentication_handler.NativeAuthenticationHandlerCoreDef
 import io.wso2.android.api_authenticator.sdk.provider.di.AuthenticationProviderImplContainer
 import io.wso2.android.api_authenticator.sdk.provider.di.TokenProviderImplContainer
 import io.wso2.android.api_authenticator.sdk.provider.providers.authentication.AuthenticationProvider
@@ -26,6 +27,10 @@ class ApiAuth private constructor(private val authenticationCoreConfig: Authenti
      */
     private val authenticationCore: AuthenticationCoreDef by lazy {
         ApiAuthContainer.getAuthenticationCoreDef(authenticationCoreConfig)
+    }
+
+    private val nativeAuthenticationHandlerCore: NativeAuthenticationHandlerCoreDef by lazy {
+        ApiAuthContainer.getNativeAuthenticationHandlerCoreDef(authenticationCoreConfig)
     }
 
     companion object {
@@ -66,7 +71,10 @@ class ApiAuth private constructor(private val authenticationCoreConfig: Authenti
      */
     fun getAuthenticationProvider(): AuthenticationProvider =
         AuthenticationProviderImpl.getInstance(
-            AuthenticationProviderImplContainer.getAuthenticationProviderManager(authenticationCore)
+            AuthenticationProviderImplContainer.getAuthenticationProviderManager(
+                authenticationCore,
+                nativeAuthenticationHandlerCore
+            )
         )
 
     /**
