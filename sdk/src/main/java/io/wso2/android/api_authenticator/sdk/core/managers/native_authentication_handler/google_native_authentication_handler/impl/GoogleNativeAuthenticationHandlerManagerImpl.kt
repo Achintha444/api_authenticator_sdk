@@ -1,0 +1,5 @@
+package io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native_authentication_handler.impl
+
+class GoogleNativeAuthenticationHandlerManagerImpl {
+
+}

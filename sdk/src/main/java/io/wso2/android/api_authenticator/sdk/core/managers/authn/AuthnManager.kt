@@ -33,15 +33,4 @@ internal interface AuthnManager {
         authenticatorType: AuthenticatorType,
         authenticatorParameters: LinkedHashMap<String, String>,
     ): AuthenticationFlow?
-
-    /**
-     * Logout the user from the application.
-     *
-     * @param clientId Client id of the application
-     * @param idToken Id token of the user
-     *
-     * @throws [AuthnManagerException] If the logout fails
-     * @throws [IOException] If the request fails due to a network error
-     */
-    suspend fun logout(clientId: String, idToken: String): Unit?
 }

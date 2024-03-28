@@ -8,6 +8,7 @@ import io.wso2.android.api_authenticator.sdk.core.managers.app_auth.AppAuthManag
 import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.AuthenticatorManager
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.AuthnManager
 import io.wso2.android.api_authenticator.sdk.core.managers.flow.FlowManager
+import io.wso2.android.api_authenticator.sdk.core.managers.logout.LogoutManager
 import io.wso2.android.api_authenticator.sdk.core.managers.token.TokenManager
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
@@ -38,7 +39,7 @@ class AuthenticationCore private constructor(
      * Instance of the [FlowManager] that will be used throughout the application
      */
     private val flowManager: FlowManager by lazy {
-        AuthenticationCoreContainer.getFlowManagerInstance(authenticationCoreConfig)
+        AuthenticationCoreContainer.getFlowManagerInstance()
     }
 
     /**
@@ -53,6 +54,13 @@ class AuthenticationCore private constructor(
      */
     private val appAuthManagerInstance: AppAuthManager by lazy {
         AuthenticationCoreContainer.getAppAuthManagerInstance(authenticationCoreConfig)
+    }
+
+    /**
+     * Instance of the [LogoutManager] that will be used throughout the application
+     */
+    private val logoutManagerInstance: LogoutManager by lazy {
+        AuthenticationCoreContainer.getLogoutManagerInstance(authenticationCoreConfig)
     }
 
     companion object {
@@ -300,6 +308,6 @@ class AuthenticationCore private constructor(
      */
     override suspend fun logout(idToken: String) {
         val clientId: String = authenticationCoreConfig.getClientId()
-        authnMangerInstance.logout(clientId, idToken)
+        logoutManagerInstance.logout(clientId, idToken)
     }
 }

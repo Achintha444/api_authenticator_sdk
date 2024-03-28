@@ -1,7 +1,6 @@
 package io.wso2.android.api_authenticator.sdk.core.managers.flow.impl
 
 import com.fasterxml.jackson.databind.JsonNode
-import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.AuthenticatorManager
 import io.wso2.android.api_authenticator.sdk.core.managers.flow.FlowManager
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowNotSuccess
@@ -14,12 +13,8 @@ import java.lang.ref.WeakReference
 /**
  * [FlowManager] implementation class
  * This class is responsible for handling the state of the authorization flow.
- *
- * @property authenticatorManager The [AuthenticatorManager] instance
  */
-internal class FlowManagerImpl private constructor(
-    private val authenticatorManager: AuthenticatorManager
-) : FlowManager {
+internal class FlowManagerImpl private constructor() : FlowManager {
     companion object {
         /**
          * Instance of the [FlowManagerImpl] that will be used throughout the application
@@ -28,13 +23,11 @@ internal class FlowManagerImpl private constructor(
 
         /**
          * Initialize the [FlowManagerImpl] instance and return the instance.
-         *
-         * @param authenticatorManager The [AuthenticatorManager] instance
          */
-        fun getInstance(authenticatorManager: AuthenticatorManager): FlowManagerImpl {
+        fun getInstance(): FlowManagerImpl {
             var flowManagerImpl = flowManagerImplInstance.get()
             if (flowManagerImpl == null) {
-                flowManagerImpl = FlowManagerImpl(authenticatorManager)
+                flowManagerImpl = FlowManagerImpl()
                 flowManagerImplInstance = WeakReference(flowManagerImpl)
             }
             return flowManagerImpl
