@@ -151,14 +151,32 @@ class AuthScreenViewModel @Inject constructor(
     }
 
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    fun authenticateWithGoogle(googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>) {
+    fun authenticateWithGoogle() {
         viewModelScope.launch {
             _state.update {
                 it.copy(
                     isLoading = true
                 )
             }
-            authenticationProvider.authenticateWithGoogle(
+            authenticationProvider.authenticateWithGoogle(applicationContext)
+            _state.update {
+                it.copy(
+                    isLoading = false
+                )
+            }
+        }
+    }
+
+    fun authenticateWithGoogleNativeLegacy(
+        googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
+    ) {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    isLoading = true
+                )
+            }
+            authenticationProvider.authenticateWithGoogleLegacy(
                 applicationContext,
                 googleAuthenticateResultLauncher
             )
@@ -170,9 +188,9 @@ class AuthScreenViewModel @Inject constructor(
         }
     }
 
-    fun handleGoogleSignInResult(result: ActivityResult) {
+    fun handleGoogleNativeLegacyAuthenticateResult(result: ActivityResult) {
         viewModelScope.launch {
-            authenticationProvider.handleGoogleAuthenticateResult(
+            authenticationProvider.handleGoogleNativeLegacyAuthenticateResult(
                 applicationContext,
                 result
             )

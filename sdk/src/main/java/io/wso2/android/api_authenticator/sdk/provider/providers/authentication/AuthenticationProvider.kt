@@ -118,7 +118,18 @@ interface AuthenticationProvider {
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    suspend fun authenticateWithGoogle(
+    suspend fun authenticateWithGoogle(context: Context)
+
+    /**
+     * Authenticate the user with the Google authenticator using the legacy one tap method.
+     *
+     * @param context The context of the application
+     * @param googleAuthenticateResultLauncher The result launcher for the Google authentication process
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     */
+    suspend fun authenticateWithGoogleLegacy(
         context: Context,
         googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
     )
@@ -133,7 +144,7 @@ interface AuthenticationProvider {
      * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      */
-    suspend fun handleGoogleAuthenticateResult(
+    suspend fun handleGoogleNativeLegacyAuthenticateResult(
         context: Context,
         result: ActivityResult
     )

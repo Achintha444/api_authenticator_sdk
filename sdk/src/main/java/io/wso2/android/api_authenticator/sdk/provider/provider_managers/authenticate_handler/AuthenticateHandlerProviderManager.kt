@@ -86,19 +86,26 @@ interface AuthenticateHandlerProviderManager {
      * Authenticate the user with the Google authenticator.
      *
      * @param context The context of the application
-     * @param authenticatorType The authenticator type to authenticate the user
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     */
+    suspend fun googleAuthenticate(context: Context): String?
+
+    /**
+     * Authenticate the user with the Google authenticator using the legacy one tap method.
+     *
+     * @param context The context of the application
      * @param googleAuthenticateResultLauncher The result launcher for the Google authentication process
      *
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    suspend fun googleAuthenticate(
+    suspend fun googleLegacyAuthenticate(
         context: Context,
-        authenticatorType: AuthenticatorType,
         googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
-    ): String?
+    )
 
     /**
-     * Handle the Google authentication result.
+     * Handle the Google authentication result using the legacy one tap Google authentication.
      *
      * @param context The context of the application
      * @param result The [ActivityResult] object that contains the result of the Google authentication process
@@ -107,5 +114,5 @@ interface AuthenticateHandlerProviderManager {
      * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      */
-    suspend fun handleGoogleAuthenticateResult(context: Context, result: ActivityResult)
+    suspend fun handleGoogleNativeLegacyAuthenticateResult(context: Context, result: ActivityResult)
 }

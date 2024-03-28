@@ -25,16 +25,6 @@ class AuthenticatorProviderException (
          * Message for the case where the redirect URI is not found
          */
         const val REDIRECT_URI_NOT_FOUND = "Redirect URI not found"
-        /**
-         * Message for the case where the google web client id is not found
-         */
-        const val GOOGLE_WEB_CLIENT_ID_NOT_FOUND = "Google web client id not found"
-        /**
-         * Message for the case where the Google auth code or id token is not found
-         */
-        const val GOOGLE_AUTH_CODE_OR_ID_TOKEN_NOT_FOUND = "Google auth code or id token not found"
-
-
     }
 
     override fun toString(): String {

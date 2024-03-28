@@ -23,12 +23,12 @@ internal fun GoogleNativeAuth(
     val launcher: ActivityResultLauncher<Intent> = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        viewModel.handleGoogleSignInResult(result)
+        viewModel.handleGoogleNativeLegacyAuthenticateResult(result)
     }
 
     GoogleNativeAuthComponent(
         onSubmit = {
-            viewModel.authenticateWithGoogle(launcher)
+            viewModel.authenticateWithGoogleNativeLegacy(launcher)
         }
     )
 }

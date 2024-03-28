@@ -123,15 +123,25 @@ internal interface AuthenticationProviderManager {
     suspend fun authenticateWithOpenIdConnect(context: Context)
 
     /**
-     * Authenticate the user with the Google authenticator.
+     * Authenticate the user with the Google authenticator using the Credential Manager API.
      *
      * @param context The context of the application
-     * @param googleAuthenticateResultLauncher The [ActivityResultLauncher] object to handle the Google authentication result
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    suspend fun authenticateWithGoogle(
+    suspend fun authenticateWithGoogle(context: Context)
+
+    /**
+     * Authenticate the user with the Google authenticator using the legacy one tap method.
+     *
+     * @param context The context of the application
+     * @param googleAuthenticateResultLauncher The result launcher for the Google authentication process
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     */
+    suspend fun authenticateWithGoogleLegacy(
         context: Context,
         googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
     )
@@ -146,7 +156,7 @@ internal interface AuthenticationProviderManager {
      * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      */
-    suspend fun handleGoogleAuthenticateResult(context: Context, result: ActivityResult)
+    suspend fun handleGoogleNativeLegacyAuthenticateResult(context: Context, result: ActivityResult)
 
     /**
      * Authenticate the user with the selected authenticator.

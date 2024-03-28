@@ -259,29 +259,45 @@ internal class AuthenticationProviderManagerImpl private constructor(
     }
 
     /**
-     * Authenticate the user with the Google authenticator.
+     * Authenticate the user with the Google authenticator using the Credential Manager API.
      *
      * @param context The context of the application
-     * @param googleAuthenticateResultLauncher The [ActivityResultLauncher] object to handle the Google authentication result
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    override suspend fun authenticateWithGoogle(
+    override suspend fun authenticateWithGoogle(context: Context) {
+        authenticateHandlerProviderManager.authenticateWithAuthenticator(
+            authenticatorTypeString = AuthenticatorTypes.GOOGLE_AUTHENTICATOR.authenticatorType
+        ) {
+            authenticateHandlerProviderManager.googleAuthenticate(context)
+        }
+    }
+
+    /**
+     * Authenticate the user with the Google authenticator using the legacy one tap method.
+     *
+     * @param context The context of the application
+     * @param googleAuthenticateResultLauncher The result launcher for the Google authentication process
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     */
+    override suspend fun authenticateWithGoogleLegacy(
         context: Context,
         googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
     ) {
         authenticateHandlerProviderManager.authenticateWithAuthenticator(
             authenticatorTypeString = AuthenticatorTypes.GOOGLE_AUTHENTICATOR.authenticatorType
         ) {
-            authenticateHandlerProviderManager.googleAuthenticate(
+            authenticateHandlerProviderManager.googleLegacyAuthenticate(
                 context,
-                it,
                 googleAuthenticateResultLauncher
             )
         }
     }
+
     /**
      * Handle the Google authentication result.
      *
@@ -292,8 +308,14 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      */
-    override suspend fun handleGoogleAuthenticateResult(context: Context, result: ActivityResult) {
-        authenticateHandlerProviderManager.handleGoogleAuthenticateResult(context, result)
+    override suspend fun handleGoogleNativeLegacyAuthenticateResult(
+        context: Context,
+        result: ActivityResult
+    ) {
+        authenticateHandlerProviderManager.handleGoogleNativeLegacyAuthenticateResult(
+            context,
+            result
+        )
     }
 
     /**

@@ -68,6 +68,7 @@ class GoogleNativeAuthenticationHandlerManagerImpl private constructor(
      *
      * @return [CredentialManager] instance
      */
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     private fun getCredentialManager(context: Context) = CredentialManager.create(context)
 
     /**
@@ -77,6 +78,7 @@ class GoogleNativeAuthenticationHandlerManagerImpl private constructor(
      *
      * @return [GetGoogleIdOption] instance
      */
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     private fun getGoogleIdOptions(googleWebClientId: String): GetGoogleIdOption =
         GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(true)
@@ -107,26 +109,17 @@ class GoogleNativeAuthenticationHandlerManagerImpl private constructor(
                 googleNativeAuthenticationHandlerManagerImplRequestBuilder
                     .getAuthenticateWithGoogleNativeRequestBuilder(googleIdOptions)
 
-//            return withContext(Dispatchers.IO) {
-//                val result: GetCredentialResponse = credentialManager.getCredential(
-//                    request = request,
-//                    context = context,
-//                )
-//
-//                val googleIdTokenCredential =
-//                    GoogleIdTokenCredential.createFrom(result.credential.data)
-//
-//                return@withContext googleIdTokenCredential.idToken
-//            }
-            val result: GetCredentialResponse = credentialManager.getCredential(
-                request = request,
-                context = context,
-            )
+            return withContext(Dispatchers.IO) {
+                val result: GetCredentialResponse = credentialManager.getCredential(
+                    request = request,
+                    context = context,
+                )
 
-            val googleIdTokenCredential =
-                GoogleIdTokenCredential.createFrom(result.credential.data)
+                val googleIdTokenCredential =
+                    GoogleIdTokenCredential.createFrom(result.credential.data)
 
-            return googleIdTokenCredential.idToken
+                return@withContext googleIdTokenCredential.idToken
+            }
         }
     }
 
@@ -135,11 +128,12 @@ class GoogleNativeAuthenticationHandlerManagerImpl private constructor(
      *
      * @param context [Context] of the application
      */
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override suspend fun logout(context: Context) {
         withContext(Dispatchers.IO) {
             getCredentialManager(context).clearCredentialState(
                 googleNativeAuthenticationHandlerManagerImplRequestBuilder
-                    .getGoogleLoginRequestBuilder()
+                    .getGoogleLogoutRequestBuilder()
             )
         }
     }
