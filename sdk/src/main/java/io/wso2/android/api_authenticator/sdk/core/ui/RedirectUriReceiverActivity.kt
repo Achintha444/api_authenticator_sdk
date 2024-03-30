@@ -1,9 +1,9 @@
-package io.wso2.android.api_authenticator.sdk.provider.ui
+package io.wso2.android.api_authenticator.sdk.core.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import io.wso2.android.api_authenticator.sdk.provider.di.RedirectUriReceiverActivityContainer
-import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authenticate_handler.AuthenticateHandlerProviderManager
+import io.wso2.android.api_authenticator.sdk.core.di.RedirectUriReceiverActivityContainer
+import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.redirect_authentication_handler.RedirectAuthenticationHandlerManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,8 +13,8 @@ import kotlinx.coroutines.launch
  */
 class RedirectUriReceiverActivity : ComponentActivity() {
     // The authentication provider
-    private val authenticateHandlerProviderManager: AuthenticateHandlerProviderManager? by lazy {
-        RedirectUriReceiverActivityContainer.getAuthenticateHandlerProviderManager()
+    private val redirectAuthenticationManager: RedirectAuthenticationHandlerManager? by lazy {
+        RedirectUriReceiverActivityContainer.getRedirectAuthenticationHandlerManager()
     }
 
     // Flag to check if the redirection is handled
@@ -34,7 +34,7 @@ class RedirectUriReceiverActivity : ComponentActivity() {
 
                 // Handle the redirection URI in a coroutine
                 CoroutineScope(Dispatchers.IO).launch {
-                    authenticateHandlerProviderManager!!.handleRedirectUri(
+                    redirectAuthenticationManager!!.handleRedirectUri(
                         this@RedirectUriReceiverActivity,
                         deepLink
                     )

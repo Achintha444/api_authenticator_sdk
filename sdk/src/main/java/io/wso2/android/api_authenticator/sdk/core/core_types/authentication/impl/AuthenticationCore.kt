@@ -281,14 +281,6 @@ class AuthenticationCore private constructor(
         getTokenManagerInstance(context).validateAccessToken()
 
     /**
-     * Get the authentication core configuration.
-     * This configuration is used to configure the authentication core.
-     *
-     * @return [AuthenticationCoreConfig] instance
-     */
-    override fun getAuthenticationCoreConfig(): AuthenticationCoreConfig = authenticationCoreConfig
-
-    /**
      * Logout the user from the application.
      *
      * @param idToken Id token of the user

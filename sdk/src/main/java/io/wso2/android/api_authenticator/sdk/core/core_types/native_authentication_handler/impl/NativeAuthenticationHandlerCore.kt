@@ -9,9 +9,10 @@ import androidx.annotation.RequiresApi
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.core_types.native_authentication_handler.NativeAuthenticationHandlerCoreDef
 import io.wso2.android.api_authenticator.sdk.core.di.NativeAuthenticationHandlerCoreContainer
-import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.AuthenticatorManager
 import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native_authentication_handler.GoogleNativeAuthenticationHandlerManager
 import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native_legacy_authentication_handler.GoogleNativeLegacyAuthenticationHandlerManager
+import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.redirect_authentication_handler.RedirectAuthenticationHandlerManager
+import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import java.lang.ref.WeakReference
 
 class NativeAuthenticationHandlerCore private constructor(
@@ -34,6 +35,13 @@ class NativeAuthenticationHandlerCore private constructor(
         NativeAuthenticationHandlerCoreContainer.getGoogleNativeLegacyAuthenticationHandlerManager(
             authenticationCoreConfig
         )
+    }
+
+    /**
+     * Instance of the [RedirectAuthenticationHandlerManager] that will be used throughout the application
+     */
+    private val redirectAuthenticationHandlerManager: RedirectAuthenticationHandlerManager by lazy {
+        NativeAuthenticationHandlerCoreContainer.getRedirectAuthenticationHandlerManager()
     }
 
     companion object {
@@ -107,4 +115,19 @@ class NativeAuthenticationHandlerCore private constructor(
         googleNativeLegacyAuthenticationHandlerManager.handleGoogleNativeLegacyAuthenticateResult(
             result
         )
+
+    /**
+     * Handle the redirect authentication process.
+     * This method will redirect the user to the authenticator's authentication page.
+     *
+     * @param context The context of the application
+     * @param authenticatorType The authenticator type to redirect the user
+     *
+     * @return The authentication parameters extracted from the redirect URI
+     */
+    override suspend fun handleRedirectAuthentication(
+        context: Context,
+        authenticatorType: AuthenticatorType
+    ): LinkedHashMap<String, String>? =
+        redirectAuthenticationHandlerManager.redirectAuthenticate(context, authenticatorType)
 }

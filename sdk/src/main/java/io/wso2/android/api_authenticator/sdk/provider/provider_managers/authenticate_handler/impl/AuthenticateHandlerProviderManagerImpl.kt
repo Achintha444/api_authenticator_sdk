@@ -14,6 +14,7 @@ import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorProviderException
 import io.wso2.android.api_authenticator.sdk.models.exceptions.GoogleNativeAuthenticationException
+import io.wso2.android.api_authenticator.sdk.models.exceptions.RedirectAuthenticationException
 import io.wso2.android.api_authenticator.sdk.models.prompt_type.PromptTypes
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authenticate_handler.AuthenticateHandlerProviderManager
@@ -88,25 +89,6 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
      * The selected authenticator for the authentication process.
      */
     private var selectedAuthenticator: AuthenticatorType? = null
-
-    /**
-     * Deferred object to wait for the result of the redirect authentication process.
-     *
-     * TODO: Move to the Core module
-     */
-    private val redirectAuthenticationResultDeferred: CompletableDeferred<Unit> by lazy {
-        CompletableDeferred()
-    }
-
-    /**
-     * Complete the deferred objects.
-     */
-    private fun completeDeferred() {
-        if (!redirectAuthenticationResultDeferred.isCompleted) {
-            // Complete the deferred object and finish the [authenticateWithRedirectUri] method
-            redirectAuthenticationResultDeferred.complete(Unit)
-        }
-    }
 
     /**
      * Set the authenticators in this step of the authentication flow.
@@ -226,8 +208,6 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
                 )
             }
 
-            completeDeferred()
-
             selectedAuthenticator = null
         } else {
             authenticationStateProviderManager.emitAuthenticationState(
@@ -239,8 +219,6 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
             )
 
             selectedAuthenticator = null
-
-            completeDeferred()
         }
     }
 
@@ -256,87 +234,29 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
         context: Context,
         authenticatorType: AuthenticatorType
     ) {
-        // Retrieving the prompt type of the authenticator
-        val promptType: String? = authenticatorType.metadata?.promptType
+        runCatching {
+            nativeAuthenticationHandlerCore.handleRedirectAuthentication(context, authenticatorType)
+        }.onSuccess {
+            val authParamsMap: LinkedHashMap<String, String>? = it
 
-        if (promptType == PromptTypes.REDIRECTION_PROMPT.promptType) {
-            // Retrieving the redirect URI of the authenticator
-            val redirectUri: String? = authenticatorType.metadata?.additionalData?.redirectUrl
-
-            if (redirectUri.isNullOrEmpty()) {
+            if (authParamsMap.isNullOrEmpty()) {
                 authenticationStateProviderManager.emitAuthenticationState(
                     AuthenticationState.Error(
-                        AuthenticatorProviderException(
-                            AuthenticatorProviderException.REDIRECT_URI_NOT_FOUND
+                        RedirectAuthenticationException(
+                            RedirectAuthenticationException.AUTHENTICATION_PARAMS_NOT_FOUND
                         )
                     )
                 )
 
                 selectedAuthenticator = null
             } else {
-                selectedAuthenticator = authenticatorType
-
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(redirectUri))
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                context.startActivity(intent)
-
-                redirectAuthenticationResultDeferred.await()
+                commonAuthenticate(context, authParamsAsMap = authParamsMap)
             }
-        } else {
+        }.onFailure {
             authenticationStateProviderManager.emitAuthenticationState(
-                AuthenticationState.Error(
-                    AuthenticatorProviderException(
-                        AuthenticatorProviderException.NOT_REDIRECT_PROMPT
-                    )
-                )
+                AuthenticationState.Error(it)
             )
-
             selectedAuthenticator = null
-        }
-    }
-
-    /**
-     * Handle the redirect URI and authenticate the user with the selected authenticator.
-     *
-     * @param context The context of the application
-     * @param deepLink The deep link URI that is received from the redirect URI
-     *
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
-     */
-    override suspend fun handleRedirectUri(context: Context, deepLink: Uri) {
-        // Setting up the deferred object to wait for the result
-        if (selectedAuthenticator != null) {
-            val requiredParams: List<String> = selectedAuthenticator!!.requiredParams!!
-
-            // Extract required parameters from the authenticator type
-            val authParamsMap: LinkedHashMap<String, String> = LinkedHashMap()
-
-            for (param in requiredParams) {
-                val paramValue: String? = deepLink.getQueryParameter(param)
-
-                if (paramValue != null) {
-                    authParamsMap[param] = paramValue
-                }
-            }
-
-            // Finish the [RedirectUriReceiverActivity] activity
-            if (context is ComponentActivity) {
-                context.finish()
-            }
-
-            commonAuthenticate(context, authParamsAsMap = authParamsMap)
-        } else {
-            authenticationStateProviderManager.emitAuthenticationState(
-                AuthenticationState.Error(
-                    AuthenticatorProviderException(
-                        AuthenticatorProviderException.AUTHENTICATOR_NOT_FOUND
-                    )
-                )
-            )
-            // Complete the deferred object and finish the [authenticateWithRedirectUri] method
-            redirectAuthenticationResultDeferred.complete(Unit)
         }
     }
 
@@ -348,8 +268,38 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    override suspend fun googleAuthenticate(context: Context): String? =
-        nativeAuthenticationHandlerCore.handleGoogleNativeAuthentication(context)
+    override suspend fun googleAuthenticate(context: Context) {
+        runCatching {
+            nativeAuthenticationHandlerCore.handleGoogleNativeAuthentication(context)
+        }.onSuccess {
+            val idToken: String? = it
+
+            if (idToken.isNullOrEmpty()) {
+                authenticationStateProviderManager.emitAuthenticationState(
+                    AuthenticationState.Error(
+                        GoogleNativeAuthenticationException(
+                            GoogleNativeAuthenticationException.GOOGLE_ID_TOKEN_NOT_FOUND
+                        )
+                    )
+                )
+
+                selectedAuthenticator = null
+            } else {
+                commonAuthenticate(
+                    context,
+                    authParamsAsMap = linkedMapOf(
+                        "idToken" to idToken,
+                        "accessToken" to idToken
+                    )
+                )
+            }
+        }.onFailure {
+            authenticationStateProviderManager.emitAuthenticationState(
+                AuthenticationState.Error(it)
+            )
+            selectedAuthenticator = null
+        }
+    }
 
     /**
      * Authenticate the user with the Google authenticator using the legacy one tap method.

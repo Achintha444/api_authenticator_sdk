@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="io.wso2.android.api_authenticator.sdk.provider.ui.RedirectUriReceiverActivity"
+            android:name="io.wso2.android.api_authenticator.sdk.core.ui.RedirectUriReceiverActivity"
             android:exported="true">
             <intent-filter>
                 <category android:name="android.intent.category.BROWSABLE" />

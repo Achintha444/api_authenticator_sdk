@@ -112,7 +112,6 @@ interface AuthenticationProvider {
      * Authenticate the user with the Google authenticator.
      *
      * @param context The context of the application
-     * @param googleAuthenticateResultLauncher The [ActivityResultLauncher] object to handle the Google authentication result
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process

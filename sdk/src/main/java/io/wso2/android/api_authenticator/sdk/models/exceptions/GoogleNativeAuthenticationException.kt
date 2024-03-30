@@ -26,6 +26,11 @@ class GoogleNativeAuthenticationException (
          * Message for the case where the Google authentication failed
          */
         const val GOOGLE_AUTHENTICATION_FAILED = "Google authentication failed"
+
+        /**
+         * Message for the case where the Google ID Token is not found
+         */
+        const val GOOGLE_ID_TOKEN_NOT_FOUND = "Google ID Token not found"
     }
 
     override fun toString(): String {

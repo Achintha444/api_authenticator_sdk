@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
+import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 
 /**
  * Native Authentication Handler Core class interface which has the core functionality to
@@ -44,4 +45,18 @@ interface NativeAuthenticationHandlerCoreDef {
      */
     suspend fun handleGoogleNativeLegacyAuthenticateResult(result: ActivityResult)
             : LinkedHashMap<String, String>?
+
+    /**
+     * Handle the redirect authentication process.
+     * This method will redirect the user to the authenticator's authentication page.
+     *
+     * @param context The context of the application
+     * @param authenticatorType The authenticator type to redirect the user
+     *
+     * @return The authentication parameters extracted from the redirect URI
+     */
+    suspend fun handleRedirectAuthentication(
+        context: Context,
+        authenticatorType: AuthenticatorType
+    ): LinkedHashMap<String, String>?
 }

@@ -169,14 +169,6 @@ interface AuthenticationCoreDef {
     suspend fun validateAccessToken(context: Context): Boolean?
 
     /**
-     * Get the authentication core configuration.
-     * This configuration is used to configure the authentication core.
-     *
-     * @return [AuthenticationCoreConfig] instance
-     */
-    fun getAuthenticationCoreConfig(): AuthenticationCoreConfig
-
-    /**
      * Logout the user from the application.
      *
      * @param idToken Id token of the user
