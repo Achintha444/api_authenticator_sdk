@@ -12,6 +12,7 @@ import io.wso2.android.api_authenticator.sdk.core.di.NativeAuthenticationHandler
 import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native_authentication_handler.GoogleNativeAuthenticationHandlerManager
 import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native_legacy_authentication_handler.GoogleNativeLegacyAuthenticationHandlerManager
 import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.redirect_authentication_handler.RedirectAuthenticationHandlerManager
+import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import java.lang.ref.WeakReference
 
@@ -111,7 +112,7 @@ class NativeAuthenticationHandlerCore private constructor(
      * @return The Google native authenticator parameters [LinkedHashMap] that contains the ID Token and the Auth Code
      */
     override suspend fun handleGoogleNativeLegacyAuthenticateResult(result: ActivityResult)
-            : LinkedHashMap<String, String>? =
+            : AuthParams? =
         googleNativeLegacyAuthenticationHandlerManager.handleGoogleNativeLegacyAuthenticateResult(
             result
         )

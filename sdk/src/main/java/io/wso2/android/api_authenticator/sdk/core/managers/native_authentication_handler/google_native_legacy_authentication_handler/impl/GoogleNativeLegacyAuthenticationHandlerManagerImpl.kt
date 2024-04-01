@@ -13,6 +13,8 @@ import com.google.android.gms.tasks.Task
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native_authentication_handler.GoogleNativeAuthenticationHandlerManager
 import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native_legacy_authentication_handler.GoogleNativeLegacyAuthenticationHandlerManager
+import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
+import io.wso2.android.api_authenticator.sdk.models.auth_params.GoogleNativeAuthenticatorTypeAuthParams
 import io.wso2.android.api_authenticator.sdk.models.exceptions.GoogleNativeAuthenticationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
@@ -112,7 +114,7 @@ class GoogleNativeLegacyAuthenticationHandlerManagerImpl private constructor(
      * @return The Google native authenticator parameters [LinkedHashMap] that contains the ID Token and the Auth Code
      */
     override suspend fun handleGoogleNativeLegacyAuthenticateResult(result: ActivityResult)
-            : LinkedHashMap<String, String>? = withContext(Dispatchers.IO) {
+            : AuthParams? = withContext(Dispatchers.IO) {
         suspendCoroutine { continuation ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(
@@ -130,10 +132,10 @@ class GoogleNativeLegacyAuthenticationHandlerManagerImpl private constructor(
                             )
                         )
                     } else {
-                        val googleNativeAuthenticatorParams: LinkedHashMap<String, String> =
-                            linkedMapOf(
-                                "idToken" to idToken,
-                                "authCode" to authCode
+                        val googleNativeAuthenticatorParams: AuthParams =
+                            GoogleNativeAuthenticatorTypeAuthParams(
+                                accessToken = authCode,
+                                idToken = idToken
                             )
 
                         continuation.resume(googleNativeAuthenticatorParams)

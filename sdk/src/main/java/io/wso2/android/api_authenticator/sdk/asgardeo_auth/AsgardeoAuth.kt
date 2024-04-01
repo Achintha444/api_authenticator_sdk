@@ -1,6 +1,6 @@
-package io.wso2.android.api_authenticator.sdk.api_auth
+package io.wso2.android.api_authenticator.sdk.asgardeo_auth
 
-import io.wso2.android.api_authenticator.sdk.api_auth.di.ApiAuthContainer
+import io.wso2.android.api_authenticator.sdk.asgardeo_auth.di.AsgardeoAuthContainer
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.impl.AuthenticationCore
@@ -14,54 +14,56 @@ import io.wso2.android.api_authenticator.sdk.provider.providers.token.impl.Token
 import java.lang.ref.WeakReference
 
 /**
- * The [ApiAuth] class act as the entry point for the SDK.
+ * The [AsgardeoAuth] class act as the entry point for the SDK.
  * This class will initialize the [AuthenticationProvider] and [TokenProvider] instances,
  * which will be used throughout the application for authentication and token management.
  *
  * @param authenticationCoreConfig Configuration of the Authenticator [AuthenticationCoreConfig]
  */
-class ApiAuth private constructor(private val authenticationCoreConfig: AuthenticationCoreConfig) {
+class AsgardeoAuth private constructor(
+    private val authenticationCoreConfig: AuthenticationCoreConfig
+) {
 
     /**
      * Instance of the [AuthenticationCore] that will be used throughout the application
      */
     private val authenticationCore: AuthenticationCoreDef by lazy {
-        ApiAuthContainer.getAuthenticationCoreDef(authenticationCoreConfig)
+        AsgardeoAuthContainer.getAuthenticationCoreDef(authenticationCoreConfig)
     }
 
     private val nativeAuthenticationHandlerCore: NativeAuthenticationHandlerCoreDef by lazy {
-        ApiAuthContainer.getNativeAuthenticationHandlerCoreDef(authenticationCoreConfig)
+        AsgardeoAuthContainer.getNativeAuthenticationHandlerCoreDef(authenticationCoreConfig)
     }
 
     companion object {
         /**
-         * Instance of the [ApiAuth] that will be used throughout the application
+         * Instance of the [AsgardeoAuth] that will be used throughout the application
          */
-        private var apiAuthInstance = WeakReference<ApiAuth?>(null)
+        private var asgardeoAuthInstance = WeakReference<AsgardeoAuth?>(null)
 
         /**
-         * Initialize the [ApiAuth] instance and return the instance.
+         * Initialize the [AsgardeoAuth] instance and return the instance.
          *
          * @param authenticationCoreConfig Configuration of the Authenticator [AuthenticationCoreConfig]
          *
          * @return Initialized [AuthenticationCore] instance
          */
-        fun getInstance(authenticationCoreConfig: AuthenticationCoreConfig): ApiAuth {
-            var apiAuth = apiAuthInstance.get()
-            if (apiAuth == null) {
-                apiAuth = ApiAuth(authenticationCoreConfig)
-                apiAuthInstance = WeakReference(apiAuth)
+        fun getInstance(authenticationCoreConfig: AuthenticationCoreConfig): AsgardeoAuth {
+            var asgardeoAuth = asgardeoAuthInstance.get()
+            if (asgardeoAuth == null) {
+                asgardeoAuth = AsgardeoAuth(authenticationCoreConfig)
+                asgardeoAuthInstance = WeakReference(asgardeoAuth)
             }
-            return apiAuth
+            return asgardeoAuth
         }
 
         /**
-         * Get the [ApiAuth] instance.
-         * This method will return null if the [ApiAuth] instance is not initialized.
+         * Get the [AsgardeoAuth] instance.
+         * This method will return null if the [AsgardeoAuth] instance is not initialized.
          *
-         * @return [ApiAuth] instance
+         * @return [AsgardeoAuth] instance
          */
-        fun getInstance(): ApiAuth? = apiAuthInstance.get()
+        fun getInstance(): AsgardeoAuth? = asgardeoAuthInstance.get()
     }
 
     /**

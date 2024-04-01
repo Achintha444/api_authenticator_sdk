@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
+import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 
 /**
  * Interface to be implemented by the Google Native Authentication Handler Manager
@@ -29,8 +30,7 @@ interface GoogleNativeLegacyAuthenticationHandlerManager {
      *
      * @return The Google native authenticator parameters [LinkedHashMap] that contains the ID Token and the Auth Code
      */
-    suspend fun handleGoogleNativeLegacyAuthenticateResult(result: ActivityResult)
-            : LinkedHashMap<String, String>?
+    suspend fun handleGoogleNativeLegacyAuthenticateResult(result: ActivityResult): AuthParams?
 
     /**
      * Logout the user from the Google account

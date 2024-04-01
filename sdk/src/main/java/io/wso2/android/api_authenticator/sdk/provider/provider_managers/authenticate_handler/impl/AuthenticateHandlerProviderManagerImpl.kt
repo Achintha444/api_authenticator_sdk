@@ -343,23 +343,19 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
         runCatching {
             nativeAuthenticationHandlerCore.handleGoogleNativeLegacyAuthenticateResult(result)
         }.onSuccess {
-            val googleNativeLegacyAuthParams: LinkedHashMap<String, String>? = it
-
-            if (googleNativeLegacyAuthParams.isNullOrEmpty()) {
+            if (it == null) {
                 authenticationStateProviderManager.emitAuthenticationState(
                     AuthenticationState.Error(
                         GoogleNativeAuthenticationException(
-                            GoogleNativeAuthenticationException.GOOGLE_AUTH_CODE_OR_ID_TOKEN_NOT_FOUND
+                            GoogleNativeAuthenticationException
+                                .GOOGLE_AUTH_CODE_OR_ID_TOKEN_NOT_FOUND
                         )
                     )
                 )
 
                 selectedAuthenticator = null
             } else {
-                commonAuthenticate(
-                    context,
-                    authParamsAsMap = googleNativeLegacyAuthParams
-                )
+                commonAuthenticate(context, authParams = it)
             }
         }.onFailure {
             authenticationStateProviderManager.emitAuthenticationState(

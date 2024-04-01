@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
+import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 
 /**
@@ -43,8 +44,7 @@ interface NativeAuthenticationHandlerCoreDef {
      *
      * @return The Google native authenticator parameters [LinkedHashMap] that contains the ID Token and the Auth Code
      */
-    suspend fun handleGoogleNativeLegacyAuthenticateResult(result: ActivityResult)
-            : LinkedHashMap<String, String>?
+    suspend fun handleGoogleNativeLegacyAuthenticateResult(result: ActivityResult): AuthParams?
 
     /**
      * Handle the redirect authentication process.

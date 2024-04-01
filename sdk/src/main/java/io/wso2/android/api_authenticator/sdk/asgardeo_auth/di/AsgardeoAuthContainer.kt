@@ -1,6 +1,6 @@
-package io.wso2.android.api_authenticator.sdk.api_auth.di
+package io.wso2.android.api_authenticator.sdk.asgardeo_auth.di
 
-import io.wso2.android.api_authenticator.sdk.api_auth.ApiAuth
+import io.wso2.android.api_authenticator.sdk.asgardeo_auth.AsgardeoAuth
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.impl.AuthenticationCore
@@ -8,9 +8,9 @@ import io.wso2.android.api_authenticator.sdk.core.core_types.native_authenticati
 import io.wso2.android.api_authenticator.sdk.core.core_types.native_authentication_handler.impl.NativeAuthenticationHandlerCore
 
 /**
- * Dependency Injection container for the [ApiAuth] class.
+ * Dependency Injection container for the [AsgardeoAuth] class.
  */
-internal object ApiAuthContainer {
+internal object AsgardeoAuthContainer {
     /**
      * Get the instance of the [AuthenticationCoreDef].
      *
