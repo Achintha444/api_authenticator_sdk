@@ -2,8 +2,10 @@ package io.wso2.android.api_authenticator.sdk.provider.provider_managers.authent
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.RequiresApi
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
@@ -102,4 +104,26 @@ interface AuthenticateHandlerProviderManager {
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      */
     suspend fun handleGoogleNativeLegacyAuthenticateResult(context: Context, result: ActivityResult)
+
+    /**
+     * Authenticate the user with the Passkey authenticator using Credential Manager API.
+     *
+     * @param context The context of the application
+     * @param challengeString The challenge string to authenticate the user
+     * @param allowCredentials The list of allowed credentials. Default is empty array.
+     * @param timeout The timeout for the authentication. Default is 300000.
+     * @param userVerification The user verification method. Default is "required"
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     */
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    suspend fun passkeyAuthenticate(
+        context: Context,
+        challengeString: String,
+        allowCredentials: List<String>? = null,
+        timeout: Long? = null,
+        userVerification: String? = null
+    )
 }

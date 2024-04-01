@@ -9,9 +9,10 @@ import androidx.annotation.RequiresApi
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.core_types.native_authentication_handler.NativeAuthenticationHandlerCoreDef
 import io.wso2.android.api_authenticator.sdk.core.di.NativeAuthenticationHandlerCoreContainer
-import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native_authentication_handler.GoogleNativeAuthenticationHandlerManager
-import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native_legacy_authentication_handler.GoogleNativeLegacyAuthenticationHandlerManager
-import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.redirect_authentication_handler.RedirectAuthenticationHandlerManager
+import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native.GoogleNativeAuthenticationHandlerManager
+import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native_legacy.GoogleNativeLegacyAuthenticationHandlerManager
+import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.passkey.PasskeyAuthenticationHandlerManager
+import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.redirect.RedirectAuthenticationHandlerManager
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import java.lang.ref.WeakReference
@@ -43,6 +44,13 @@ class NativeAuthenticationHandlerCore private constructor(
      */
     private val redirectAuthenticationHandlerManager: RedirectAuthenticationHandlerManager by lazy {
         NativeAuthenticationHandlerCoreContainer.getRedirectAuthenticationHandlerManager()
+    }
+
+    /**
+     * Instance of the [PasskeyAuthenticationHandlerManager] that will be used throughout the application
+     */
+    private val passkeyAuthenticationHandlerManager: PasskeyAuthenticationHandlerManager by lazy {
+        NativeAuthenticationHandlerCoreContainer.getPasskeyAuthenticationHandlerManager()
     }
 
     companion object {
@@ -81,7 +89,7 @@ class NativeAuthenticationHandlerCore private constructor(
      * @return idToken sent by the Google Native Authentication
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    override suspend fun handleGoogleNativeAuthentication(context: Context): String? =
+    override suspend fun handleGoogleNativeAuthentication(context: Context): AuthParams? =
         googleNativeAuthenticationHandlerManager.authenticateWithGoogleNative(context)
 
     /**
@@ -131,4 +139,31 @@ class NativeAuthenticationHandlerCore private constructor(
         authenticatorType: AuthenticatorType
     ): LinkedHashMap<String, String>? =
         redirectAuthenticationHandlerManager.redirectAuthenticate(context, authenticatorType)
+
+    /**
+     * Handle the passkey authentication process.
+     *
+     * @param context [Context] of the application
+     * @param challengeString Challenge string to authenticate the user. This string is received from the Identity Server
+     * @param allowCredentials List of allowed credentials. Default is empty array.
+     * @param timeout Timeout for the authentication. Default is 300000.
+     * @param userVerification User verification method. Default is "required"
+     *
+     * @return Authenticator
+     */
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    override suspend fun handlePasskeyAuthentication(
+        context: Context,
+        challengeString: String,
+        allowCredentials: List<String>?,
+        timeout: Long?,
+        userVerification: String?
+    ): AuthParams? =
+        passkeyAuthenticationHandlerManager.authenticateWithPasskey(
+            context,
+            challengeString,
+            allowCredentials,
+            timeout,
+            userVerification
+        )
 }

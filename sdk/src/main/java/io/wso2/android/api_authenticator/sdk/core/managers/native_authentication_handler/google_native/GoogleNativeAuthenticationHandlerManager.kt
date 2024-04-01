@@ -1,8 +1,9 @@
-package io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native_authentication_handler
+package io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native
 
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
+import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 
 /**
  * Interface to be implemented by the Google Native Authentication Handler Manager
@@ -18,7 +19,7 @@ interface GoogleNativeAuthenticationHandlerManager {
      * @return Google ID Token of the authenticated user
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    suspend fun authenticateWithGoogleNative(context: Context): String?
+    suspend fun authenticateWithGoogleNative(context: Context): AuthParams?
 
     /**
      * Logout the user from the google account

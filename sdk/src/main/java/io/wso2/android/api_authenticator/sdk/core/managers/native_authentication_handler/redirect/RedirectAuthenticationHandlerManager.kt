@@ -1,4 +1,4 @@
-package io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.redirect_authentication_handler
+package io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.redirect
 
 import android.content.Context
 import android.net.Uri

@@ -15,7 +15,7 @@ object AuthenticatorTypeUtil {
      *
      * @return Boolean value whether there are duplicates authenticators of the given authenticator type in the given step
      */
-    fun hasDuplicatesAuthenticatorsInGivenStep(
+    internal fun hasDuplicatesAuthenticatorsInGivenStep(
         authenticators: ArrayList<AuthenticatorType>,
         authenticatorTypeString: String
     ): Boolean {
@@ -30,7 +30,7 @@ object AuthenticatorTypeUtil {
      *
      * @return [AuthenticatorType] object, `null` if the authenticator type is not found
      */
-    fun getAuthenticatorTypeFromAuthenticatorTypeList(
+    internal fun getAuthenticatorTypeFromAuthenticatorTypeList(
         authenticators: ArrayList<AuthenticatorType>,
         authenticatorTypeString: String
     ): AuthenticatorType? {
@@ -45,7 +45,7 @@ object AuthenticatorTypeUtil {
      *
      * @return Boolean value whether there are duplicates authenticators of the given authenticator type in the given step
      */
-    fun hasDuplicatesAuthenticatorsInGivenStepOnAuthenticatorId(
+    internal fun hasDuplicatesAuthenticatorsInGivenStepOnAuthenticatorId(
         authenticators: ArrayList<AuthenticatorType>,
         authenticatorIdString: String
     ): Boolean {
@@ -60,7 +60,7 @@ object AuthenticatorTypeUtil {
      *
      * @return [AuthenticatorType] object, `null` if the authenticator type is not found
      */
-    fun getAuthenticatorTypeFromAuthenticatorTypeListOnAuthenticatorId(
+    internal fun getAuthenticatorTypeFromAuthenticatorTypeListOnAuthenticatorId(
         authenticators: ArrayList<AuthenticatorType>,
         authenticatorIdString: String
     ): AuthenticatorType? {
@@ -78,7 +78,7 @@ object AuthenticatorTypeUtil {
      * @param authenticatorIdString The authenticator id string
      * @param authenticatorTypeString The authenticator type string
      */
-     fun getAuthenticatorTypeFromAuthenticatorTypeList(
+     internal fun getAuthenticatorTypeFromAuthenticatorTypeList(
         authenticators: ArrayList<AuthenticatorType>,
         authenticatorIdString: String? = null,
         authenticatorTypeString: String? = null

@@ -1,4 +1,4 @@
-package io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native_legacy_authentication_handler
+package io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native_legacy
 
 import android.content.Context
 import android.content.Intent

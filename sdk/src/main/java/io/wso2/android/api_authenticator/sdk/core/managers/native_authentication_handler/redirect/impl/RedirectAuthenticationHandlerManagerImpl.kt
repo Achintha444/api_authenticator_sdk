@@ -1,10 +1,10 @@
-package io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.redirect_authentication_handler.impl
+package io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.redirect.impl
 
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.ComponentActivity
-import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.redirect_authentication_handler.RedirectAuthenticationHandlerManager
+import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.redirect.RedirectAuthenticationHandlerManager
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.exceptions.RedirectAuthenticationException
 import io.wso2.android.api_authenticator.sdk.models.prompt_type.PromptTypes

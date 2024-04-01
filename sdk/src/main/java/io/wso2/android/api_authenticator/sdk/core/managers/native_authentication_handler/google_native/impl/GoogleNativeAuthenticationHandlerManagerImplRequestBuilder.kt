@@ -1,15 +1,15 @@
-package io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native_legacy_authentication_handler.impl
+package io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native.impl
 
 import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.GetCredentialRequest
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 
 /**
- * Request builder class for the [GoogleNativeLegacyAuthenticationHandlerManagerImpl]
+ * Request builder class for the [GoogleNativeAuthenticationHandlerManagerImpl]
  * This class is responsible for building the requests for the Google Native Authentication
  * using the Credential Manager API
  */
-object GoogleNativeLegacyAuthenticationHandlerManagerImplRequestBuilder {
+object GoogleNativeAuthenticationHandlerManagerImplRequestBuilder {
     /**
      * Build the request to authenticate the user with Google using the Credential Manager API
      *

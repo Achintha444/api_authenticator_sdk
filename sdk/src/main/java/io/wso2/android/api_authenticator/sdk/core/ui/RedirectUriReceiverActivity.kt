@@ -3,7 +3,7 @@ package io.wso2.android.api_authenticator.sdk.core.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import io.wso2.android.api_authenticator.sdk.core.di.RedirectUriReceiverActivityContainer
-import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.redirect_authentication_handler.RedirectAuthenticationHandlerManager
+import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.redirect.RedirectAuthenticationHandlerManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

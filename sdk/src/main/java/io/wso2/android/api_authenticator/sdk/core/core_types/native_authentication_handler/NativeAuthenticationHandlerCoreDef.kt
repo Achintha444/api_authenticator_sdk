@@ -2,8 +2,10 @@ package io.wso2.android.api_authenticator.sdk.core.core_types.native_authenticat
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.RequiresApi
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 
@@ -20,7 +22,7 @@ interface NativeAuthenticationHandlerCoreDef {
      *
      * @return idToken sent by the Google Native Authentication
      */
-    suspend fun handleGoogleNativeAuthentication(context: Context): String?
+    suspend fun handleGoogleNativeAuthentication(context: Context): AuthParams?
 
     /**
      * Handle the Google Native Authentication result using the legacy one tap method.
@@ -59,4 +61,24 @@ interface NativeAuthenticationHandlerCoreDef {
         context: Context,
         authenticatorType: AuthenticatorType
     ): LinkedHashMap<String, String>?
+
+    /**
+     * Handle the passkey authentication process.
+     *
+     * @param context [Context] of the application
+     * @param challengeString Challenge string to authenticate the user. This string is received from the Identity Server
+     * @param allowCredentials List of allowed credentials. Default is empty array.
+     * @param timeout Timeout for the authentication. Default is 300000.
+     * @param userVerification User verification method. Default is "required"
+     *
+     * @return Authenticator
+     */
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    suspend fun handlePasskeyAuthentication(
+        context: Context,
+        challengeString: String,
+        allowCredentials: List<String>?,
+        timeout: Long?,
+        userVerification: String?
+    ): AuthParams?
 }

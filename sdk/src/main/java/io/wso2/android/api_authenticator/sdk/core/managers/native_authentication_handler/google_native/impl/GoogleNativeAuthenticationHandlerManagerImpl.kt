@@ -1,4 +1,4 @@
-package io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native_authentication_handler.impl
+package io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native.impl
 
 import android.content.Context
 import android.os.Build
@@ -9,7 +9,9 @@ import androidx.credentials.GetCredentialResponse
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
-import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native_authentication_handler.GoogleNativeAuthenticationHandlerManager
+import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native.GoogleNativeAuthenticationHandlerManager
+import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
+import io.wso2.android.api_authenticator.sdk.models.auth_params.GoogleNativeAuthenticatorTypeAuthParams
 import io.wso2.android.api_authenticator.sdk.models.exceptions.GoogleNativeAuthenticationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -25,7 +27,8 @@ import java.lang.ref.WeakReference
  */
 class GoogleNativeAuthenticationHandlerManagerImpl private constructor(
     private val authenticationCoreConfig: AuthenticationCoreConfig,
-    private val googleNativeAuthenticationHandlerManagerImplRequestBuilder: GoogleNativeAuthenticationHandlerManagerImplRequestBuilder
+    private val googleNativeAuthenticationHandlerManagerImplRequestBuilder
+    : GoogleNativeAuthenticationHandlerManagerImplRequestBuilder
 ) : GoogleNativeAuthenticationHandlerManager {
     companion object {
         /**
@@ -94,7 +97,7 @@ class GoogleNativeAuthenticationHandlerManagerImpl private constructor(
      * @return Google ID Token of the authenticated user
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    override suspend fun authenticateWithGoogleNative(context: Context): String? {
+    override suspend fun authenticateWithGoogleNative(context: Context): AuthParams {
         val googleWebClientId: String? = authenticationCoreConfig.getGoogleWebClientId()
 
         if (googleWebClientId.isNullOrEmpty()) {
@@ -115,10 +118,13 @@ class GoogleNativeAuthenticationHandlerManagerImpl private constructor(
                     context = context,
                 )
 
-                val googleIdTokenCredential =
+                val googleIdTokenCredential: GoogleIdTokenCredential =
                     GoogleIdTokenCredential.createFrom(result.credential.data)
 
-                return@withContext googleIdTokenCredential.idToken
+                return@withContext GoogleNativeAuthenticatorTypeAuthParams(
+                    idToken = googleIdTokenCredential.idToken,
+                    accessToken = googleIdTokenCredential.id
+                )
             }
         }
     }

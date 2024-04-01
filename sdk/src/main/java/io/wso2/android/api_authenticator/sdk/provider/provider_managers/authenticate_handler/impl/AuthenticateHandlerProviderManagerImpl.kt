@@ -14,6 +14,7 @@ import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorProviderException
 import io.wso2.android.api_authenticator.sdk.models.exceptions.GoogleNativeAuthenticationException
+import io.wso2.android.api_authenticator.sdk.models.exceptions.PasskeyAuthenticationException
 import io.wso2.android.api_authenticator.sdk.models.exceptions.RedirectAuthenticationException
 import io.wso2.android.api_authenticator.sdk.models.prompt_type.PromptTypes
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
@@ -266,15 +267,15 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
      * @param context The context of the application
      *
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override suspend fun googleAuthenticate(context: Context) {
         runCatching {
             nativeAuthenticationHandlerCore.handleGoogleNativeAuthentication(context)
         }.onSuccess {
-            val idToken: String? = it
-
-            if (idToken.isNullOrEmpty()) {
+            if (it == null) {
                 authenticationStateProviderManager.emitAuthenticationState(
                     AuthenticationState.Error(
                         GoogleNativeAuthenticationException(
@@ -285,13 +286,7 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
 
                 selectedAuthenticator = null
             } else {
-                commonAuthenticate(
-                    context,
-                    authParamsAsMap = linkedMapOf(
-                        "idToken" to idToken,
-                        "accessToken" to idToken
-                    )
-                )
+                commonAuthenticate(context, authParams = it)
             }
         }.onFailure {
             authenticationStateProviderManager.emitAuthenticationState(
@@ -349,6 +344,57 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
                         GoogleNativeAuthenticationException(
                             GoogleNativeAuthenticationException
                                 .GOOGLE_AUTH_CODE_OR_ID_TOKEN_NOT_FOUND
+                        )
+                    )
+                )
+
+                selectedAuthenticator = null
+            } else {
+                commonAuthenticate(context, authParams = it)
+            }
+        }.onFailure {
+            authenticationStateProviderManager.emitAuthenticationState(
+                AuthenticationState.Error(it)
+            )
+            selectedAuthenticator = null
+        }
+    }
+
+    /**
+     * Authenticate the user with the Passkey authenticator using Credential Manager API.
+     *
+     * @param context The context of the application
+     * @param challengeString The challenge string to authenticate the user
+     * @param allowCredentials The list of allowed credentials. Default is empty array.
+     * @param timeout The timeout for the authentication. Default is 300000.
+     * @param userVerification The user verification method. Default is "required"
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     */
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    override suspend fun passkeyAuthenticate(
+        context: Context,
+        challengeString: String,
+        allowCredentials: List<String>?,
+        timeout: Long?,
+        userVerification: String?
+    ) {
+        runCatching {
+            nativeAuthenticationHandlerCore.handlePasskeyAuthentication(
+                context,
+                challengeString,
+                allowCredentials,
+                timeout,
+                userVerification
+            )
+        }.onSuccess {
+            if (it == null) {
+                authenticationStateProviderManager.emitAuthenticationState(
+                    AuthenticationState.Error(
+                        PasskeyAuthenticationException(
+                            PasskeyAuthenticationException.PASSKEY_AUTHENTICATION_FAILED
                         )
                     )
                 )
