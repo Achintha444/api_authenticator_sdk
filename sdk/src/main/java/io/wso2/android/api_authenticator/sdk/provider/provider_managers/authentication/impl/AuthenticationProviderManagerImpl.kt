@@ -12,7 +12,6 @@ import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.Auth
 import io.wso2.android.api_authenticator.sdk.models.auth_params.BasicAuthenticatorAuthParams
 import io.wso2.android.api_authenticator.sdk.models.auth_params.TotpAuthenticatorTypeAuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorTypes
-import io.wso2.android.api_authenticator.sdk.models.exceptions.PasskeyAuthenticationException
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authenticate_handler.AuthenticateHandlerProviderManager
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication.AuthenticationProviderManager
@@ -353,7 +352,6 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * Authenticate the user with the Passkey authenticator.
      *
      * @param context The context of the application
-     * @param challengeString The challenge string to authenticate the user
      * @param allowCredentials The list of allowed credentials. Default is empty array.
      * @param timeout Timeout for the authentication. Default is 300000.
      * @param userVerification User verification method. Default is "required"
@@ -364,9 +362,8 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    suspend fun authenticateWithPasskeyAuthenticate(
+    override suspend fun authenticateWithPasskey(
         context: Context,
-        challengeString: String,
         allowCredentials: List<String>?,
         timeout: Long?,
         userVerification: String?
@@ -376,7 +373,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
         ) {
             authenticateHandlerProviderManager.passkeyAuthenticate(
                 context,
-                challengeString,
+                it,
                 allowCredentials,
                 timeout,
                 userVerification

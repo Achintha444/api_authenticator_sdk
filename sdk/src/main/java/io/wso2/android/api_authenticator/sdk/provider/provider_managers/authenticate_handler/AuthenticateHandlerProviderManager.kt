@@ -109,7 +109,7 @@ interface AuthenticateHandlerProviderManager {
      * Authenticate the user with the Passkey authenticator using Credential Manager API.
      *
      * @param context The context of the application
-     * @param challengeString The challenge string to authenticate the user
+     * @param authenticatorType The authenticator type to authenticate the user
      * @param allowCredentials The list of allowed credentials. Default is empty array.
      * @param timeout The timeout for the authentication. Default is 300000.
      * @param userVerification The user verification method. Default is "required"
@@ -121,7 +121,7 @@ interface AuthenticateHandlerProviderManager {
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     suspend fun passkeyAuthenticate(
         context: Context,
-        challengeString: String,
+        authenticatorType: AuthenticatorType,
         allowCredentials: List<String>? = null,
         timeout: Long? = null,
         userVerification: String? = null

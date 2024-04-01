@@ -76,7 +76,7 @@ interface NativeAuthenticationHandlerCoreDef {
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     suspend fun handlePasskeyAuthentication(
         context: Context,
-        challengeString: String,
+        challengeString: String?,
         allowCredentials: List<String>?,
         timeout: Long?,
         userVerification: String?

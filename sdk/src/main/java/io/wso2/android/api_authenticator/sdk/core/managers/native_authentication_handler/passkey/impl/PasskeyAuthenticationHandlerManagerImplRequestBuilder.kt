@@ -19,9 +19,9 @@ object PasskeyAuthenticationHandlerManagerImplRequestBuilder {
      */
     internal fun getAuthenticateWithPasskeyRequestBuilder(
         publicKeyCredentialOption: GetPublicKeyCredentialOption
-    ): GetCredentialRequest = GetCredentialRequest.Builder()
-        .addCredentialOption(publicKeyCredentialOption)
-        .build()
+    ): GetCredentialRequest = GetCredentialRequest(
+        listOf(publicKeyCredentialOption)
+    )
 
     /**
      * Build the request to logout the user using the passkey

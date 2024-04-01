@@ -2,9 +2,7 @@ package io.wso2.android.api_authenticator.sdk.provider.provider_managers.authent
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
-import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
@@ -16,12 +14,10 @@ import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorProv
 import io.wso2.android.api_authenticator.sdk.models.exceptions.GoogleNativeAuthenticationException
 import io.wso2.android.api_authenticator.sdk.models.exceptions.PasskeyAuthenticationException
 import io.wso2.android.api_authenticator.sdk.models.exceptions.RedirectAuthenticationException
-import io.wso2.android.api_authenticator.sdk.models.prompt_type.PromptTypes
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authenticate_handler.AuthenticateHandlerProviderManager
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication_state.AuthenticationStateProviderManager
 import io.wso2.android.api_authenticator.sdk.util.AuthenticatorTypeUtil
-import kotlinx.coroutines.CompletableDeferred
 import java.lang.ref.WeakReference
 
 /**
@@ -364,7 +360,7 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
      * Authenticate the user with the Passkey authenticator using Credential Manager API.
      *
      * @param context The context of the application
-     * @param challengeString The challenge string to authenticate the user
+     * @param authenticatorType The authenticator type to authenticate the user
      * @param allowCredentials The list of allowed credentials. Default is empty array.
      * @param timeout The timeout for the authentication. Default is 300000.
      * @param userVerification The user verification method. Default is "required"
@@ -376,7 +372,7 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override suspend fun passkeyAuthenticate(
         context: Context,
-        challengeString: String,
+        authenticatorType: AuthenticatorType,
         allowCredentials: List<String>?,
         timeout: Long?,
         userVerification: String?
@@ -384,7 +380,7 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
         runCatching {
             nativeAuthenticationHandlerCore.handlePasskeyAuthentication(
                 context,
-                challengeString,
+                authenticatorType.metadata?.additionalData?.challengeData,
                 allowCredentials,
                 timeout,
                 userVerification

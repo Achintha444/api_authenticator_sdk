@@ -110,11 +110,12 @@ internal class AuthenticationProviderImpl private constructor(
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     override suspend fun authenticateWithUsernameAndPassword(
-        context: Context,
-        username: String,
-        password: String
-    ) = authenticationProviderManager
-        .authenticateWithUsernameAndPassword(context, username, password)
+        context: Context, username: String, password: String
+    ) = authenticationProviderManager.authenticateWithUsernameAndPassword(
+        context,
+        username,
+        password
+    )
 
     /**
      * Authenticate the user with the TOTP token.
@@ -142,11 +143,12 @@ internal class AuthenticationProviderImpl private constructor(
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      */
     override suspend fun authenticateWithRedirectUri(
-        context: Context,
-        authenticatorId: String?,
-        authenticatorType: String?
-    ) = authenticationProviderManager
-        .authenticateWithRedirectUri(context, authenticatorId, authenticatorType)
+        context: Context, authenticatorId: String?, authenticatorType: String?
+    ) = authenticationProviderManager.authenticateWithRedirectUri(
+        context,
+        authenticatorId,
+        authenticatorType
+    )
 
     /**
      * Authenticate the user with the OpenID Connect authenticator.
@@ -183,8 +185,8 @@ internal class AuthenticationProviderImpl private constructor(
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    override suspend fun authenticateWithGoogle(context: Context) = authenticationProviderManager
-        .authenticateWithGoogle(context)
+    override suspend fun authenticateWithGoogle(context: Context) =
+        authenticationProviderManager.authenticateWithGoogle(context)
 
     /**
      * Authenticate the user with the Google authenticator using the legacy one tap method.
@@ -196,10 +198,11 @@ internal class AuthenticationProviderImpl private constructor(
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     override suspend fun authenticateWithGoogleLegacy(
-        context: Context,
-        googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
-    ) = authenticationProviderManager
-        .authenticateWithGoogleLegacy(context, googleAuthenticateResultLauncher)
+        context: Context, googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
+    ) = authenticationProviderManager.authenticateWithGoogleLegacy(
+        context,
+        googleAuthenticateResultLauncher
+    )
 
     /**
      * Handle the Google authentication result.
@@ -212,8 +215,7 @@ internal class AuthenticationProviderImpl private constructor(
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      */
     override suspend fun handleGoogleNativeLegacyAuthenticateResult(
-        context: Context,
-        result: ActivityResult
+        context: Context, result: ActivityResult
     ) = authenticationProviderManager.handleGoogleNativeLegacyAuthenticateResult(context, result)
 
     /**
@@ -234,8 +236,37 @@ internal class AuthenticationProviderImpl private constructor(
         context: Context,
         authenticatorId: String,
         authParams: LinkedHashMap<String, String>
-    ) = authenticationProviderManager
-        .authenticateWithAnyAuthenticator(context, authenticatorId, authParams)
+    ) = authenticationProviderManager.authenticateWithAnyAuthenticator(
+        context,
+        authenticatorId,
+        authParams
+    )
+
+    /**
+     * Authenticate the user with the Passkey authenticator.
+     *
+     * @param context The context of the application
+     * @param allowCredentials The list of allowed credentials. Default is empty array.
+     * @param timeout Timeout for the authentication. Default is 300000.
+     * @param userVerification User verification method. Default is "required"
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     */
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    override suspend fun authenticateWithPasskey(
+        context: Context,
+        allowCredentials: List<String>?,
+        timeout: Long?,
+        userVerification: String?
+    ) = authenticationProviderManager.authenticateWithPasskey(
+        context,
+        allowCredentials,
+        timeout,
+        userVerification
+    )
 
     /**
      * Logout the user from the application.

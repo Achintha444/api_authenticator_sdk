@@ -21,6 +21,11 @@ class PasskeyAuthenticationException (
          * Passkey Authentication failed message
          */
         const val PASSKEY_AUTHENTICATION_FAILED = "Passkey Authentication failed"
+
+        /**
+         * Passkey Challenge String is empty message
+         */
+        const val PASSKEY_CHALLENGE_STRING_EMPTY = "Passkey Challenge String is empty"
     }
 
     override fun toString(): String {

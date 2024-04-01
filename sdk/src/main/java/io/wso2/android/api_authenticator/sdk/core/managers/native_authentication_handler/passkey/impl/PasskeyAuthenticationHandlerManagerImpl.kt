@@ -97,55 +97,61 @@ class PasskeyAuthenticationHandlerManagerImpl private constructor(
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override suspend fun authenticateWithPasskey(
         context: Context,
-        challengeString: String,
+        challengeString: String?,
         allowCredentials: List<String>?,
         timeout: Long?,
         userVerification: String?,
     ): AuthParams {
-        val challengeInfo: ChallengeInfo = ChallengeInfo
-            .getChallengeInfoFromChallengeString(challengeString)
+        if (challengeString == null) {
+            throw PasskeyAuthenticationException(
+                PasskeyAuthenticationException.PASSKEY_CHALLENGE_STRING_EMPTY
+            )
+        } else {
+            val challengeInfo: ChallengeInfo = ChallengeInfo
+                .getChallengeInfoFromChallengeString(challengeString)
 
-        val passkeyChallenge: PasskeyChallenge = challengeInfo.getPasskeyChallenge(
-            allowCredentials = allowCredentials,
-            timeout = timeout,
-            userVerification = userVerification
-        )
-
-        val credentialManager: CredentialManager = getCredentialManager(context)
-        val passkeyCredentialOptions: GetPublicKeyCredentialOption =
-            getPasskeyCredentialOptions(passkeyChallenge.toString())
-
-        val request: GetCredentialRequest =
-            passkeyAuthenticationRequestHandlerManagerImplRequestBuilder
-                .getAuthenticateWithPasskeyRequestBuilder(passkeyCredentialOptions)
-
-        return withContext(Dispatchers.IO) {
-            val result: GetCredentialResponse = credentialManager.getCredential(
-                request = request,
-                context = context,
+            val passkeyChallenge: PasskeyChallenge = challengeInfo.getPasskeyChallenge(
+                allowCredentials = allowCredentials,
+                timeout = timeout,
+                userVerification = userVerification
             )
 
-            when (val credential = result.credential) {
-                is PublicKeyCredential -> {
-                    val responseJson: String = credential.authenticationResponseJson
+            val credentialManager: CredentialManager = getCredentialManager(context)
+            val passkeyCredentialOptions: GetPublicKeyCredentialOption =
+                getPasskeyCredentialOptions(passkeyChallenge.toString())
 
-                    val passkeyCredential: PasskeyCredentialAuthParams.PasskeyCredential =
-                        PasskeyCredentialAuthParams.PasskeyCredential.fromJsonString(responseJson)
+            val request: GetCredentialRequest =
+                passkeyAuthenticationRequestHandlerManagerImplRequestBuilder
+                    .getAuthenticateWithPasskeyRequestBuilder(passkeyCredentialOptions)
 
-                    val passkeyCredentialAuthParams = PasskeyCredentialAuthParams(
-                        requestId = challengeInfo.requestId,
-                        credential = passkeyCredential
-                    )
+            return withContext(Dispatchers.IO) {
+                val result: GetCredentialResponse = credentialManager.getCredential(
+                    request = request,
+                    context = context,
+                )
 
-                    return@withContext PasskeyAuthenticatorTypeAuthParams(
-                        tokenResponse = passkeyCredentialAuthParams.toString()
-                    )
-                }
+                when (val credential = result.credential) {
+                    is PublicKeyCredential -> {
+                        val responseJson: String = credential.authenticationResponseJson
 
-                else -> {
-                    throw PasskeyAuthenticationException(
-                        PasskeyAuthenticationException.PASSKEY_AUTHENTICATION_NOT_SUPPORTED
-                    )
+                        val passkeyCredential: PasskeyCredentialAuthParams.PasskeyCredential =
+                            PasskeyCredentialAuthParams.PasskeyCredential.fromJsonString(responseJson)
+
+                        val passkeyCredentialAuthParams = PasskeyCredentialAuthParams(
+                            requestId = challengeInfo.requestId,
+                            credential = passkeyCredential
+                        )
+
+                        return@withContext PasskeyAuthenticatorTypeAuthParams(
+                            tokenResponse = passkeyCredentialAuthParams.toString()
+                        )
+                    }
+
+                    else -> {
+                        throw PasskeyAuthenticationException(
+                            PasskeyAuthenticationException.PASSKEY_AUTHENTICATION_NOT_SUPPORTED
+                        )
+                    }
                 }
             }
         }

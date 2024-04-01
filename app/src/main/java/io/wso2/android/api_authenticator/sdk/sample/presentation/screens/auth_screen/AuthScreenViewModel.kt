@@ -167,6 +167,23 @@ class AuthScreenViewModel @Inject constructor(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    fun authenticateWithPasskey() {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    isLoading = true
+                )
+            }
+            authenticationProvider.authenticateWithPasskey(applicationContext)
+            _state.update {
+                it.copy(
+                    isLoading = false
+                )
+            }
+        }
+    }
+
     fun authenticateWithGoogleNativeLegacy(
         googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
     ) {

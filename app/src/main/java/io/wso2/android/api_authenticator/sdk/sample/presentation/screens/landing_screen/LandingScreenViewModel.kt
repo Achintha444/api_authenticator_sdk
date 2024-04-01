@@ -21,7 +21,7 @@ import javax.inject.Inject
 class LandingScreenViewModel @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
     private val authenticationRepository: AuthenticationRepository,
-    private val providerRepository: ProviderRepository
+    providerRepository: ProviderRepository
 ) : ViewModel() {
     companion object {
         const val TAG = "LandingScreen"

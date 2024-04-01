@@ -17,7 +17,7 @@ import io.wso2.android.api_authenticator.sdk.util.JsonUtil
 data class ChallengeInfo (
     val requestId: String,
     val publicKeyCredentialRequestOptions: PublicKeyCredentialRequestOptions,
-    val request: Any
+    val request: Any?
 ) {
     companion object {
         /**
@@ -40,10 +40,11 @@ data class ChallengeInfo (
     /**
      * Get the passkey challenge from the challenge info
      */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class PublicKeyCredentialRequestOptions (
         val challenge: String,
         val rpId: String,
-        val extensions: Any
+        val extensions: Any?
     )
 
     /**

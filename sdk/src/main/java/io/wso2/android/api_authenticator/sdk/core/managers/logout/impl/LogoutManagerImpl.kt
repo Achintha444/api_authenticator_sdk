@@ -2,8 +2,6 @@ package io.wso2.android.api_authenticator.sdk.core.managers.logout.impl
 
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.impl.AuthnManagerImpl
-import io.wso2.android.api_authenticator.sdk.core.managers.authn.impl.AuthnManagerImplRequestBuilder
-import io.wso2.android.api_authenticator.sdk.core.managers.flow.FlowManager
 import io.wso2.android.api_authenticator.sdk.core.managers.logout.LogoutManager
 import io.wso2.android.api_authenticator.sdk.models.exceptions.LogoutException
 import kotlinx.coroutines.Dispatchers

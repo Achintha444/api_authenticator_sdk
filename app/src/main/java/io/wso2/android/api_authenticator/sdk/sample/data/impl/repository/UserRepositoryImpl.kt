@@ -25,7 +25,7 @@ class UserRepositoryImpl @Inject constructor() : UserRepository {
             val requestBuilder: Request.Builder = Request.Builder().url(
                 Config.getBaseUrl() + "/scim2/Me"
             )
-            requestBuilder.addHeader("Accept", "application/json")
+            requestBuilder.addHeader("Accept", "application/scim+json")
             requestBuilder.addHeader("Authorization", "Bearer $accessToken")
 
             val request: Request = requestBuilder.get().build()

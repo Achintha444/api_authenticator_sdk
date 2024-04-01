@@ -24,6 +24,10 @@ internal fun AuthUI(authenticationFlow: AuthenticationFlowNotSuccess) {
                 GithubNativeAuth(authenticatorType = it)
             }
 
+            AuthenticatorTypes.PASSKEY_AUTHENTICATOR.authenticatorType -> {
+                PasskeyAuth(authenticatorType = it)
+            }
+
             else -> {
                 TotpAuth(authenticatorType = it)
             }

@@ -158,7 +158,7 @@ interface AuthenticationProvider {
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-     suspend fun authenticateWithGithubRedirect(context: Context)
+    suspend fun authenticateWithGithubRedirect(context: Context)
 
     /**
      * Authenticate the user with the selected authenticator.
@@ -178,6 +178,28 @@ interface AuthenticationProvider {
         context: Context,
         authenticatorId: String,
         authParams: LinkedHashMap<String, String>
+    )
+
+
+    /**
+     * Authenticate the user with the Passkey authenticator.
+     *
+     * @param context The context of the application
+     * @param allowCredentials The list of allowed credentials. Default is empty array.
+     * @param timeout Timeout for the authentication. Default is 300000.
+     * @param userVerification User verification method. Default is "required"
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     */
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    suspend fun authenticateWithPasskey(
+        context: Context,
+        allowCredentials: List<String>? = null,
+        timeout: Long? = null,
+        userVerification: String? = null
     )
 
     /**

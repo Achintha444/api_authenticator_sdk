@@ -88,7 +88,7 @@ class MainActivity : ComponentActivity() {
                             Brush.radialGradient(
                                 colors = listOf(
                                     MaterialTheme.colorScheme.primary,
-                                    MaterialTheme.colorScheme.background
+                                    Color.White
                                 ),
                                 radius = 1500f,
                                 center = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)

@@ -1,5 +1,7 @@
 package io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen.components
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -13,35 +15,34 @@ import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.Authenti
 import io.wso2.android.api_authenticator.sdk.sample.R
 import io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen.AuthScreenViewModel
 
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-internal fun GithubNativeAuth(
+internal fun PasskeyAuth(
     viewModel: AuthScreenViewModel = hiltViewModel(),
     authenticatorType: AuthenticatorType
 ) {
-    GithubNativeAuthComponent(
+    PasskeyAuthComponent(
         onSubmit = {
-            viewModel.authenticateWithGithubRedirect(
-                authenticatorType.authenticatorId
-            )
+            viewModel.authenticateWithPasskey()
         }
     )
 }
 
 @Composable
-fun GithubNativeAuthComponent(
+fun PasskeyAuthComponent(
     onSubmit: () -> Unit
 ) {
     Button(
         onClick = onSubmit,
         modifier = Modifier.padding(16.dp)
     ) {
-        Text(text = stringResource(id = R.string.screens_auth_screen_github_login))
+        Text(text = stringResource(id = R.string.screens_auth_screen_passkey_login))
     }
 }
 
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
-fun GithubNativeAuthPreview() {
-    GithubNativeAuthComponent(onSubmit = {})
+fun PasskeyAuthPreview() {
+    PasskeyAuthComponent(onSubmit = {})
 }

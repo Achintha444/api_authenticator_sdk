@@ -2,8 +2,6 @@ package io.wso2.android.api_authenticator.sdk.core.managers.authn
 
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
-import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthnManagerException
-import java.io.IOException
 
 /**
  * Interface which has the methods to initiate the authorization and authentication flows.

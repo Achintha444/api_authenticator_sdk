@@ -20,7 +20,7 @@ interface PasskeyAuthenticationHandlerManager {
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     suspend fun authenticateWithPasskey(
         context: Context,
-        challengeString: String,
+        challengeString: String?,
         allowCredentials: List<String>?,
         timeout: Long?,
         userVerification: String?,

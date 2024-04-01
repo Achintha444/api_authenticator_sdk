@@ -28,6 +28,16 @@
     <string name="screens_auth_screen_totp_code">TOTP Code</string>
     <string name="screens_auth_screen_totp_submit">Submit</string>
     <string name="screens_auth_screen_totp_login">Sign in with TOTP</string>
+    <!-- Google  -->
+    <string name="screens_auth_screen_google_login">Sign in with Google</string>
+    <!-- Facebook  -->
+    <string name="screens_auth_screen_facebook_login">Sign in with Facebook</string>
+    <!-- Github  -->
+    <string name="screens_auth_screen_github_login">Sign in with Github</string>
+    <!-- Open ID Redirect  -->
+    <string name="screens_auth_screen_open_id_redirect_login">Sign in with Open ID Redirect</string>
+    <!-- Passkey  -->
+    <string name="screens_auth_screen_passkey_login">Sign in with Passkey</string>
 
     <!--  Home Screen  -->
     <string name="screens_home_screen_user_card_username">Username</string>
