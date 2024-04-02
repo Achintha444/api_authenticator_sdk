@@ -1,26 +1,31 @@
 package io.wso2.android.api_authenticator.sdk.models.exceptions
 
+import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+
 /**
- * Exception to be thrown to the exception related to [AuthenticatorProvider]
+ * Exception to be thrown to the exception related to [AuthenticatorType]
  *
  * @property message Message related to the exception
  */
-class AuthenticatorProviderException (
+class AuthenticatorProviderException(
     override val message: String?
-): Exception(message) {
+) : Exception(message) {
     companion object {
         /**
          * AuthenticatorProvider Exception
          */
         const val AUTHENTICATOR_PROVIDER_EXCEPTION = "AuthenticatorProvider Exception"
+
         /**
          * Message for the case where the authenticator is not found
          */
         const val AUTHENTICATOR_NOT_FOUND = "Authenticator not found"
+
         /**
          * Message for the case where the authenticator is not supported
          */
         const val NOT_REDIRECT_PROMPT = "Authenticator does not support redirect prompt"
+
         /**
          * Message for the case where the redirect URI is not found
          */

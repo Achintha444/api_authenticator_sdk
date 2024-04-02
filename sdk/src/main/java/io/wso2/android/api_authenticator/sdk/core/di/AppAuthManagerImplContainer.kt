@@ -1,6 +1,8 @@
 package io.wso2.android.api_authenticator.sdk.core.di
 
 import android.net.Uri
+import io.wso2.android.api_authenticator.sdk.core.managers.app_auth.impl.AppAuthManagerImpl
+import io.wso2.android.api_authenticator.sdk.models.http_client.LessSecureHttpClient
 import io.wso2.android.api_authenticator.sdk.models.http_client.http_client_builder.HttpClientBuilder
 import net.openid.appauth.AuthorizationServiceConfiguration
 import okhttp3.OkHttpClient
@@ -62,6 +64,6 @@ internal object AppAuthManagerImplContainer {
             Uri.parse(authorizeEndpoint),
             Uri.parse(tokenEndpoint),
 
-        )
+            )
     }
 }

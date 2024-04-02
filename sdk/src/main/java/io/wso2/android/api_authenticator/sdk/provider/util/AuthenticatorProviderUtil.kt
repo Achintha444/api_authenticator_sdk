@@ -4,9 +4,9 @@ import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.Authenti
 import io.wso2.android.api_authenticator.sdk.util.AuthenticatorTypeUtil
 
 /**
- * Utility class for the [AuthenticatorProvider]
+ * Utility class for the [AuthenticatorType]
  *
- * This class contains utility methods that are used by the [AuthenticatorProvider]
+ * This class contains utility methods that are used by the [AuthenticatorType]
  */
 object AuthenticatorProviderUtil {
     /**

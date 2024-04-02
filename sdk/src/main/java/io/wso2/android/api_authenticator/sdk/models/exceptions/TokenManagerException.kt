@@ -1,11 +1,13 @@
 package io.wso2.android.api_authenticator.sdk.models.exceptions
 
+import io.wso2.android.api_authenticator.sdk.core.managers.token.TokenManager
+
 /**
  * Exception to be thrown to the exception related to [TokenManager]
  */
-class TokenManagerException (
+class TokenManagerException(
     override val message: String?
-): Exception(message) {
+) : Exception(message) {
     companion object {
         /**
          * Token manager exception TAG
@@ -20,7 +22,8 @@ class TokenManagerException (
         /**
          *
          */
-        const val CANNOT_GET_TOKEN = "Cannot get the token from the token data store due to an error"
+        const val CANNOT_GET_TOKEN =
+            "Cannot get the token from the token data store due to an error"
     }
 
     override fun toString(): String {

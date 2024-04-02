@@ -1,11 +1,13 @@
 package io.wso2.android.api_authenticator.sdk.models.exceptions
 
+import io.wso2.android.api_authenticator.sdk.core.managers.flow.FlowManager
+
 /**
  * Exception to be thrown to the exception related to [FlowManager]
  */
-class FlowManagerException (
+class FlowManagerException(
     override val message: String?
-): Exception(message) {
+) : Exception(message) {
     companion object {
         /**
          * Flow manager exception TAG
@@ -15,12 +17,14 @@ class FlowManagerException (
         /**
          * Message to be shown when authentication is not completed
          */
-        const val AUTHENTICATION_NOT_COMPLETED = "Authentication is not completed. Response returned FAIL_INCOMPLETE"
+        const val AUTHENTICATION_NOT_COMPLETED =
+            "Authentication is not completed. Response returned FAIL_INCOMPLETE"
 
         /**
          * Message to be shown when authentication is not completed due to an unknown error
          */
-        const val AUTHENTICATION_NOT_COMPLETED_UNKNOWN = "Authentication is not completed. Unknown error occurred"
+        const val AUTHENTICATION_NOT_COMPLETED_UNKNOWN =
+            "Authentication is not completed. Unknown error occurred"
     }
 
     override fun toString(): String {

@@ -1,5 +1,7 @@
 package io.wso2.android.api_authenticator.sdk.models.exceptions
 
+import io.wso2.android.api_authenticator.sdk.core.managers.authn.AuthnManager
+
 /**
  * Exception to be thrown to the exception related to [AuthnManager]
  *

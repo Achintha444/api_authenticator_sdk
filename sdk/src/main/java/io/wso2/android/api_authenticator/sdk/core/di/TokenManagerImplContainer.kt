@@ -1,5 +1,6 @@
 package io.wso2.android.api_authenticator.sdk.core.di
 
+import io.wso2.android.api_authenticator.sdk.core.managers.token.impl.TokenManagerImpl
 import io.wso2.android.api_authenticator.sdk.data.token.TokenDataStoreFactory
 
 /**

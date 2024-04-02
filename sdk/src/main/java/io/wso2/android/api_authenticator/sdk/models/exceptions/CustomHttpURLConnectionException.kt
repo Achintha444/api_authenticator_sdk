@@ -1,5 +1,7 @@
 package io.wso2.android.api_authenticator.sdk.models.exceptions
 
+import io.wso2.android.api_authenticator.sdk.models.http_client.CustomHttpURLConnection
+
 /**
  * Exception to be thrown to the exception related to the [CustomHttpURLConnection]
  *
@@ -7,7 +9,7 @@ package io.wso2.android.api_authenticator.sdk.models.exceptions
  */
 class CustomHttpURLConnectionException(
     override val message: String?
-): Exception(message) {
+) : Exception(message) {
     companion object {
         /**
          * Authenticator exception TAG
@@ -17,7 +19,7 @@ class CustomHttpURLConnectionException(
         /**
          * Message to be shown when authenticator is not initialized
          */
-        const val  FAILED_TO_INITIALIZE_SSL_CONTEXT = "Failed to initialize SSL context"
+        const val FAILED_TO_INITIALIZE_SSL_CONTEXT = "Failed to initialize SSL context"
 
         /**
          * Message to be shown when authentication is not completed
