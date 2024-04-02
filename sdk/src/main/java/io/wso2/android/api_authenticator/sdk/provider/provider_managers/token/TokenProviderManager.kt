@@ -8,7 +8,7 @@ import io.wso2.android.api_authenticator.sdk.provider.provider_managers.token.im
  * refresh the tokens, and clear the tokens. This interface should be implemented by the
  * [TokenProviderManagerImpl] class.
  */
-internal interface TokenProviderManager {
+interface TokenProviderManager {
     /**
      * Get the access token from the token.
      *

@@ -15,6 +15,8 @@ import io.wso2.android.api_authenticator.sdk.core.managers.logout.LogoutManager
 import io.wso2.android.api_authenticator.sdk.core.managers.logout.impl.LogoutManagerImpl
 import io.wso2.android.api_authenticator.sdk.core.managers.token.TokenManager
 import io.wso2.android.api_authenticator.sdk.core.managers.token.TokenManagerFactory
+import io.wso2.android.api_authenticator.sdk.core.managers.user.UserManager
+import io.wso2.android.api_authenticator.sdk.core.managers.user.impl.UserManagerImpl
 
 /**
  * Dependency Injection container for the [AuthenticationCore]
@@ -96,6 +98,23 @@ internal object AuthenticationCoreContainer {
      */
     internal fun getTokenManagerInstance(context: Context): TokenManager =
         TokenManagerFactory.getTokenManager(context)
+
+    /**
+     * Returns an instance of the [UserManager] object, based on the given parameters.
+     *
+     * @property authenticationCoreConfig The [AuthenticationCoreConfig] instance.
+     *
+     * @return [UserManager] instance.
+     */
+    internal fun getUserManagerInstance(
+        authenticationCoreConfig: AuthenticationCoreConfig,
+    ): UserManager = UserManagerImpl.getInstance(
+        authenticationCoreConfig,
+        UserManagerImplContainer.getClient(
+            authenticationCoreConfig.getIsDevelopment()
+        ),
+        UserManagerImplContainer.getUserManagerImplRequestBuilder()
+    )
 
     /**
      * Returns an instance of the [LogoutManager] object, based on the given parameters.

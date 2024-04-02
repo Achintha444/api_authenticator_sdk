@@ -57,16 +57,16 @@ internal class AuthenticationProviderManagerImpl private constructor(
             authenticationStateProviderManager: AuthenticationStateProviderManager,
             authenticateHandlerProviderManager: AuthenticateHandlerProviderManager
         ): AuthenticationProviderManagerImpl {
-            var authenticatorProviderManager = authenticationProviderManagerInstance.get()
-            if (authenticatorProviderManager == null) {
-                authenticatorProviderManager = AuthenticationProviderManagerImpl(
+            var authenticationProviderManager = authenticationProviderManagerInstance.get()
+            if (authenticationProviderManager == null) {
+                authenticationProviderManager = AuthenticationProviderManagerImpl(
                     authenticationCore,
                     authenticationStateProviderManager,
                     authenticateHandlerProviderManager
                 )
-                authenticationProviderManagerInstance = WeakReference(authenticatorProviderManager)
+                authenticationProviderManagerInstance = WeakReference(authenticationProviderManager)
             }
-            return authenticatorProviderManager
+            return authenticationProviderManager
         }
 
         /**

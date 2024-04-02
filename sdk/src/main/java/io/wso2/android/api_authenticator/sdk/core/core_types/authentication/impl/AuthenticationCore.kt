@@ -10,6 +10,7 @@ import io.wso2.android.api_authenticator.sdk.core.managers.authn.AuthnManager
 import io.wso2.android.api_authenticator.sdk.core.managers.flow.FlowManager
 import io.wso2.android.api_authenticator.sdk.core.managers.logout.LogoutManager
 import io.wso2.android.api_authenticator.sdk.core.managers.token.TokenManager
+import io.wso2.android.api_authenticator.sdk.core.managers.user.UserManager
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
@@ -54,6 +55,13 @@ class AuthenticationCore private constructor(
      */
     private val appAuthManagerInstance: AppAuthManager by lazy {
         AuthenticationCoreContainer.getAppAuthManagerInstance(authenticationCoreConfig)
+    }
+
+    /**
+     * Instance of the [UserManager] that will be used throughout the application
+     */
+    private val userManagerInstance: UserManager by lazy {
+        AuthenticationCoreContainer.getUserManagerInstance(authenticationCoreConfig)
     }
 
     /**
@@ -279,6 +287,16 @@ class AuthenticationCore private constructor(
      */
     override suspend fun validateAccessToken(context: Context): Boolean? =
         getTokenManagerInstance(context).validateAccessToken()
+
+    /**
+     * Get the user details from the Identity Server.
+     *
+     * @param accessToken Access token to authorize the request
+     *
+     * @return User details as a [LinkedHashMap]
+     */
+    override suspend fun getUserDetails(accessToken: String?): LinkedHashMap<String, Any>? =
+        userManagerInstance.getUserDetails(accessToken)
 
     /**
      * Logout the user from the application.

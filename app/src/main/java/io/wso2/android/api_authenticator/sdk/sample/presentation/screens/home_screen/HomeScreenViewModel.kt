@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import io.wso2.android.api_authenticator.sdk.sample.domain.model.UserDetails
 import io.wso2.android.api_authenticator.sdk.sample.domain.repository.ProviderRepository
 import io.wso2.android.api_authenticator.sdk.sample.domain.repository.UserRepository
 import io.wso2.android.api_authenticator.sdk.sample.util.navigation.NavigationViewModel
@@ -27,8 +28,8 @@ class HomeScreenViewModel @Inject constructor(
     private val _state = MutableStateFlow(HomeScreenState())
     val state = _state
 
-    private val tokenProvider = providerRepository.getTokenProvider()
     private val authenticationProvider = providerRepository.getAuthenticationProvider()
+    private val tokenProvider = providerRepository.getTokenProvider()
 
     init {
         getUserDetails()
@@ -42,13 +43,18 @@ class HomeScreenViewModel @Inject constructor(
         }
         viewModelScope.launch {
             runCatching {
-                tokenProvider.performActionWithFreshTokens(applicationContext) { accessToken, _ ->
-                    val user = userRepository.getUserDetails(accessToken!!)
-                    _state.update {
-                        it.copy(user = user)
-                    }
+                authenticationProvider.getUserDetails(applicationContext)
+            }.onSuccess { userDetails ->
+                _state.update {
+                    it.copy(
+                        user = UserDetails(
+                            username = userDetails?.get("userName").toString(),
+                            firstName = ( userDetails?.get("name") as LinkedHashMap<String, String>?)?.get("givenName").toString(),
+                            lastName = ( userDetails?.get("name") as LinkedHashMap<String, String>?)?.get("familyName").toString()
+                        ),
+                        isLoading = false
+                    )
                 }
-            }.onSuccess {
                 _state.update {
                     it.copy(
                         isLoading = false

@@ -8,6 +8,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication.AuthenticationProviderManager
+import io.wso2.android.api_authenticator.sdk.provider.provider_managers.user.UserProviderManager
 import io.wso2.android.api_authenticator.sdk.provider.providers.authentication.AuthenticationProvider
 import kotlinx.coroutines.flow.SharedFlow
 import java.lang.ref.WeakReference
@@ -23,7 +24,8 @@ import java.lang.ref.WeakReference
  * emit: [AuthenticationState.Error] - An error occurred during the authentication process
  */
 internal class AuthenticationProviderImpl private constructor(
-    private val authenticationProviderManager: AuthenticationProviderManager
+    private val authenticationProviderManager: AuthenticationProviderManager,
+    private val userProviderManager: UserProviderManager
 ) : AuthenticationProvider {
 
     companion object {
@@ -42,10 +44,14 @@ internal class AuthenticationProviderImpl private constructor(
          */
         fun getInstance(
             authenticationProviderManager: AuthenticationProviderManager,
+            userProviderManager: UserProviderManager
         ): AuthenticationProviderImpl {
             var authenticatorProvider = authenticationProviderImplInstance.get()
             if (authenticatorProvider == null) {
-                authenticatorProvider = AuthenticationProviderImpl(authenticationProviderManager)
+                authenticatorProvider = AuthenticationProviderImpl(
+                    authenticationProviderManager,
+                    userProviderManager
+                )
                 authenticationProviderImplInstance = WeakReference(authenticatorProvider)
             }
             return authenticatorProvider
@@ -267,6 +273,16 @@ internal class AuthenticationProviderImpl private constructor(
         timeout,
         userVerification
     )
+
+    /**
+     * Get the user details of the authenticated user.
+     *
+     * @param context The context of the application
+     *
+     * @return The user details [LinkedHashMap] that contains the user details
+     */
+    override suspend fun getUserDetails(context: Context): LinkedHashMap<String, Any>? =
+        userProviderManager.getUserDetails(context)
 
     /**
      * Logout the user from the application.

@@ -76,7 +76,8 @@ class AsgardeoAuth private constructor(
             AuthenticationProviderImplContainer.getAuthenticationProviderManager(
                 authenticationCore,
                 nativeAuthenticationHandlerCore
-            )
+            ),
+            AuthenticationProviderImplContainer.getUserProviderManager(authenticationCore)
         )
 
     /**

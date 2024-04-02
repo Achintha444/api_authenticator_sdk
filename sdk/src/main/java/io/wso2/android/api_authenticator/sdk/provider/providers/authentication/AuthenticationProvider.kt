@@ -203,6 +203,15 @@ interface AuthenticationProvider {
     )
 
     /**
+     * Get the user details of the authenticated user.
+     *
+     * @param context The context of the application
+     *
+     * @return The user details [LinkedHashMap] that contains the user details
+     */
+    suspend fun getUserDetails(context: Context): LinkedHashMap<String, Any>?
+
+    /**
      * Logout the user from the application.
      *
      * @param context The context of the application
