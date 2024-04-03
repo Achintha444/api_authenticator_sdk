@@ -55,8 +55,6 @@ class RedirectAuthenticationHandlerManagerImpl private constructor() :
 
     /**
      * Deferred object to wait for the result of the redirect authentication process.
-     *
-     * TODO: Move to the Core module
      */
     private val redirectAuthenticationResultDeferred: CompletableDeferred<Unit> by lazy {
         CompletableDeferred()

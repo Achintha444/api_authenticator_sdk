@@ -81,8 +81,6 @@ interface TokenProviderManager {
      *
      * @param context The [Context] instance.
      * @param action The action to perform.
-     *
-     * TODO: Set to pass the exception as well
      */
     suspend fun performActionWithFreshTokens(
         context: Context,
