@@ -17,7 +17,7 @@ import okhttp3.OkHttpClient
  * @property isDevelopment The flag to check whether the app is in development mode or not.
  * If true, the [LessSecureHttpClient] instance will be returned. Otherwise, the default
  * [OkHttpClient] instance will be returned. Default value is `false`. It is not recommended to
- * keep this value as `false` in production environment.
+ * keep this value as `false` in the production environment.
  */
 class AuthenticationCoreConfig(
     private val baseUrl: String,

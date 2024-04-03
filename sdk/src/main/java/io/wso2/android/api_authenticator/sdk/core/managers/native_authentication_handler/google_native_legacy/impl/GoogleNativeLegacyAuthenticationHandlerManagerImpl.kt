@@ -112,6 +112,8 @@ class GoogleNativeLegacyAuthenticationHandlerManagerImpl private constructor(
      * @param result The [ActivityResult] object that contains the result of the Google authentication process
      *
      * @return The Google native authenticator parameters [LinkedHashMap] that contains the ID Token and the Auth Code
+     *
+     * TODO: Get the result code and data separately
      */
     override suspend fun handleGoogleNativeLegacyAuthenticateResult(result: ActivityResult)
             : AuthParams? = withContext(Dispatchers.IO) {

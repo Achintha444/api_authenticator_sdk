@@ -31,6 +31,8 @@ interface AuthenticateHandlerProviderManager {
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
+     * TODO: This also need to be exposed from the Authentication Provider to support for authenticate with any authenticator
      */
     suspend fun authenticateWithAuthenticator(
         authenticatorTypeString: String? = null,

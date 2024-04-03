@@ -258,6 +258,8 @@ internal class AppAuthManagerImpl private constructor(
      * @param tokenState The [TokenState] instance.
      * @param action The action to perform.
      *
+     * TODO: need to pass the exception as well
+     *
      * @return Updated [TokenState] instance.
      */
     override suspend fun performActionWithFreshTokens(
