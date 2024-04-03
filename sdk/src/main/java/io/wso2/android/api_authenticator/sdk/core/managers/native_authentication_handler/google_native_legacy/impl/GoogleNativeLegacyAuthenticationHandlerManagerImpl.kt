@@ -109,18 +109,17 @@ class GoogleNativeLegacyAuthenticationHandlerManagerImpl private constructor(
     /**
      * Handle the Google native authentication result.
      *
-     * @param result The [ActivityResult] object that contains the result of the Google authentication process
+     * @param resultCode The result code of the Google authentication process
+     * @param data The [Intent] object that contains the result of the Google authentication process
      *
      * @return The Google native authenticator parameters [LinkedHashMap] that contains the ID Token and the Auth Code
-     *
-     * TODO: Get the result code and data separately
      */
-    override suspend fun handleGoogleNativeLegacyAuthenticateResult(result: ActivityResult)
+    override suspend fun handleGoogleNativeLegacyAuthenticateResult(resultCode: Int, data: Intent)
             : AuthParams? = withContext(Dispatchers.IO) {
         suspendCoroutine { continuation ->
-            if (result.resultCode == Activity.RESULT_OK) {
+            if (resultCode == Activity.RESULT_OK) {
                 val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(
-                    result.data
+                    data
                 )
                 try {
                     val account: GoogleSignInAccount = task.getResult(ApiException::class.java)

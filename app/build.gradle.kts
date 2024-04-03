@@ -23,7 +23,7 @@ android {
             useSupportLibrary = true
         }
         manifestPlaceholders.putIfAbsent(
-            "appAuthRedirectScheme", "wso2.apiauth.sample.android"
+            "appAuthRedirectScheme", "wso2.apiauth.sample.android://login-callback"
         )
     }
 

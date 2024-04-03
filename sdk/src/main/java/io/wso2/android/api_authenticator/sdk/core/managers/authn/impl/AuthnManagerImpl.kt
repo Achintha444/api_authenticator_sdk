@@ -30,8 +30,6 @@ import kotlin.coroutines.suspendCoroutine
  * @property authenticationCoreConfig Configuration of the Identity Server [AuthenticationCoreConfig]
  * @property client OkHttpClient instance to handle network calls [OkHttpClient]
  * @property authenticationCoreRequestBuilder Request builder class to build the requests [AuthnManagerImplRequestBuilder]
- *
- * TODO: Dispose managers instances when the authentication flow is completed.
  */
 internal class AuthnManagerImpl private constructor(
     private val authenticationCoreConfig: AuthenticationCoreConfig,

@@ -115,14 +115,16 @@ class NativeAuthenticationHandlerCore private constructor(
      * This method will authenticate the user with the Google Native Authentication using the legacy one tap method.
      * This is not recommended to use for new applications that support Android 14(API 34) and above.
      *
-     * @param result The [ActivityResult] object that contains the result of the Google authentication process
+     * @param resultCode The result code of the Google authentication process
+     * @param data The [Intent] object that contains the result of the Google authentication process
      *
      * @return The Google native authenticator parameters [LinkedHashMap] that contains the ID Token and the Auth Code
      */
-    override suspend fun handleGoogleNativeLegacyAuthenticateResult(result: ActivityResult)
+    override suspend fun handleGoogleNativeLegacyAuthenticateResult(resultCode: Int, data: Intent)
             : AuthParams? =
         googleNativeLegacyAuthenticationHandlerManager.handleGoogleNativeLegacyAuthenticateResult(
-            result
+            resultCode,
+            data
         )
 
     /**

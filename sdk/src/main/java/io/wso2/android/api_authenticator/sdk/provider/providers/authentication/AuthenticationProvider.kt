@@ -137,7 +137,8 @@ interface AuthenticationProvider {
      * Handle the Google authentication result.
      *
      * @param context The context of the application
-     * @param result The [ActivityResult] object that contains the result of the Google authentication process
+     * @param resultCode The result code of the Google authentication process
+     * @param data The [Intent] object that contains the result of the Google authentication process
      *
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
@@ -145,7 +146,8 @@ interface AuthenticationProvider {
      */
     suspend fun handleGoogleNativeLegacyAuthenticateResult(
         context: Context,
-        result: ActivityResult
+        resultCode: Int,
+        data: Intent
     )
 
     /**

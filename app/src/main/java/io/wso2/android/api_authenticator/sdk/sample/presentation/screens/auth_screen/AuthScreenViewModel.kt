@@ -51,43 +51,6 @@ class AuthScreenViewModel @Inject constructor(
         }
     }
 
-    fun authenticate(
-        authenticatorType: AuthenticatorType,
-        authenticatorParameters: LinkedHashMap<String, String>
-    ) {
-        viewModelScope.launch {
-            _state.update {
-                it.copy(isLoading = true)
-            }
-            authenticationRepository.authenticate(
-                authenticatorType,
-                authenticatorParameters
-            )
-                .onRight { authenticationFlow ->
-                    // TODO: Move this to MutableSharedFlow
-                    // Handle success
-                    if (authenticationFlow.flowStatus == FlowStatus.SUCCESS.flowStatus) {
-                        sendEvent(Event.Toast("Logged in successfully"))
-                        NavigationViewModel.navigationEvents.emit(
-                            NavigationViewModel.Companion.NavigationEvent.NavigateToHome
-                        )
-                    } else {
-                        setAuthenticationFlow(authenticationFlow)
-                    }
-                }
-                .onLeft { authenticationError ->
-                    // Handle error
-                    _state.update {
-                        it.copy(error = authenticationError.errorMessage)
-                    }
-                    sendEvent(Event.Toast(authenticationError.errorMessage))
-                }
-            _state.update {
-                it.copy(isLoading = false)
-            }
-        }
-    }
-
     fun authenticateWithUsernamePassword(
         username: String,
         password: String
@@ -209,7 +172,8 @@ class AuthScreenViewModel @Inject constructor(
         viewModelScope.launch {
             authenticationProvider.handleGoogleNativeLegacyAuthenticateResult(
                 applicationContext,
-                result
+                result.resultCode,
+                result.data!!
             )
         }
     }

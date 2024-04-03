@@ -26,11 +26,12 @@ interface GoogleNativeLegacyAuthenticationHandlerManager {
     /**
      * Handle the Google native authentication result.
      *
-     * @param result The [ActivityResult] object that contains the result of the Google authentication process
+     * @param resultCode The result code of the Google authentication process
+     * @param data The [Intent] object that contains the result of the Google authentication process
      *
      * @return The Google native authenticator parameters [LinkedHashMap] that contains the ID Token and the Auth Code
      */
-    suspend fun handleGoogleNativeLegacyAuthenticateResult(result: ActivityResult): AuthParams?
+    suspend fun handleGoogleNativeLegacyAuthenticateResult(resultCode: Int, data: Intent): AuthParams?
 
     /**
      * Logout the user from the Google account

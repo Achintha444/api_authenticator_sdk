@@ -3,7 +3,6 @@ package io.wso2.android.api_authenticator.sdk.core.core_types.native_authenticat
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
@@ -42,11 +41,13 @@ interface NativeAuthenticationHandlerCoreDef {
      * This method will authenticate the user with the Google Native Authentication using the legacy one tap method.
      * This is not recommended to use for new applications that support Android 14(API 34) and above.
      *
-     * @param result The [ActivityResult] object that contains the result of the Google authentication process
+     * @param resultCode The result code of the Google authentication process
+     * @param data The [Intent] object that contains the result of the Google authentication process
      *
      * @return The Google native authenticator parameters [LinkedHashMap] that contains the ID Token and the Auth Code
      */
-    suspend fun handleGoogleNativeLegacyAuthenticateResult(result: ActivityResult): AuthParams?
+    suspend fun handleGoogleNativeLegacyAuthenticateResult(resultCode: Int, data: Intent)
+            : AuthParams?
 
     /**
      * Handle the redirect authentication process.

@@ -152,13 +152,18 @@ internal interface AuthenticationProviderManager {
      * Handle the Google authentication result.
      *
      * @param context The context of the application
-     * @param result The [ActivityResult] object that contains the result of the Google authentication process
+     * @param resultCode The result code of the Google authentication process
+     * @param data The [Intent] object that contains the result of the Google authentication process
      *
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      */
-    suspend fun handleGoogleNativeLegacyAuthenticateResult(context: Context, result: ActivityResult)
+    suspend fun handleGoogleNativeLegacyAuthenticateResult(
+        context: Context,
+        resultCode: Int,
+        data: Intent
+    )
 
     /**
      * Authenticate the user with the selected authenticator.
