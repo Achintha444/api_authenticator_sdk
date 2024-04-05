@@ -35,7 +35,7 @@ internal fun TotpAuth(
 ) {
     TotpAuthComponent(
         onSubmit = { token ->
-            viewModel.authenticateWithTotp(token)
+            viewModel.authenticateWithTotp(authenticatorType.authenticatorId, token)
         }
     )
 }

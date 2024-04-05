@@ -35,6 +35,7 @@ internal fun BasicAuth(
     BasicAuthComponent(
         onLoginClick = { username, password ->
             viewModel.authenticateWithUsernamePassword(
+                authenticatorType.authenticatorId,
                 username,
                 password
             )

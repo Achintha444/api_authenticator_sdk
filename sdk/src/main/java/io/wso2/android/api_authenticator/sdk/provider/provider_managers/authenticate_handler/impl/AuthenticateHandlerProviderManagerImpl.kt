@@ -103,16 +103,16 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
      * get the full details of the selected authenticator type, then perform the passed
      * authentication process.
      *
+     * @param authenticatorId The authenticator ID string
      * @param authenticatorTypeString The authenticator type string
-     * @param authenticatorIdString The authenticator ID string
      * @param afterGetAuthenticatorType The function to be executed after getting the authenticator type
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     override suspend fun authenticateWithAuthenticator(
-        authenticatorTypeString: String?,
-        authenticatorIdString: String?,
+        authenticatorId: String,
+        authenticatorTypeString: String,
         afterGetAuthenticatorType: suspend (AuthenticatorType) -> Unit
     ) {
         authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Loading)
@@ -120,7 +120,7 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
         val authenticatorType: AuthenticatorType? =
             AuthenticatorTypeUtil.getAuthenticatorTypeFromAuthenticatorTypeList(
                 authenticatorsInThisStep!!,
-                authenticatorIdString,
+                authenticatorId,
                 authenticatorTypeString
             ) ?: selectedAuthenticator
 

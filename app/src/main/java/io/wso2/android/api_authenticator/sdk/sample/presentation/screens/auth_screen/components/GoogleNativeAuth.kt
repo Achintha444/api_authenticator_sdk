@@ -30,7 +30,10 @@ internal fun GoogleNativeAuth(
 
     GoogleNativeAuthComponent(
         onSubmit = {
-            viewModel.authenticateWithGoogleNativeLegacy(launcher)
+            viewModel.authenticateWithGoogleNativeLegacy(
+                authenticatorType.authenticatorId,
+                launcher
+            )
         }
     )
 }

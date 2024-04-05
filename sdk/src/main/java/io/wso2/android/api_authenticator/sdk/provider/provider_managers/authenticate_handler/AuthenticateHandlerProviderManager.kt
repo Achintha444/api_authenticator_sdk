@@ -25,8 +25,8 @@ interface AuthenticateHandlerProviderManager {
      * get the full details of the selected authenticator type, then perform the passed
      * authentication process.
      *
+     * @param authenticatorId The authenticator ID string
      * @param authenticatorTypeString The authenticator type string
-     * @param authenticatorIdString The authenticator ID string
      * @param afterGetAuthenticatorType The function to be executed after getting the authenticator type
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
@@ -35,8 +35,8 @@ interface AuthenticateHandlerProviderManager {
      * TODO: This also need to be exposed from the Authentication Provider to support for authenticate with any authenticator
      */
     suspend fun authenticateWithAuthenticator(
-        authenticatorTypeString: String? = null,
-        authenticatorIdString: String? = null,
+        authenticatorId: String,
+        authenticatorTypeString: String,
         afterGetAuthenticatorType: suspend (AuthenticatorType) -> Unit
     )
 
@@ -100,7 +100,7 @@ interface AuthenticateHandlerProviderManager {
      *
      * @param context The context of the application
      * @param resultCode The result code of the Google authentication process
-     * @param result The [Intent] object that contains the result of the Google authentication process
+     * @param data The [Intent] object that contains the result of the Google authentication process
      *
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
@@ -109,7 +109,7 @@ interface AuthenticateHandlerProviderManager {
     suspend fun handleGoogleNativeLegacyAuthenticateResult(
         context: Context,
         resultCode: Int,
-        result: Intent
+        data: Intent
     )
 
     /**

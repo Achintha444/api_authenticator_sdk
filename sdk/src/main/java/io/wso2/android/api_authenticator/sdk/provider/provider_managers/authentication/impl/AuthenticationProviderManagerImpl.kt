@@ -3,7 +3,6 @@ package io.wso2.android.api_authenticator.sdk.provider.provider_managers.authent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -152,6 +151,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * Authenticate the user with the username and password.
      *
      * @param context The context of the application
+     * @param authenticatorId The authenticator id of the selected authenticator
      * @param username The username of the user
      * @param password The password of the user
      *
@@ -162,10 +162,12 @@ internal class AuthenticationProviderManagerImpl private constructor(
      */
     override suspend fun authenticateWithUsernameAndPassword(
         context: Context,
+        authenticatorId: String,
         username: String,
         password: String
     ) {
         authenticateHandlerProviderManager.authenticateWithAuthenticator(
+            authenticatorId = authenticatorId,
             authenticatorTypeString = AuthenticatorTypes.BASIC_AUTHENTICATOR.authenticatorType
         ) {
             authenticateHandlerProviderManager.commonAuthenticate(
@@ -180,6 +182,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * Authenticate the user with the TOTP token.
      *
      * @param context The context of the application
+     * @param authenticatorId The authenticator id of the selected authenticator
      * @param token The TOTP token of the user
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
@@ -187,8 +190,13 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    override suspend fun authenticateWithTotp(context: Context, token: String) {
+    override suspend fun authenticateWithTotp(
+        context: Context,
+        authenticatorId: String,
+        token: String
+    ) {
         authenticateHandlerProviderManager.authenticateWithAuthenticator(
+            authenticatorId = authenticatorId,
             authenticatorTypeString = AuthenticatorTypes.TOTP_AUTHENTICATOR.authenticatorType
         ) {
             authenticateHandlerProviderManager.commonAuthenticate(
@@ -203,7 +211,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * Authenticate the user with the selected authenticator which requires a redirect URI.
      *
      * @param context The context of the application
-     * @param authenticatorIdString The authenticator id of the selected authenticator
+     * @param authenticatorId The authenticator id of the selected authenticator
      * @param authenticatorTypeString The authenticator type of the selected authenticator
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
@@ -211,14 +219,14 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      */
-    override suspend fun authenticateWithRedirectUri(
+    private suspend fun authenticateWithRedirectUri(
         context: Context,
-        authenticatorIdString: String?,
-        authenticatorTypeString: String?
+        authenticatorId: String,
+        authenticatorTypeString: String
     ) {
         authenticateHandlerProviderManager.authenticateWithAuthenticator(
-            authenticatorTypeString = authenticatorTypeString,
-            authenticatorIdString = authenticatorIdString
+            authenticatorId = authenticatorId,
+            authenticatorTypeString = authenticatorTypeString
         ) {
             authenticateHandlerProviderManager.redirectAuthenticate(context, it)
         }
@@ -228,15 +236,17 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * Authenticate the user with the OpenID Connect authenticator.
      *
      * @param context The context of the application
+     * @param authenticatorId The authenticator id of the selected authenticator
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
      * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    override suspend fun authenticateWithOpenIdConnect(context: Context) {
+    override suspend fun authenticateWithOpenIdConnect(context: Context, authenticatorId: String) {
         authenticateWithRedirectUri(
             context,
+            authenticatorId = authenticatorId,
             authenticatorTypeString = AuthenticatorTypes.OPENID_CONNECT_AUTHENTICATOR.authenticatorType
         )
     }
@@ -245,16 +255,19 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * Authenticate the user with the Github authenticator (Redirect).
      *
      * @param context The context of the application
+     * @param authenticatorId The authenticator id of the selected authenticator
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
      * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    override suspend fun authenticateWithGithubRedirect(context: Context) {
+    override suspend fun authenticateWithGithubRedirect(context: Context, authenticatorId: String) {
         authenticateWithRedirectUri(
             context,
-            authenticatorTypeString = AuthenticatorTypes.GITHUB_REDIRECT_AUTHENTICATOR.authenticatorType
+            authenticatorId = authenticatorId,
+            authenticatorTypeString =
+            AuthenticatorTypes.GITHUB_REDIRECT_AUTHENTICATOR.authenticatorType
         )
     }
 
@@ -262,16 +275,22 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * Authenticate the user with the Microsoft authenticator (Redirect).
      *
      * @param context The context of the application
+     * @param authenticatorId The authenticator id of the selected authenticator
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
      * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    override suspend fun authenticateWithMicrosoftRedirect(context: Context) {
+    override suspend fun authenticateWithMicrosoftRedirect(
+        context: Context,
+        authenticatorId: String
+    ) {
         authenticateWithRedirectUri(
             context,
-            authenticatorTypeString = AuthenticatorTypes.MICROSOFT_REDIRECT_AUTHENTICATOR.authenticatorType
+            authenticatorId = authenticatorId,
+            authenticatorTypeString =
+            AuthenticatorTypes.MICROSOFT_REDIRECT_AUTHENTICATOR.authenticatorType
         )
     }
 
@@ -279,13 +298,15 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * Authenticate the user with the Google authenticator using the Credential Manager API.
      *
      * @param context The context of the application
+     * @param authenticatorId The authenticator id of the selected authenticator
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    override suspend fun authenticateWithGoogle(context: Context) {
+    override suspend fun authenticateWithGoogle(context: Context, authenticatorId: String) {
         authenticateHandlerProviderManager.authenticateWithAuthenticator(
+            authenticatorId = authenticatorId,
             authenticatorTypeString = AuthenticatorTypes.GOOGLE_AUTHENTICATOR.authenticatorType
         ) {
             authenticateHandlerProviderManager.googleAuthenticate(context)
@@ -296,6 +317,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * Authenticate the user with the Google authenticator using the legacy one tap method.
      *
      * @param context The context of the application
+     * @param authenticatorId The authenticator id of the selected authenticator
      * @param googleAuthenticateResultLauncher The result launcher for the Google authentication process
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
@@ -303,9 +325,11 @@ internal class AuthenticationProviderManagerImpl private constructor(
      */
     override suspend fun authenticateWithGoogleLegacy(
         context: Context,
+        authenticatorId: String,
         googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
     ) {
         authenticateHandlerProviderManager.authenticateWithAuthenticator(
+            authenticatorId = authenticatorId,
             authenticatorTypeString = AuthenticatorTypes.GOOGLE_AUTHENTICATOR.authenticatorType
         ) {
             authenticateHandlerProviderManager.googleLegacyAuthenticate(
@@ -339,39 +363,10 @@ internal class AuthenticationProviderManagerImpl private constructor(
     }
 
     /**
-     * Authenticate the user with the selected authenticator.
-     *
-     * @param context The context of the application
-     * @param authenticatorId The authenticator id of the selected authenticator
-     * @param authParams The authentication parameters of the selected authenticator
-     * as a LinkedHashMap<String, String> with the key as the parameter name and the value as the
-     * parameter value
-     *
-     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
-     */
-    override suspend fun authenticateWithAnyAuthenticator(
-        context: Context,
-        authenticatorId: String,
-        authParams: LinkedHashMap<String, String>
-    ) {
-        authenticateHandlerProviderManager.authenticateWithAuthenticator(
-            authenticatorIdString = authenticatorId
-        ) {
-            authenticateHandlerProviderManager.commonAuthenticate(
-                context,
-                userSelectedAuthenticatorType = it,
-                authParamsAsMap = authParams
-            )
-        }
-    }
-
-    /**
      * Authenticate the user with the Passkey authenticator.
      *
      * @param context The context of the application
+     * @param authenticatorId The authenticator id of the selected authenticator
      * @param allowCredentials The list of allowed credentials. Default is empty array.
      * @param timeout Timeout for the authentication. Default is 300000.
      * @param userVerification User verification method. Default is "required"
@@ -384,11 +379,13 @@ internal class AuthenticationProviderManagerImpl private constructor(
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override suspend fun authenticateWithPasskey(
         context: Context,
+        authenticatorId: String,
         allowCredentials: List<String>?,
         timeout: Long?,
         userVerification: String?
     ) {
         authenticateHandlerProviderManager.authenticateWithAuthenticator(
+            authenticatorId = authenticatorId,
             authenticatorTypeString = AuthenticatorTypes.PASSKEY_AUTHENTICATOR.authenticatorType
         ) {
             authenticateHandlerProviderManager.passkeyAuthenticate(
@@ -397,6 +394,39 @@ internal class AuthenticationProviderManagerImpl private constructor(
                 allowCredentials,
                 timeout,
                 userVerification
+            )
+        }
+    }
+
+    /**
+     * Authenticate the user with the selected authenticator.
+     *
+     * @param context The context of the application
+     * @param authenticatorId The authenticator id of the selected authenticator
+     * @param authenticatorTypeString The authenticator type of the selected authenticator
+     * @param authParams The authentication parameters of the selected authenticator
+     * as a LinkedHashMap<String, String> with the key as the parameter name and the value as the
+     * parameter value
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     */
+    override suspend fun authenticateWithAnyAuthenticator(
+        context: Context,
+        authenticatorId: String,
+        authenticatorTypeString: String,
+        authParams: LinkedHashMap<String, String>
+    ) {
+        authenticateHandlerProviderManager.authenticateWithAuthenticator(
+            authenticatorId = authenticatorId,
+            authenticatorTypeString = authenticatorTypeString
+        ) {
+            authenticateHandlerProviderManager.commonAuthenticate(
+                context,
+                userSelectedAuthenticatorType = it,
+                authParamsAsMap = authParams
             )
         }
     }

@@ -1,7 +1,6 @@
 package io.wso2.android.api_authenticator.sdk.util
 
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
-import io.wso2.android.api_authenticator.sdk.provider.util.AuthenticatorProviderUtil
 
 /**
  * Util class to handle the authenticator types
@@ -45,7 +44,7 @@ object AuthenticatorTypeUtil {
      *
      * @return Boolean value whether there are duplicates authenticators of the given authenticator type in the given step
      */
-    internal fun hasDuplicatesAuthenticatorsInGivenStepOnAuthenticatorId(
+    private fun hasDuplicatesAuthenticatorsInGivenStepOnAuthenticatorId(
         authenticators: ArrayList<AuthenticatorType>,
         authenticatorIdString: String
     ): Boolean {
@@ -59,12 +58,25 @@ object AuthenticatorTypeUtil {
      * @param authenticatorIdString Authenticator id string
      *
      * @return [AuthenticatorType] object, `null` if the authenticator type is not found
+     * or if there are duplicates authenticators of the given authenticator type in the given step
      */
-    internal fun getAuthenticatorTypeFromAuthenticatorTypeListOnAuthenticatorId(
+    private fun getAuthenticatorTypeFromAuthenticatorTypeListOnAuthenticatorId(
         authenticators: ArrayList<AuthenticatorType>,
-        authenticatorIdString: String
+        authenticatorIdString: String,
+        authenticatorTypeString: String
     ): AuthenticatorType? {
-        return authenticators.find { it.authenticatorId == authenticatorIdString }
+        val authenticatorType: AuthenticatorType? =
+            authenticators.find { it.authenticatorId == authenticatorIdString }
+
+        val hasDuplicates: Boolean = hasDuplicatesAuthenticatorsInGivenStepOnAuthenticatorId(
+            authenticators,
+            authenticatorIdString
+        )
+
+        return if (hasDuplicates) null else {
+            if (authenticatorType?.authenticator == authenticatorTypeString) authenticatorType
+            else null
+        }
     }
 
 
@@ -78,29 +90,13 @@ object AuthenticatorTypeUtil {
      * @param authenticatorIdString The authenticator id string
      * @param authenticatorTypeString The authenticator type string
      */
-     internal fun getAuthenticatorTypeFromAuthenticatorTypeList(
+    internal fun getAuthenticatorTypeFromAuthenticatorTypeList(
         authenticators: ArrayList<AuthenticatorType>,
-        authenticatorIdString: String? = null,
-        authenticatorTypeString: String? = null
-    ): AuthenticatorType? {
-        // setting up the authenticator type
-        var authenticatorType: AuthenticatorType? = null
-
-        if (authenticatorIdString != null) {
-            authenticatorType =
-                AuthenticatorProviderUtil
-                    .getAuthenticatorTypeFromAuthenticatorTypeListOnAuthenticatorId(
-                        authenticators,
-                        authenticatorIdString
-                    )
-        } else if (authenticatorTypeString != null) {
-            authenticatorType =
-                AuthenticatorProviderUtil.getAuthenticatorTypeFromAuthenticatorTypeList(
-                    authenticators,
-                    authenticatorTypeString
-                )
-        }
-
-        return authenticatorType
-    }
+        authenticatorIdString: String,
+        authenticatorTypeString: String
+    ): AuthenticatorType? = getAuthenticatorTypeFromAuthenticatorTypeListOnAuthenticatorId(
+        authenticators,
+        authenticatorIdString,
+        authenticatorTypeString
+    )
 }

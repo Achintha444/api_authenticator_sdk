@@ -23,7 +23,7 @@ internal fun PasskeyAuth(
 ) {
     PasskeyAuthComponent(
         onSubmit = {
-            viewModel.authenticateWithPasskey()
+            viewModel.authenticateWithPasskey(authenticatorType.authenticatorId)
         }
     )
 }

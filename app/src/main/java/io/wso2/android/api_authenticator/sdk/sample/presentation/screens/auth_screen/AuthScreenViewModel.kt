@@ -52,6 +52,7 @@ class AuthScreenViewModel @Inject constructor(
     }
 
     fun authenticateWithUsernamePassword(
+        authenticatorId: String,
         username: String,
         password: String
     ) {
@@ -63,6 +64,7 @@ class AuthScreenViewModel @Inject constructor(
             }
             authenticationProvider.authenticateWithUsernameAndPassword(
                 applicationContext,
+                authenticatorId,
                 username,
                 password
             )
@@ -74,7 +76,7 @@ class AuthScreenViewModel @Inject constructor(
         }
     }
 
-    fun authenticateWithTotp(token: String) {
+    fun authenticateWithTotp(authenticatorId: String, token: String) {
         viewModelScope.launch {
             _state.update {
                 it.copy(
@@ -83,6 +85,7 @@ class AuthScreenViewModel @Inject constructor(
             }
             authenticationProvider.authenticateWithTotp(
                 applicationContext,
+                authenticatorId,
                 token
             )
             _state.update {
@@ -100,7 +103,10 @@ class AuthScreenViewModel @Inject constructor(
                     isLoading = true
                 )
             }
-            authenticationProvider.authenticateWithOpenIdConnect(applicationContext)
+            authenticationProvider.authenticateWithOpenIdConnect(
+                applicationContext,
+                authenticatorId
+            )
             _state.update {
                 it.copy(
                     isLoading = false
@@ -110,14 +116,14 @@ class AuthScreenViewModel @Inject constructor(
     }
 
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    fun authenticateWithGoogle() {
+    fun authenticateWithGoogle(authenticatorId: String) {
         viewModelScope.launch {
             _state.update {
                 it.copy(
                     isLoading = true
                 )
             }
-            authenticationProvider.authenticateWithGoogle(applicationContext)
+            authenticationProvider.authenticateWithGoogle(applicationContext, authenticatorId)
             _state.update {
                 it.copy(
                     isLoading = false
@@ -127,14 +133,14 @@ class AuthScreenViewModel @Inject constructor(
     }
 
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    fun authenticateWithPasskey() {
+    fun authenticateWithPasskey(authenticatorId: String) {
         viewModelScope.launch {
             _state.update {
                 it.copy(
                     isLoading = true
                 )
             }
-            authenticationProvider.authenticateWithPasskey(applicationContext)
+            authenticationProvider.authenticateWithPasskey(applicationContext, authenticatorId)
             _state.update {
                 it.copy(
                     isLoading = false
@@ -144,6 +150,7 @@ class AuthScreenViewModel @Inject constructor(
     }
 
     fun authenticateWithGoogleNativeLegacy(
+        authenticatorId: String,
         googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
     ) {
         viewModelScope.launch {
@@ -154,6 +161,7 @@ class AuthScreenViewModel @Inject constructor(
             }
             authenticationProvider.authenticateWithGoogleLegacy(
                 applicationContext,
+                authenticatorId,
                 googleAuthenticateResultLauncher
             )
             _state.update {
@@ -181,7 +189,10 @@ class AuthScreenViewModel @Inject constructor(
                     isLoading = true
                 )
             }
-            authenticationProvider.authenticateWithGithubRedirect(applicationContext)
+            authenticationProvider.authenticateWithGithubRedirect(
+                applicationContext,
+                authenticatorId
+            )
             _state.update {
                 it.copy(
                     isLoading = false

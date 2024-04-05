@@ -20,9 +20,7 @@ internal fun OpenIdRedirectAuth(
 ) {
     OpenIdRedirectAuthComponent(
         onSubmit = {
-            viewModel.authenticateWithOpenIdConnect(
-                authenticatorType.authenticatorId
-            )
+            viewModel.authenticateWithOpenIdConnect(authenticatorType.authenticatorId)
         }
     )
 }
