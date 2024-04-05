@@ -31,11 +31,8 @@
             android:exported="true">
             <intent-filter>
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data
                     android:host="login-callback"
                     android:scheme="wso2.apiauth.sample.android" />

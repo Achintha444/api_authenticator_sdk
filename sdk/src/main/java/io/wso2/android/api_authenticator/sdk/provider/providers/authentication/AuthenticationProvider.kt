@@ -109,6 +109,18 @@ interface AuthenticationProvider {
     suspend fun authenticateWithOpenIdConnect(context: Context)
 
     /**
+     * Authenticate the user with the Microsoft authenticator (Redirect).
+     *
+     * @param context The context of the application
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     */
+     suspend fun authenticateWithMicrosoftRedirect(context: Context)
+
+    /**
      * Authenticate the user with the Google authenticator.
      *
      * @param context The context of the application

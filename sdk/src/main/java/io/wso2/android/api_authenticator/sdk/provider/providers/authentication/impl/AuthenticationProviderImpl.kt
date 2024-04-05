@@ -149,7 +149,9 @@ internal class AuthenticationProviderImpl private constructor(
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      */
     override suspend fun authenticateWithRedirectUri(
-        context: Context, authenticatorId: String?, authenticatorType: String?
+        context: Context,
+        authenticatorId: String?,
+        authenticatorType: String?
     ) = authenticationProviderManager.authenticateWithRedirectUri(
         context,
         authenticatorId,
@@ -183,6 +185,19 @@ internal class AuthenticationProviderImpl private constructor(
         authenticationProviderManager.authenticateWithGithubRedirect(context)
 
     /**
+     * Authenticate the user with the Microsoft authenticator (Redirect).
+     *
+     * @param context The context of the application
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     */
+    override suspend fun authenticateWithMicrosoftRedirect(context: Context) =
+        authenticationProviderManager.authenticateWithMicrosoftRedirect(context)
+
+    /**
      * Authenticate the user with the Google authenticator.
      *
      * @param context The context of the application
@@ -204,7 +219,8 @@ internal class AuthenticationProviderImpl private constructor(
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     override suspend fun authenticateWithGoogleLegacy(
-        context: Context, googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
+        context: Context,
+        googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
     ) = authenticationProviderManager.authenticateWithGoogleLegacy(
         context,
         googleAuthenticateResultLauncher

@@ -259,6 +259,23 @@ internal class AuthenticationProviderManagerImpl private constructor(
     }
 
     /**
+     * Authenticate the user with the Microsoft authenticator (Redirect).
+     *
+     * @param context The context of the application
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     */
+    override suspend fun authenticateWithMicrosoftRedirect(context: Context) {
+        authenticateWithRedirectUri(
+            context,
+            authenticatorTypeString = AuthenticatorTypes.MICROSOFT_REDIRECT_AUTHENTICATOR.authenticatorType
+        )
+    }
+
+    /**
      * Authenticate the user with the Google authenticator using the Credential Manager API.
      *
      * @param context The context of the application

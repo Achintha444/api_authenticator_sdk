@@ -74,9 +74,7 @@ class AuthScreenViewModel @Inject constructor(
         }
     }
 
-    fun authenticateWithTotp(
-        token: String
-    ) {
+    fun authenticateWithTotp(token: String) {
         viewModelScope.launch {
             _state.update {
                 it.copy(
@@ -95,9 +93,7 @@ class AuthScreenViewModel @Inject constructor(
         }
     }
 
-    fun authenticateWithOpenIdConnect(
-        authenticatorId: String,
-    ) {
+    fun authenticateWithOpenIdConnect(authenticatorId: String) {
         viewModelScope.launch {
             _state.update {
                 it.copy(
