@@ -7,7 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
 import io.wso2.android.api_authenticator.sdk.petcare.features.login.domain.repository.AsgardeoAuthRepository
-import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.util.sendEvent
+import io.wso2.android.api_authenticator.sdk.petcare.util.ui.sendEvent
 import io.wso2.android.api_authenticator.sdk.petcare.util.Event
 import io.wso2.android.api_authenticator.sdk.sample.presentation.screens.landing_screen.LandingScreenState
 import io.wso2.android.api_authenticator.sdk.petcare.util.navigation.NavigationViewModel

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -74,10 +75,12 @@ fun BasicAuthComponent(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.medium,
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                focusedContainerColor = MaterialTheme.colorScheme.background,
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.tertiaryContainer
+                unfocusedBorderColor = MaterialTheme.colorScheme.tertiaryContainer,
+                unfocusedLabelColor = MaterialTheme.colorScheme.tertiaryContainer,
+                focusedLabelColor = MaterialTheme.colorScheme.tertiaryContainer
             )
 
         )
@@ -92,10 +95,12 @@ fun BasicAuthComponent(
             visualTransformation = PasswordVisualTransformation(),
             shape = MaterialTheme.shapes.medium,
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                focusedContainerColor = MaterialTheme.colorScheme.background,
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.tertiaryContainer
+                unfocusedBorderColor = MaterialTheme.colorScheme.tertiaryContainer,
+                unfocusedLabelColor = MaterialTheme.colorScheme.tertiaryContainer,
+                focusedLabelColor = MaterialTheme.colorScheme.tertiaryContainer
             )
         )
 
@@ -103,7 +108,10 @@ fun BasicAuthComponent(
         Button(
             onClick = { onLoginClick(username, password) },
             modifier = Modifier.fillMaxWidth()
-        ) { Text(text = "Sign In") }
+        ) { Text(
+            text = "Sign In",
+            color = MaterialTheme.colorScheme.surface
+        ) }
     }
 }
 

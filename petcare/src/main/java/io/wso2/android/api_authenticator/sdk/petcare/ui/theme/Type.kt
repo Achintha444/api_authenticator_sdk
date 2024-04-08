@@ -51,7 +51,7 @@ val Typography = Typography(
     ),
     labelLarge = TextStyle(
         fontFamily = montserratFontFamily,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 14.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.1.sp
@@ -80,6 +80,7 @@ val Typography = Typography(
         letterSpacing = 0.sp,
         color = Color(0xFF3E4747)
     ),
+
 
     /* Other default text styles to override
     titleLarge = TextStyle(

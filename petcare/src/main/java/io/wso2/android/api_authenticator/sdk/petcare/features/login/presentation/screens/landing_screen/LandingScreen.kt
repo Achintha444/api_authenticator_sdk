@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.AssistChipDefaults
@@ -25,7 +24,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.wso2.android.api_authenticator.sdk.petcare.R
 import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.util.common_component.FooterImage
 import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.util.common_component.LandingPageLogo
-import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.util.common_component.LoadingDialog
+import io.wso2.android.api_authenticator.sdk.petcare.util.ui.LoadingDialog
 import io.wso2.android.api_authenticator.sdk.petcare.ui.theme.Api_authenticator_sdkTheme
 import io.wso2.android.api_authenticator.sdk.sample.presentation.screens.landing_screen.LandingScreenState
 
@@ -82,7 +81,10 @@ private fun LoginButton(modifier: Modifier = Modifier, onClcik: () -> Unit) {
                 .size(AssistChipDefaults.IconSize)
         )
         Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-        Text(text = "Getting Started")
+        Text(
+            text = "Getting Started",
+            color = MaterialTheme.colorScheme.surface,
+        )
     }
 }
 
