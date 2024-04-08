@@ -15,6 +15,6 @@ fun LandingPageLogo() {
     Image(
         painter = painterResource(R.drawable.landing_page_logo),
         contentDescription = "Landing Page Logo",
-        modifier = Modifier.size(UiUtil.height().dp/4, UiUtil.height().dp/4)
+        modifier = Modifier.size(UiUtil.getScreenHeight().dp/4, UiUtil.getScreenHeight().dp/4)
     )
 }

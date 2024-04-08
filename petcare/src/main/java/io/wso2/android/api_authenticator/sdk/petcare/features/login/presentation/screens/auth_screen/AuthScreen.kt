@@ -1,9 +1,13 @@
 package io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.screens.auth_screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -30,6 +34,7 @@ import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation
 import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.util.common_component.ContinueText
 import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.util.common_component.LoadingDialog
 import io.wso2.android.api_authenticator.sdk.petcare.ui.theme.Api_authenticator_sdkTheme
+import io.wso2.android.api_authenticator.sdk.petcare.util.UiUtil
 import io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen.components.PasskeyAuthComponent
 
 @Composable
@@ -52,32 +57,41 @@ fun AuthScreenContent(state: AuthScreenState) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
             modifier = Modifier
                 .padding(start = 32.dp, end = 32.dp, bottom = 32.dp)
-                .offset(y = 42.dp)
+                .offset(y = 32.dp)
         ) {
             GetStarted()
         }
         Surface(
-            color = MaterialTheme.colorScheme.background
+            color = MaterialTheme.colorScheme.background,
+            modifier = Modifier.fillMaxHeight(5f)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(
-                    top = 16.dp,
-                    start = 32.dp,
-                    end = 32.dp,
-                    bottom = 32.dp
-                )
+                modifier = Modifier
+                    .padding(
+                        top = 16.dp,
+                        start = 32.dp,
+                        end = 32.dp,
+                        bottom = 32.dp
+                    )
+                    .fillMaxSize()
             ) {
                 state.authenticationFlow?.let { authenticationFlow ->
                     AuthUI(authenticationFlow)
                 }
             }
         }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f)
+                .background(MaterialTheme.colorScheme.background)
+        )
     }
 }
 
@@ -88,6 +102,7 @@ fun AuthScreenPreview() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .fillMaxHeight()
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -96,20 +111,26 @@ fun AuthScreenPreview() {
                 modifier = Modifier
                     .padding(start = 32.dp, end = 32.dp, bottom = 32.dp)
                     .offset(y = 42.dp)
+                    .fillMaxHeight()
             ) {
                 GetStarted()
             }
-            Surface(
-                color = MaterialTheme.colorScheme.background
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(
-                        top = 16.dp,
-                        start = 32.dp,
-                        end = 32.dp,
-                        bottom = 32.dp
-                    )
+                    modifier = Modifier
+                        .padding(
+                            top = 16.dp,
+                            start = 32.dp,
+                            end = 32.dp,
+                            bottom = 32.dp
+                        )
+                        .fillMaxSize(2f)
+                        .background(MaterialTheme.colorScheme.background)
                 ) {
                     BasicAuthComponent(onLoginClick = { _, _ -> })
                     ContinueText()
@@ -120,15 +141,6 @@ fun AuthScreenPreview() {
 
                     }
                     GithubAuthComponent {
-
-                    }
-                    MicrosoftAuthComponent {
-
-                    }
-                    OpenIdRedirectAuthComponent {
-
-                    }
-                    TotpAuthComponent {
 
                     }
                 }

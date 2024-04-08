@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import io.wso2.android.api_authenticator.sdk.petcare.R
@@ -41,18 +42,20 @@ fun GetStarted() {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "Best pet care starts here.",
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.labelLarge,
+                color = Color(0xFF939B9B)
             )
+            Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = "Schedule appointments & keep your furry friend healthy – all at your fingertips.",
-                style = MaterialTheme.typography.labelSmall
+                style = MaterialTheme.typography.labelMedium
             )
         }
         Image(
             painter = painterResource(id = R.drawable.person_dog_login),
             contentDescription = "Artist image",
             modifier = Modifier
-                .size(UiUtil.height().dp/4, UiUtil.height().dp/4)
+                .size(UiUtil.getScreenHeight().dp/4, UiUtil.getScreenHeight().dp/4)
                 .weight(0.64f)
         )
     }

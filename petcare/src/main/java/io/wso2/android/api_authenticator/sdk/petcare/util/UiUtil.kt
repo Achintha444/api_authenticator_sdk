@@ -5,12 +5,12 @@ import androidx.compose.ui.platform.LocalConfiguration
 
 object UiUtil {
     @Composable
-    fun height(): Int {
+    fun getScreenHeight(): Int {
         val configuration = LocalConfiguration.current
         return configuration.screenHeightDp
     }
     @Composable
-    fun width(): Int {
+    fun getScreenWidth(): Int {
         val configuration = LocalConfiguration.current
         return configuration.screenWidthDp
     }
