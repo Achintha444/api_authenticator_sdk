@@ -1,4 +1,4 @@
-package io.wso2.android.api_authenticator.sdk.sample.util.navigation
+package io.wso2.android.api_authenticator.sdk.petcare.util.navigation
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +13,7 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
         sealed class NavigationEvent {
             data object NavigateBack : NavigationEvent()
             data object NavigateToLanding : NavigationEvent()
-            data object NavigateToHome : NavigationEvent()
+            //data object NavigateToHome : NavigationEvent()
             data class NavigateToAuthWithData(val data: String) : NavigationEvent()
         }
     }

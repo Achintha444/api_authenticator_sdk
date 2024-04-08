@@ -5,15 +5,11 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.rememberNavController
@@ -24,7 +20,7 @@ import io.wso2.android.api_authenticator.sdk.petcare.util.Event
 import io.wso2.android.api_authenticator.sdk.petcare.util.EventBus
 import io.wso2.android.api_authenticator.sdk.petcare.util.navigation.NavDestination
 import io.wso2.android.api_authenticator.sdk.petcare.util.navigation.NavGraph
-import io.wso2.android.api_authenticator.sdk.sample.util.navigation.NavigationViewModel
+import io.wso2.android.api_authenticator.sdk.petcare.util.navigation.NavigationViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -67,16 +63,15 @@ class MainActivity : ComponentActivity() {
 //                                navigationController.navigate(NavDestination.HomeScreen)
 //                            }
 //
-//                            is NavigationViewModel.Companion.NavigationEvent.NavigateToAuthWithData -> {
-//                                navigationController.navigate(
-//                                    "${NavDestination.AuthScreen}?authenticationFlow={authenticationFlow}"
-//                                        .replace(
-//                                            "{authenticationFlow}",
-//                                            newValue = it.data
-//                                        )
-//                                )
-//                            }
-                            else -> {}
+                            is NavigationViewModel.Companion.NavigationEvent.NavigateToAuthWithData -> {
+                                navigationController.navigate(
+                                    "${NavDestination.AuthScreen}?authenticationFlow={authenticationFlow}"
+                                        .replace(
+                                            "{authenticationFlow}",
+                                            newValue = it.data
+                                        )
+                                )
+                            }
                         }
                     }
                 }
@@ -84,10 +79,9 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = MaterialTheme.colorScheme.surface
                 ) {
                     NavGraph(navController = navigationController)
-                    LandingScreen()
                 }
             }
         }

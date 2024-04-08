@@ -26,35 +26,43 @@ val Typography = Typography(
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
         lineHeight = 16.sp,
-        letterSpacing = 0.25.sp
+        letterSpacing = 0.1.sp
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = montserratFontFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 10.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.1.sp,
+        color = Color(0xFF939B9B)
     ),
     bodySmall = TextStyle(
         fontFamily = montserratFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 10.sp,
         lineHeight = 16.sp,
-        letterSpacing = 0.25.sp
+        letterSpacing = 0.1.sp
     ),
     titleSmall = TextStyle(
         fontFamily = montserratFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 14.sp,
         lineHeight = 20.sp,
-        letterSpacing = 0.25.sp
+        letterSpacing = 0.1.sp
     ),
     labelLarge = TextStyle(
         fontFamily = montserratFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 14.sp,
         lineHeight = 24.sp,
-        letterSpacing = 0.15.sp
+        letterSpacing = 0.1.sp
     ),
     labelMedium = TextStyle(
         fontFamily = montserratFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
         lineHeight = 16.sp,
-        letterSpacing = 0.25.sp,
+        letterSpacing = 0.1.sp,
         color = Color(0xFF939B9B)
     ),
     labelSmall = TextStyle(
@@ -62,8 +70,16 @@ val Typography = Typography(
         fontWeight = FontWeight.Light,
         fontSize = 10.sp,
         lineHeight = 16.sp,
-        letterSpacing = 0.25.sp,
+        letterSpacing = 0.1.sp,
         color = Color(0xFF9E9E9E)
+    ),
+    titleLarge = TextStyle(
+        fontFamily = montserratFontFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 24.sp,
+        lineHeight = 28.sp,
+        letterSpacing = 0.sp,
+        color = Color(0xFF3E4747)
     ),
 
     /* Other default text styles to override

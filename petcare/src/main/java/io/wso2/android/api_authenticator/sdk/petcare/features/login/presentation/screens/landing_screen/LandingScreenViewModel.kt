@@ -10,7 +10,7 @@ import io.wso2.android.api_authenticator.sdk.petcare.features.login.domain.repos
 import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.util.sendEvent
 import io.wso2.android.api_authenticator.sdk.petcare.util.Event
 import io.wso2.android.api_authenticator.sdk.sample.presentation.screens.landing_screen.LandingScreenState
-import io.wso2.android.api_authenticator.sdk.sample.util.navigation.NavigationViewModel
+import io.wso2.android.api_authenticator.sdk.petcare.util.navigation.NavigationViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -81,9 +81,9 @@ class LandingScreenViewModel @Inject constructor(
                         _state.update { landingScreenState ->
                             landingScreenState.copy(isLoading = false)
                         }
-                        NavigationViewModel.navigationEvents.emit(
-                            NavigationViewModel.Companion.NavigationEvent.NavigateToHome
-                        )
+//                        NavigationViewModel.navigationEvents.emit(
+//                            NavigationViewModel.Companion.NavigationEvent.NavigateToHome
+//                        )
                     }
 
                     else -> {
