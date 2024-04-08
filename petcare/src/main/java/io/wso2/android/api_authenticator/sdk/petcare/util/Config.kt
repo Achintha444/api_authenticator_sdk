@@ -2,22 +2,10 @@ package io.wso2.android.api_authenticator.sdk.sample.util
 
 object Config {
     private const val BASE_URL: String = "https://10.0.2.2:9443"
-    private const val CLIENT_ID: String = "DemBfWSfjhJO2ieDeI67urt7O_0a"
+    private const val CLIENT_ID: String = "YOUR_CLIENT ID"
     private const val REDIRECT_URI: String = "wso2.apiauth.sample.android://login-callback"
     private const val SCOPE: String = "openid internal_login profile email"
-    private const val GOOGLE_WEB_CLIENT_ID = "1064044497616-0326pu24eaael3u9lhs6huarj935pmti.apps.googleusercontent.com"
-
-//    private const val BASE_URL: String = "https://dev.api.asgardeo.io/t/guardioii"
-//    private const val CLIENT_ID: String = "GOjNz8iTYcfqYuuevsKgqPfeeqoa"
-//    private const val REDIRECT_URI: String = "wso2.apiauth.sample.android://login-callback"
-//    private const val SCOPE: String = "openid internal_login profile email"
-//    private const val GOOGLE_WEB_CLIENT_ID = "1064044497616-0326pu24eaael3u9lhs6huarj935pmti.apps.googleusercontent.com"
-//
-//    private const val BASE_URL: String = "https://api.asgardeo.io/t/achintha"
-//    private const val CLIENT_ID: String = "Y1xf_74lLoVwjNnXSQXINEfvbkwa"
-//    private const val REDIRECT_URI: String = "wso2.apiauth.sample.android://login-callback"
-//    private const val SCOPE: String = "openid internal_login profile email"
-//    private const val GOOGLE_WEB_CLIENT_ID = "1064044497616-0326pu24eaael3u9lhs6huarj935pmti.apps.googleusercontent.com"
+    private const val GOOGLE_WEB_CLIENT_ID = "YOUR_GOOGLE_WEB_CLIENT_ID"
 
     fun getBaseUrl(): String {
         return BASE_URL
