@@ -15,10 +15,10 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun AddPetFab() {
     FloatingActionButton(
-        onClick = { null },
+        onClick = {},
         elevation = FloatingActionButtonDefaults.elevation(0.dp),
         shape = MaterialTheme.shapes.extraSmall,
-        modifier = Modifier.offset(x = 16.dp)
+        modifier = Modifier.offset(x = (-16).dp)
     ) {
         Icon(
             imageVector = Icons.Outlined.Add,

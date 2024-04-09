@@ -3,39 +3,30 @@ package io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AccountCircle
-import androidx.compose.material3.AssistChip
-import androidx.compose.material3.AssistChipDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SuggestionChip
-import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -44,6 +35,8 @@ import io.wso2.android.api_authenticator.sdk.petcare.R
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.domain.models.UserDetails
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.util.AddPetFab
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.util.DoctorSearchField
+import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.util.EmergencyCard
+import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.util.VetCard
 import io.wso2.android.api_authenticator.sdk.petcare.ui.theme.Api_authenticator_sdkTheme
 import io.wso2.android.api_authenticator.sdk.petcare.util.ui.UiUtil
 
@@ -61,157 +54,84 @@ internal fun HomeScreen(
 fun HomeScreenContent(
     state: HomeScreenState
 ) {
+    val languages = listOf(
+        "C++", "C", "C#", "Java", "Kotlin", "Dart", "Python", "Javascript", "SpringBoot",
+        "XML", "Dart", "Node JS", "Typescript", "Dot Net", "GoLang", "MongoDb",
+    )
+
     Scaffold(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 32.dp),
+            .fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
             TopAppBar(
                 title = {
-                    Row(
+                    Image(
+                        painter = painterResource(id = R.drawable.home_logo),
                         modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.home_logo),
-                            modifier = Modifier
-                                .size(UiUtil.getScreenHeight().dp / 6),
-                            contentDescription = "Home Logo",
-
-                            )
-                        Icon(
-                            imageVector = Icons.Rounded.AccountCircle,
-                            contentDescription = "Menu",
-                            modifier = Modifier
-                                .size(UiUtil.getScreenHeight().dp / 25),
-                            tint = MaterialTheme.colorScheme.tertiary
-                        )
-                    }
-                }
+                            .size(UiUtil.getScreenHeight().dp / 6)
+                            .offset(x = (-16).dp),
+                        contentDescription = "Home Logo",
+                    )
+                },
+                actions = {
+                    Icon(
+                        imageVector = Icons.Outlined.AccountCircle,
+                        contentDescription = "Menu",
+                        modifier = Modifier
+                            .size(UiUtil.getScreenHeight().dp / 25)
+                            .offset(x = 4.dp),
+                        tint = MaterialTheme.colorScheme.tertiary
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp),
             )
         },
         floatingActionButton = { AddPetFab() },
-        floatingActionButtonPosition = FabPosition.End
+        floatingActionButtonPosition = FabPosition.End,
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize(),
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(32.dp)
         ) {
-            DoctorSearchField()
-            Spacer(modifier = Modifier.height(16.dp))
-            Card(
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 32.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                DoctorSearchField()
+                VetCard()
+                EmergencyCard()
+            }
+            Divider(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(IntrinsicSize.Max),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                ),
+                    .align(Alignment.Start),
+                thickness = 0.5.dp
+            )
+            Column(
+                modifier = Modifier.padding(horizontal = 32.dp),
             ) {
-                Box(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .height(UiUtil.getScreenHeight().dp / 5)
-                            .offset(x = 8.dp)
-                            .align(Alignment.CenterEnd)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.person_dog_home),
-                            contentDescription = "Person with dog"
-                        )
-                    }
-                    Column(
-                        modifier = Modifier
-                            .padding(start = 16.dp, top = 24.dp, bottom = 16.dp)
-                            .fillMaxWidth()
-                            .fillMaxHeight(),
-                        verticalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Column {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                SuggestionChip(
-                                    colors = SuggestionChipDefaults.suggestionChipColors(
-                                        containerColor = MaterialTheme.colorScheme.surface
-                                    ),
-                                    border = null,
-                                    modifier = Modifier.height(16.dp),
-                                    onClick = {},
-                                    label = {
-                                        Text(
-                                            text = "LIVE",
-                                            style = MaterialTheme.typography.labelSmall,
-                                            fontWeight = FontWeight.Bold,
-                                            color = MaterialTheme.colorScheme.error,
-                                        )
-                                    }
-                                )
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Text(
-                                    text = "Consult with",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.surface
-                                )
-                            }
-                            Column(
-                                verticalArrangement = Arrangement.spacedBy(0.dp),
-                                horizontalAlignment = Alignment.Start
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = "an ",
-                                        style = MaterialTheme.typography.titleLarge,
-                                        color = MaterialTheme.colorScheme.surface
-                                    )
-                                    Text(
-                                        text = "Experienced",
-                                        style = MaterialTheme.typography.titleLarge,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.surface,
-                                        modifier = Modifier.width(200.dp)
-                                    )
-                                }
-                                Text(
-                                    text = "Veterinarian",
-                                    style = MaterialTheme.typography.titleLarge,
-                                    color = MaterialTheme.colorScheme.surface,
-                                    modifier = Modifier.offset(y = -6.dp)
-                                )
-                            }
-
-                        }
-                        AssistChip(
-                            onClick = {},
-                            label = {
-                                Text(
-                                    text = "Consult Now",
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.video_call),
-                                    contentDescription = "Menu",
-                                    modifier = Modifier
-                                        .size(24.dp)
-                                        .offset(x = 4.dp),
-                                )
-                            },
-                            shape = MaterialTheme.shapes.extraSmall,
-                            border = null,
-                            colors = AssistChipDefaults.assistChipColors(
-                                containerColor = MaterialTheme.colorScheme.surface
-                            ),
-                            modifier = Modifier.align(Alignment.Start)
-                        )
+                Text(
+                    text = "Your cutie pets",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.tertiary
+                )
+                Column() {
+                    // on below line we are populating
+                    // items for listview.
+                    languages.forEach { language ->
+                        // on below line we are specifying ui for each item of list view.
+                        // we are specifying a simple text for each item of our list view.
+                        Text(text = language, modifier = Modifier.padding(15.dp))
+                        // on below line we are specifying
+                        // divider for each list item
+                        Divider()
                     }
                 }
             }

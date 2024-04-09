@@ -4,6 +4,7 @@ import android.app.Activity
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -24,6 +25,7 @@ private val LightColorScheme = lightColorScheme(
     surface = Color(0xFFFEFEFE),
     background = Color(0xFFF4F4F4),
     error = Color(0xFFF4538A),
+    outlineVariant = Color(0xFF939B9B),
 )
 
 
@@ -46,7 +48,6 @@ fun Api_authenticator_sdkTheme(
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
         }
     }
-
 
     MaterialTheme(
         colorScheme = colorScheme,

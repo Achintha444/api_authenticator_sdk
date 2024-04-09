@@ -29,7 +29,7 @@ class HomeScreenViewModel @Inject constructor(
     private val authenticationProvider = asgardeoAuthRepository.getAuthenticationProvider()
 
     init {
-        getUserDetails()
+        //getUserDetails()
     }
 
     private fun getUserDetails() {
