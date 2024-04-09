@@ -62,10 +62,6 @@ class MainActivity : ComponentActivity() {
                                 navigationController.navigate(NavDestination.LandingScreen)
                             }
 
-                            is NavigationViewModel.Companion.NavigationEvent.NavigateToHome -> {
-                                navigationController.navigate(NavDestination.HomeScreen)
-                            }
-
                             is NavigationViewModel.Companion.NavigationEvent.NavigateToAuthWithData -> {
                                 navigationController.navigate(
                                     "${NavDestination.AuthScreen}?authenticationFlow={authenticationFlow}"
@@ -74,6 +70,14 @@ class MainActivity : ComponentActivity() {
                                             newValue = it.data
                                         )
                                 )
+                            }
+
+                            is NavigationViewModel.Companion.NavigationEvent.NavigateToHome -> {
+                                navigationController.navigate(NavDestination.HomeScreen)
+                            }
+
+                            is NavigationViewModel.Companion.NavigationEvent.NavigateToProfile -> {
+                                navigationController.navigate(NavDestination.ProfileScreen)
                             }
                         }
                     }

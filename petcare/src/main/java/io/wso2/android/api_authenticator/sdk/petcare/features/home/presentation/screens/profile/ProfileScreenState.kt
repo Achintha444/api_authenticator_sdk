@@ -1,10 +1,10 @@
-package io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.screens.home
+package io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.screens.profile
 
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.domain.models.Pet
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.domain.models.UserDetails
 
-data class HomeScreenState(
+data class ProfileScreenState(
     val isLoading: Boolean = false,
     val error: String = "",
-    val pets: List<Pet> = emptyList()
+    val user: UserDetails? = null,
 )

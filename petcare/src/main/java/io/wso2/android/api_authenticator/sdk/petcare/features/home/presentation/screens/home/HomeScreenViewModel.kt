@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import io.wso2.android.api_authenticator.sdk.petcare.features.home.domain.models.UserDetails
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.domain.repository.PetRepository
 import io.wso2.android.api_authenticator.sdk.petcare.features.login.domain.repository.AsgardeoAuthRepository
 import io.wso2.android.api_authenticator.sdk.petcare.util.navigation.NavigationViewModel
@@ -58,73 +57,11 @@ class HomeScreenViewModel @Inject constructor(
         }
     }
 
-    fun navigateToHome() {
+    fun navigateToProfile() {
         viewModelScope.launch {
             NavigationViewModel.navigationEvents.emit(
-                NavigationViewModel.Companion.NavigationEvent.NavigateToHome
+                NavigationViewModel.Companion.NavigationEvent.NavigateToProfile
             )
-        }
-    }
-
-    private fun getUserDetails() {
-        _state.update {
-            it.copy(
-                isLoading = true
-            )
-        }
-        viewModelScope.launch {
-            runCatching {
-                authenticationProvider.getUserDetails(applicationContext)
-            }.onSuccess { userDetails ->
-                _state.update {
-                    it.copy(
-                        user = UserDetails(
-                            username = userDetails?.get("userName").toString(),
-                            firstName = (userDetails?.get("name") as LinkedHashMap<String, String>?)?.get(
-                                "givenName"
-                            ).toString(),
-                            lastName = (userDetails?.get("name") as LinkedHashMap<String, String>?)?.get(
-                                "familyName"
-                            ).toString()
-                        ),
-                        isLoading = false
-                    )
-                }
-                _state.update {
-                    it.copy(
-                        isLoading = false
-                    )
-                }
-            }.onFailure { e ->
-                _state.update {
-                    it.copy(
-                        error = e.message!!,
-                        isLoading = false
-                    )
-                }
-            }
-        }
-    }
-
-    fun logout() {
-        viewModelScope.launch {
-            _state.update {
-                it.copy(
-                    isLoading = true
-                )
-            }
-            try {
-                authenticationProvider.logout(applicationContext)
-                NavigationViewModel.navigationEvents.emit(
-                    NavigationViewModel.Companion.NavigationEvent.NavigateToLanding
-                )
-            } catch (e: Exception) {
-                _state.update {
-                    it.copy(
-                        error = e.message!!
-                    )
-                }
-            }
         }
     }
 }

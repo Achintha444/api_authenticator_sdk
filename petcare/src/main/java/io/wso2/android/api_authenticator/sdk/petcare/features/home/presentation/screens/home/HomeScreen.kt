@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -23,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.domain.models.Pet
-import io.wso2.android.api_authenticator.sdk.petcare.features.home.domain.models.UserDetails
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.util.AddPetFab
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.util.DoctorSearchField
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.util.EmergencyCard
@@ -38,17 +36,15 @@ internal fun HomeScreen(
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
 
-    val navigateToHome: () -> Unit = viewModel::navigateToHome
+    val navigateToProfile: () -> Unit = viewModel::navigateToProfile
 
-    HomeScreenContent(state.value, navigateToHome, navigateToHome)
+    HomeScreenContent(state.value, navigateToProfile)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 fun HomeScreenContent(
     state: HomeScreenState,
-    navigateToHome: () -> Unit = {},
     navigateToProfile: () -> Unit = {}
 ) {
     Scaffold(
@@ -56,7 +52,7 @@ fun HomeScreenContent(
             .fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
-            TopBar(navigateToHome = navigateToHome, navigateToProfile = navigateToProfile)
+            TopBar(navigateToHome = {}, navigateToProfile = navigateToProfile)
         },
         floatingActionButton = { AddPetFab() },
         floatingActionButtonPosition = FabPosition.End,
@@ -96,13 +92,13 @@ fun HomeScreenPreview() {
         HomeScreenContent(
             HomeScreenState(
                 isLoading = false,
-                user = UserDetails(
-                    imageUrl = "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=3570&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                    username = "JohnDoe",
-                    email = "john@wso2.com",
-                    firstName = "John",
-                    lastName = "Doe"
-                ),
+//                user = UserDetails(
+//                    imageUrl = "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=3570&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+//                    username = "JohnDoe",
+//                    email = "john@wso2.com",
+//                    firstName = "John",
+//                    lastName = "Doe"
+//                ),
                 pets = listOf(
                     Pet(
                         "Bella",

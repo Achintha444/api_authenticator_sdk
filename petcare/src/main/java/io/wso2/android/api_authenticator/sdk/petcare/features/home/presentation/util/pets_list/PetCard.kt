@@ -34,7 +34,6 @@ fun PetCard(pet: Pet) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-
         Image(
             //painter = painterResource(id = pet.imageId),
             painter = rememberAsyncImagePainter(pet.imageUrl),

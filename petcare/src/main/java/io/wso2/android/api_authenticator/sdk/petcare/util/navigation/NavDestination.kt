@@ -8,6 +8,8 @@ import io.wso2.android.api_authenticator.sdk.models.authentication_flow.Authenti
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowNotSuccess
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.screens.home.HomeScreen
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.screens.home.HomeScreenViewModel
+import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.screens.profile.ProfileScreen
+import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.screens.profile.ProfileScreenViewModel
 import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.screens.auth_screen.AuthScreen
 import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.screens.auth_screen.AuthScreenViewModel
 import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.screens.landing_screen.LandingScreen
@@ -18,13 +20,14 @@ object NavDestination {
     const val LandingScreen: String = LandingScreenViewModel.TAG
     const val AuthScreen: String = AuthScreenViewModel.TAG
     const val HomeScreen: String = HomeScreenViewModel.TAG
+    const val ProfileScreen: String = ProfileScreenViewModel.TAG
 }
 
 @Composable
 fun NavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = NavDestination.HomeScreen
+        startDestination = NavDestination.LandingScreen
     ) {
         composable(NavDestination.LandingScreen) {
             LandingScreen()
@@ -32,11 +35,15 @@ fun NavGraph(navController: NavHostController) {
         composable("${NavDestination.AuthScreen}?authenticationFlow={authenticationFlow}") {
             val authenticationFlowString: String? = it.arguments?.getString("authenticationFlow")
             val authenticationFlow: AuthenticationFlow = AuthenticationFlowNotSuccess.fromJson(
-                URLDecoder.decode(authenticationFlowString!!, "utf-8"))
+                URLDecoder.decode(authenticationFlowString!!, "utf-8")
+            )
             AuthScreen(authenticationFlow = authenticationFlow)
         }
         composable(NavDestination.HomeScreen) {
             HomeScreen()
+        }
+        composable(NavDestination.ProfileScreen) {
+            ProfileScreen()
         }
     }
 }
