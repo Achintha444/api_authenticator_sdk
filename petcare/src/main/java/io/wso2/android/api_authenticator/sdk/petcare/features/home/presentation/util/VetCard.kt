@@ -50,7 +50,7 @@ fun VetCard(){
                 contentDescription = "Person with dog",
                 modifier = Modifier
                     .height(UiUtil.getScreenHeight().dp / 5)
-                    .offset(x = 8.dp)
+                    .offset(x = 8.dp, y= 4.dp)
                     .align(Alignment.CenterEnd)
             )
             Column(

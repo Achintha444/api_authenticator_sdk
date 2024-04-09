@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.domain.models.Pet
 
 @Composable
@@ -35,7 +36,8 @@ fun PetCard(pet: Pet) {
     ) {
 
         Image(
-            painter = painterResource(id = pet.imageId),
+            //painter = painterResource(id = pet.imageId),
+            painter = rememberAsyncImagePainter(pet.imageUrl),
             contentDescription = pet.name,
             contentScale = ContentScale.Crop,
             modifier = Modifier
