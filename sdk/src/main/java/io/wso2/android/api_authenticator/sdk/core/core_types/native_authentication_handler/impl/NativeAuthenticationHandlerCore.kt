@@ -3,7 +3,6 @@ package io.wso2.android.api_authenticator.sdk.core.core_types.native_authenticat
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
@@ -85,12 +84,14 @@ class NativeAuthenticationHandlerCore private constructor(
      * This method is recommended to use for new applications that support Android 14(API 34) and above.
      *
      * @param context Context of the application
+     * @param nonce Nonce to be used in the authentication, this is sent by the Identity Server.
      *
      * @return idToken sent by the Google Native Authentication
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    override suspend fun handleGoogleNativeAuthentication(context: Context): AuthParams? =
-        googleNativeAuthenticationHandlerManager.authenticateWithGoogleNative(context)
+    override suspend fun handleGoogleNativeAuthentication(context: Context, nonce: String)
+            : AuthParams? =
+        googleNativeAuthenticationHandlerManager.authenticateWithGoogleNative(context, nonce)
 
     /**
      * Handle the Google Native Authentication result using the legacy one tap method.

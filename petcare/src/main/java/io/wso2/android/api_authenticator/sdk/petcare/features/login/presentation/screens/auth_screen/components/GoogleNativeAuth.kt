@@ -1,9 +1,11 @@
 package io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.screens.auth_screen.components
 
 import android.content.Intent
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -17,6 +19,7 @@ import io.wso2.android.api_authenticator.sdk.petcare.R
 import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.screens.auth_screen.AuthScreenViewModel
 import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.util.common_component.AuthButton
 
+//@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 internal fun GoogleNativeAuth(
     viewModel: AuthScreenViewModel = hiltViewModel(),
@@ -34,6 +37,7 @@ internal fun GoogleNativeAuth(
                 authenticatorType.authenticatorId,
                 launcher
             )
+            //viewModel.authenticateWithGoogle(authenticatorType.authenticatorId)
         }
     )
 }

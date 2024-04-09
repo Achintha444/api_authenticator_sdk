@@ -261,15 +261,16 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
      * Authenticate the user with the Google authenticator using Credential Manager API.
      *
      * @param context The context of the application
+     * @param nonce The nonce value to authenticate the user, which is sent by the Identity Server
      *
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    override suspend fun googleAuthenticate(context: Context) {
+    override suspend fun googleAuthenticate(context: Context, nonce: String) {
         runCatching {
-            nativeAuthenticationHandlerCore.handleGoogleNativeAuthentication(context)
+            nativeAuthenticationHandlerCore.handleGoogleNativeAuthentication(context, nonce)
         }.onSuccess {
             if (it == null) {
                 authenticationStateProviderManager.emitAuthenticationState(

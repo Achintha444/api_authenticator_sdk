@@ -77,10 +77,11 @@ interface AuthenticateHandlerProviderManager {
      * Authenticate the user with the Google authenticator.
      *
      * @param context The context of the application
+     * @param nonce The nonce value to authenticate the user, which is sent by the Identity Server.
      *
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    suspend fun googleAuthenticate(context: Context)
+    suspend fun googleAuthenticate(context: Context, nonce: String)
 
     /**
      * Authenticate the user with the Google authenticator using the legacy one tap method.

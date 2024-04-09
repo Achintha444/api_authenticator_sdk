@@ -15,11 +15,12 @@ interface GoogleNativeAuthenticationHandlerManager {
      * Authenticate the user with Google using the Credential Manager API
      *
      * @param context [Context] of the application
+     * @param nonce Nonce to be used in the authentication, this is sent by the Identity Server.
      *
      * @return Google ID Token of the authenticated user
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    suspend fun authenticateWithGoogleNative(context: Context): AuthParams?
+    suspend fun authenticateWithGoogleNative(context: Context, nonce: String): AuthParams?
 
     /**
      * Logout the user from the google account

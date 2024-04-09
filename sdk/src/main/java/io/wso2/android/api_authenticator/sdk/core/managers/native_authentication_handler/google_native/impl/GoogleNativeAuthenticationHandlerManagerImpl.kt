@@ -78,26 +78,30 @@ class GoogleNativeAuthenticationHandlerManagerImpl private constructor(
      * Get the [GetGoogleIdOption] instance
      *
      * @param googleWebClientId Google Web Client ID
+     * @param nonce Nonce to be used in the authentication, this is sent by the Identity Server.
      *
      * @return [GetGoogleIdOption] instance
+     *
+     * TODO: Pass nonce value
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    private fun getGoogleIdOptions(googleWebClientId: String): GetGoogleIdOption =
+    private fun getGoogleIdOptions(googleWebClientId: String, nonce: String): GetGoogleIdOption =
         GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(true)
             .setServerClientId(googleWebClientId)
-            .setNonce("nonce")
+            .setNonce(nonce)
             .build()
 
     /**
      * Authenticate the user with Google using the Credential Manager API
      *
      * @param context [Context] of the application
+     * @param nonce Nonce to be used in the authentication, this is sent by the Identity Server.
      *
      * @return Google ID Token of the authenticated user
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    override suspend fun authenticateWithGoogleNative(context: Context): AuthParams {
+    override suspend fun authenticateWithGoogleNative(context: Context, nonce: String): AuthParams {
         val googleWebClientId: String? = authenticationCoreConfig.getGoogleWebClientId()
 
         if (googleWebClientId.isNullOrEmpty()) {
@@ -106,7 +110,7 @@ class GoogleNativeAuthenticationHandlerManagerImpl private constructor(
             )
         } else {
             val credentialManager: CredentialManager = getCredentialManager(context)
-            val googleIdOptions: GetGoogleIdOption = getGoogleIdOptions(googleWebClientId)
+            val googleIdOptions: GetGoogleIdOption = getGoogleIdOptions(googleWebClientId, nonce)
 
             val request: GetCredentialRequest =
                 googleNativeAuthenticationHandlerManagerImplRequestBuilder

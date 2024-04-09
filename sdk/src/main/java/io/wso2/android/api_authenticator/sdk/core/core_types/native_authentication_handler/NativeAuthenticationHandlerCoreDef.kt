@@ -18,10 +18,11 @@ interface NativeAuthenticationHandlerCoreDef {
      * This method will authenticate the user with the Google Native Authentication.
      *
      * @param context Context of the application
+     * @param nonce Nonce value to authenticate the user, which is sent by the Identity Server.
      *
      * @return idToken sent by the Google Native Authentication
      */
-    suspend fun handleGoogleNativeAuthentication(context: Context): AuthParams?
+    suspend fun handleGoogleNativeAuthentication(context: Context, nonce: String): AuthParams?
 
     /**
      * Handle the Google Native Authentication result using the legacy one tap method.

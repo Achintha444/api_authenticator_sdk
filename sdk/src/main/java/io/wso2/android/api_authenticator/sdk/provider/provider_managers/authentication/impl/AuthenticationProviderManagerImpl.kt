@@ -309,7 +309,10 @@ internal class AuthenticationProviderManagerImpl private constructor(
             authenticatorId = authenticatorId,
             authenticatorTypeString = AuthenticatorTypes.GOOGLE_AUTHENTICATOR.authenticatorType
         ) {
-            authenticateHandlerProviderManager.googleAuthenticate(context)
+            authenticateHandlerProviderManager.googleAuthenticate(
+                context,
+                it.metadata?.additionalData?.nonce!!
+            )
         }
     }
 
