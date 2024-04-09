@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.domain.models.UserDetails
+import io.wso2.android.api_authenticator.sdk.petcare.features.home.domain.repository.PetRepository
 import io.wso2.android.api_authenticator.sdk.petcare.features.login.domain.repository.AsgardeoAuthRepository
 import io.wso2.android.api_authenticator.sdk.petcare.util.navigation.NavigationViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
-    asgardeoAuthRepository: AsgardeoAuthRepository
+    asgardeoAuthRepository: AsgardeoAuthRepository,
+    private val petRepository: PetRepository
 ) : ViewModel() {
 
     companion object {
@@ -29,7 +31,31 @@ class HomeScreenViewModel @Inject constructor(
     private val authenticationProvider = asgardeoAuthRepository.getAuthenticationProvider()
 
     init {
-        //getUserDetails()
+        getPets()
+    }
+
+    fun getPets() {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    isLoading = true
+                )
+            }
+            try {
+                val pets = petRepository.getPets()
+                _state.update {
+                    it.copy(
+                        pets = pets
+                    )
+                }
+            } catch (e: Exception) {
+                _state.update {
+                    it.copy(
+                        error = e.message!!
+                    )
+                }
+            }
+        }
     }
 
     private fun getUserDetails() {

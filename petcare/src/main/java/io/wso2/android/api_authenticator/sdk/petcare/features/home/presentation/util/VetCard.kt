@@ -45,17 +45,14 @@ fun VetCard(){
         Box(
             modifier = Modifier.fillMaxWidth()
         ) {
-            Box(
+            Image(
+                painter = painterResource(id = R.drawable.person_dog_home),
+                contentDescription = "Person with dog",
                 modifier = Modifier
                     .height(UiUtil.getScreenHeight().dp / 5)
                     .offset(x = 8.dp)
                     .align(Alignment.CenterEnd)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.person_dog_home),
-                    contentDescription = "Person with dog"
-                )
-            }
+            )
             Column(
                 modifier = Modifier
                     .padding(start = 16.dp, top = 24.dp, bottom = 16.dp)

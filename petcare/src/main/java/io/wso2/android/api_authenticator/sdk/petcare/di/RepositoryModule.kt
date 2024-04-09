@@ -4,6 +4,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import io.wso2.android.api_authenticator.sdk.petcare.features.home.domain.repository.PetRepository
+import io.wso2.android.api_authenticator.sdk.petcare.features.home.impl.repository.PetRepositoryImpl
 import io.wso2.android.api_authenticator.sdk.petcare.features.login.domain.repository.AsgardeoAuthRepository
 import io.wso2.android.api_authenticator.sdk.petcare.features.login.impl.repository.AsgardeoAuthRepositoryImpl
 import javax.inject.Singleton
@@ -17,4 +19,10 @@ abstract class RepositoryModule {
     abstract fun bindAsgardeoAuthRepository(
         asgardeoAuthRepositoryImpl: AsgardeoAuthRepositoryImpl
     ): AsgardeoAuthRepository
+
+    @Binds
+    @Singleton
+    abstract fun petRepository(
+        petRepositoryImpl: PetRepositoryImpl
+    ): PetRepository
 }

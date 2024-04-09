@@ -28,8 +28,6 @@ private val LightColorScheme = lightColorScheme(
     outlineVariant = Color(0xFF939B9B),
 )
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Api_authenticator_sdkTheme(
     content: @Composable () -> Unit

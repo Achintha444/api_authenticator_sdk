@@ -33,7 +33,8 @@ val Typography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
         lineHeight = 16.sp,
-        letterSpacing = 0.1.sp
+        letterSpacing = 0.1.sp,
+        color = Color(0xFF939B9B)
     ),
     bodySmall = TextStyle(
         fontFamily = montserratFontFamily,

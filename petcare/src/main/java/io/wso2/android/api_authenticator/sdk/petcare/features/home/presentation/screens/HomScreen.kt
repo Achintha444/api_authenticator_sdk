@@ -4,13 +4,13 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -21,7 +21,6 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,11 +31,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.wso2.android.api_authenticator.sdk.petcare.R
+import io.wso2.android.api_authenticator.sdk.petcare.features.home.domain.models.Pet
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.domain.models.UserDetails
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.util.AddPetFab
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.util.DoctorSearchField
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.util.EmergencyCard
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.util.VetCard
+import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.util.pets_list.PetsList
 import io.wso2.android.api_authenticator.sdk.petcare.ui.theme.Api_authenticator_sdkTheme
 import io.wso2.android.api_authenticator.sdk.petcare.util.ui.UiUtil
 
@@ -54,11 +55,6 @@ internal fun HomeScreen(
 fun HomeScreenContent(
     state: HomeScreenState
 ) {
-    val languages = listOf(
-        "C++", "C", "C#", "Java", "Kotlin", "Dart", "Python", "Javascript", "SpringBoot",
-        "XML", "Dart", "Node JS", "Typescript", "Dot Net", "GoLang", "MongoDb",
-    )
-
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -114,27 +110,8 @@ fun HomeScreenContent(
                     .align(Alignment.Start),
                 thickness = 0.5.dp
             )
-            Column(
-                modifier = Modifier.padding(horizontal = 32.dp),
-            ) {
-                Text(
-                    text = "Your cutie pets",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.tertiary
-                )
-                Column() {
-                    // on below line we are populating
-                    // items for listview.
-                    languages.forEach { language ->
-                        // on below line we are specifying ui for each item of list view.
-                        // we are specifying a simple text for each item of our list view.
-                        Text(text = language, modifier = Modifier.padding(15.dp))
-                        // on below line we are specifying
-                        // divider for each list item
-                        Divider()
-                    }
-                }
-            }
+            PetsList(state.pets)
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
@@ -152,6 +129,44 @@ fun HomeScreenPreview() {
                     email = "john@wso2.com",
                     firstName = "John",
                     lastName = "Doe"
+                ),
+                pets = listOf(
+                    Pet(
+                        "Bella",
+                        R.drawable.pet_1,
+                        "Cat - Persian",
+                        "Next appointment on 29/04/24"
+                    ),
+                    Pet(
+                        "Charlie",
+                        R.drawable.pet_2,
+                        "Rabbit - Holland Lop",
+                        "Next appointment on 19/06/24"
+                    ),
+                    Pet(
+                        "Luna",
+                        R.drawable.pet_3,
+                        "Dog - Golden Retriever",
+                        "Next appointment on 04/05/24"
+                    ),
+                    Pet(
+                        "Max",
+                        R.drawable.pet_4,
+                        "Hamster - Syrian",
+                        "Next appointment on 01/06/24"
+                    ),
+                    Pet(
+                        "Oliver",
+                        R.drawable.pet_5,
+                        "Dog - Poddle",
+                        "Next appointment on 29/04/24"
+                    ),
+                    Pet(
+                        "Lucy",
+                        R.drawable.person_dog_login,
+                        "Dog - Beagle",
+                        "Next appointment on 05/08/24"
+                    )
                 )
             )
         )
