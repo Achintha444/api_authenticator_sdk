@@ -1,4 +1,4 @@
-package io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.screens
+package io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.screens.home
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -34,7 +34,7 @@ class HomeScreenViewModel @Inject constructor(
         getPets()
     }
 
-    fun getPets() {
+    private fun getPets() {
         viewModelScope.launch {
             _state.update {
                 it.copy(
@@ -55,6 +55,14 @@ class HomeScreenViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    fun navigateToHome() {
+        viewModelScope.launch {
+            NavigationViewModel.navigationEvents.emit(
+                NavigationViewModel.Companion.NavigationEvent.NavigateToHome
+            )
         }
     }
 

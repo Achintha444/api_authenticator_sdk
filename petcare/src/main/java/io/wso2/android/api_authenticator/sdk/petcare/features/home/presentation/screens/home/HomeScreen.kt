@@ -1,89 +1,62 @@
-package io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.screens
+package io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.screens.home
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import io.wso2.android.api_authenticator.sdk.petcare.R
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.domain.models.Pet
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.domain.models.UserDetails
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.util.AddPetFab
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.util.DoctorSearchField
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.util.EmergencyCard
+import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.util.TopBar
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.util.VetCard
 import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.util.pets_list.PetsList
 import io.wso2.android.api_authenticator.sdk.petcare.ui.theme.Api_authenticator_sdkTheme
-import io.wso2.android.api_authenticator.sdk.petcare.util.ui.UiUtil
 
 @Composable
 internal fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
-    HomeScreenContent(state.value)
+
+    val navigateToHome: () -> Unit = viewModel::navigateToHome
+
+    HomeScreenContent(state.value, navigateToHome, navigateToHome)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 fun HomeScreenContent(
-    state: HomeScreenState
+    state: HomeScreenState,
+    navigateToHome: () -> Unit = {},
+    navigateToProfile: () -> Unit = {}
 ) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
-            TopAppBar(
-                title = {
-                    Image(
-                        painter = painterResource(id = R.drawable.home_logo),
-                        modifier = Modifier
-                            .size(UiUtil.getScreenHeight().dp / 6)
-                            .offset(x = (-16).dp),
-                        contentDescription = "Home Logo",
-                    )
-                },
-                actions = {
-                    Icon(
-                        imageVector = Icons.Outlined.AccountCircle,
-                        contentDescription = "Menu",
-                        modifier = Modifier
-                            .size(UiUtil.getScreenHeight().dp / 25)
-                            .offset(x = 4.dp),
-                        tint = MaterialTheme.colorScheme.tertiary
-                    )
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp),
-            )
+            TopBar(navigateToHome = navigateToHome, navigateToProfile = navigateToProfile)
         },
         floatingActionButton = { AddPetFab() },
         floatingActionButtonPosition = FabPosition.End,

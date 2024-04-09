@@ -81,9 +81,9 @@ class LandingScreenViewModel @Inject constructor(
                         _state.update { landingScreenState ->
                             landingScreenState.copy(isLoading = false)
                         }
-//                        NavigationViewModel.navigationEvents.emit(
-//                            NavigationViewModel.Companion.NavigationEvent.NavigateToHome
-//                        )
+                        NavigationViewModel.navigationEvents.emit(
+                            NavigationViewModel.Companion.NavigationEvent.NavigateToHome
+                        )
                     }
 
                     else -> {

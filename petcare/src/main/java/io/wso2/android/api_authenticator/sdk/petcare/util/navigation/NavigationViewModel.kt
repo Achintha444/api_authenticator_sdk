@@ -13,7 +13,7 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
         sealed class NavigationEvent {
             data object NavigateBack : NavigationEvent()
             data object NavigateToLanding : NavigationEvent()
-            //data object NavigateToHome : NavigationEvent()
+            data object NavigateToHome : NavigationEvent()
             data class NavigateToAuthWithData(val data: String) : NavigationEvent()
         }
     }

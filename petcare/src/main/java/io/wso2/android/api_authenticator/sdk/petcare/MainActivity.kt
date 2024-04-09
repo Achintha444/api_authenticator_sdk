@@ -14,8 +14,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.screens.HomeScreen
-import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.screens.landing_screen.LandingScreen
+import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.screens.home.HomeScreen
 import io.wso2.android.api_authenticator.sdk.petcare.ui.theme.Api_authenticator_sdkTheme
 import io.wso2.android.api_authenticator.sdk.petcare.util.Event
 import io.wso2.android.api_authenticator.sdk.petcare.util.EventBus
@@ -25,6 +24,9 @@ import io.wso2.android.api_authenticator.sdk.petcare.util.navigation.NavigationV
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -40,7 +42,7 @@ class MainActivity : ComponentActivity() {
                                     // Show toast
                                     Toast.makeText(
                                         this@MainActivity,
-                                        "Error",
+                                        event.message,
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 }
@@ -60,10 +62,10 @@ class MainActivity : ComponentActivity() {
                                 navigationController.navigate(NavDestination.LandingScreen)
                             }
 
-//                            is NavigationViewModel.Companion.NavigationEvent.NavigateToHome -> {
-//                                navigationController.navigate(NavDestination.HomeScreen)
-//                            }
-//
+                            is NavigationViewModel.Companion.NavigationEvent.NavigateToHome -> {
+                                navigationController.navigate(NavDestination.HomeScreen)
+                            }
+
                             is NavigationViewModel.Companion.NavigationEvent.NavigateToAuthWithData -> {
                                 navigationController.navigate(
                                     "${NavDestination.AuthScreen}?authenticationFlow={authenticationFlow}"
@@ -82,8 +84,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.surface
                 ) {
-                    //NavGraph(navController = navigationController)
-                    HomeScreen()
+                    NavGraph(navController = navigationController)
+                    //HomeScreen()
                 }
             }
         }
