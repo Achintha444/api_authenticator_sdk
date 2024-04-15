@@ -105,6 +105,13 @@ class RedirectAuthenticationManagementActivity : AppCompatActivity() {
         }
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        
+        // Set the new intent with the response URI
+        setIntent(intent)
+    }
+
     /**
      * Open the redirect URL in a Chrome Custom Tab
      *

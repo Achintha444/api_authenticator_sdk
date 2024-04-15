@@ -11,6 +11,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -57,28 +58,34 @@ fun BottomSheetWithForm(
         ) {
             Column(
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(32.dp)
                     .fillMaxWidth(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "stringResource(id = R.string.screens_auth_screen_totp_title)",
+                    text = "Enter TOTP Code",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Medium
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "stringResource(id = R.string.screens_auth_screen_totp_subtitle)",
-                    style = MaterialTheme.typography.bodySmall,
-                    fontWeight = FontWeight.Normal,
-                    textAlign = TextAlign.Center
+                    text = "Enter the verification code from your authenticator application",
+                    style = MaterialTheme.typography.labelSmall,
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(24.dp))
                 OutlinedTextField(
                     value = totpCode,
                     onValueChange = { totpCode = it },
-                    label = { Text(text = "stringResource(id = R.string.screens_auth_screen_totp_code))") },
+                    label = { Text(text = "TOTP Code") },
+                    shape = MaterialTheme.shapes.medium,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                        focusedContainerColor = MaterialTheme.colorScheme.background,
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        focusedLabelColor = MaterialTheme.colorScheme.tertiaryContainer
+                    ),
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -87,11 +94,12 @@ fun BottomSheetWithForm(
                         onSubmit(totpCode)
                         onDismiss()
                     },
-                    modifier = Modifier
-                        .align(alignment = Alignment.CenterHorizontally)
-                        .padding(end = 24.dp)
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "stringResource(id = R.string.screens_auth_screen_totp_submit)")
+                    Text(
+                        text = "Submit",
+                        color = MaterialTheme.colorScheme.surface
+                    )
                 }
             }
         }
