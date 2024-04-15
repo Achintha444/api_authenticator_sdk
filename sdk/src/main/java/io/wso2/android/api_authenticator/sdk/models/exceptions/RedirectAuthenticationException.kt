@@ -28,6 +28,11 @@ class RedirectAuthenticationException (
          * Message to be shown when the authentication parameters are not found
          */
         const val AUTHENTICATION_PARAMS_NOT_FOUND = "Authentication parameters not found"
+
+        /**
+         * Message to be shown when the authentication is cancelled by the user
+         */
+        const val AUTHENTICATION_CANCELLED = "Authentication cancelled by the user"
     }
 
     override fun toString(): String {

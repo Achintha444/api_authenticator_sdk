@@ -36,8 +36,7 @@ import io.wso2.android.api_authenticator.sdk.petcare.util.ui.UiUtil
 fun VetCard(){
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(IntrinsicSize.Max),
+            .fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primary
         ),
@@ -50,7 +49,7 @@ fun VetCard(){
                 contentDescription = "Person with dog",
                 modifier = Modifier
                     .height(UiUtil.getScreenHeight().dp / 5)
-                    .offset(x = 8.dp, y= 4.dp)
+                    .offset(x = 8.dp, y = 4.dp)
                     .align(Alignment.CenterEnd)
             )
             Column(
@@ -116,6 +115,7 @@ fun VetCard(){
                     }
 
                 }
+                Spacer(modifier = Modifier.height(8.dp))
                 AssistChip(
                     onClick = {},
                     label = {

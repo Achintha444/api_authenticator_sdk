@@ -3,6 +3,7 @@ package io.wso2.android.api_authenticator.sdk.core.managers.native_authenticatio
 import android.content.Context
 import android.net.Uri
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+import io.wso2.android.api_authenticator.sdk.models.exceptions.RedirectAuthenticationException
 
 /**
  * This manager is responsible for handling the redirect authentication process
@@ -29,4 +30,11 @@ interface RedirectAuthenticationHandlerManager {
      * @return The authentication parameters extracted from the redirect URI
      */
     fun handleRedirectUri(context: Context, deepLink: Uri)
+
+    /**
+     * Handle the cancel event of the redirect authentication process.
+     *
+     * @throws [RedirectAuthenticationException] with the message [RedirectAuthenticationException.AUTHENTICATION_CANCELLED]
+     */
+    fun handleRedirectAuthenticationCancel()
 }

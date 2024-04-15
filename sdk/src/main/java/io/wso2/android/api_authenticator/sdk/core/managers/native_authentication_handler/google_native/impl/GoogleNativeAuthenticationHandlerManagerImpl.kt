@@ -81,8 +81,6 @@ class GoogleNativeAuthenticationHandlerManagerImpl private constructor(
      * @param nonce Nonce to be used in the authentication, this is sent by the Identity Server.
      *
      * @return [GetGoogleIdOption] instance
-     *
-     * TODO: Pass nonce value
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     private fun getGoogleIdOptions(googleWebClientId: String, nonce: String): GetGoogleIdOption =

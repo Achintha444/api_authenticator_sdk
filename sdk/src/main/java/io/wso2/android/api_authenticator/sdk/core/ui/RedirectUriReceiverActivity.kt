@@ -2,21 +2,11 @@ package io.wso2.android.api_authenticator.sdk.core.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import io.wso2.android.api_authenticator.sdk.core.di.RedirectUriReceiverActivityContainer
-import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.redirect.RedirectAuthenticationHandlerManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 /**
  * Activity to receive the deep link redirection URI
  */
 class RedirectUriReceiverActivity : ComponentActivity() {
-    // The authentication provider
-    private val redirectAuthenticationManager: RedirectAuthenticationHandlerManager? by lazy {
-        RedirectUriReceiverActivityContainer.getRedirectAuthenticationHandlerManager()
-    }
-
     // Flag to check if the redirection is handled
     private var redirectionHandled: Boolean = false
 
@@ -32,17 +22,14 @@ class RedirectUriReceiverActivity : ComponentActivity() {
             intent?.data?.let { deepLink ->
                 redirectionHandled = true // Mark redirection as handled
 
-                // Handle the redirection URI in a coroutine
-                CoroutineScope(Dispatchers.IO).launch {
-                    redirectAuthenticationManager!!.handleRedirectUri(
-                        this@RedirectUriReceiverActivity,
-                        deepLink
-                    )
-                }
+                // this will redirect to the RedirectAuthenticationManagementActivity
+                // to continue the authentication process
+                startActivity(RedirectAuthenticationManagementActivity
+                    .createResponseHandlingIntent(this, deepLink))
             }
-        } else {
-            finish()
         }
+
+        finish()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

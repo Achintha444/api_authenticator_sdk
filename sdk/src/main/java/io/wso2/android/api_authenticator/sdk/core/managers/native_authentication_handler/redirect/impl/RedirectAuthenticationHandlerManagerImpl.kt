@@ -1,15 +1,16 @@
 package io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.redirect.impl
 
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import androidx.activity.ComponentActivity
 import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.redirect.RedirectAuthenticationHandlerManager
+import io.wso2.android.api_authenticator.sdk.core.ui.RedirectAuthenticationManagementActivity
 import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
 import io.wso2.android.api_authenticator.sdk.models.exceptions.RedirectAuthenticationException
 import io.wso2.android.api_authenticator.sdk.models.prompt_type.PromptTypes
 import kotlinx.coroutines.CompletableDeferred
 import java.lang.ref.WeakReference
+
 
 /**
  * Implementation of [RedirectAuthenticationHandlerManager]
@@ -83,9 +84,14 @@ class RedirectAuthenticationHandlerManagerImpl private constructor() :
                         .REDIRECT_URI_NOT_FOUND
                 ))
             } else {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(redirectUri))
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                context.startActivity(intent)
+                // redirect to the RedirectAuthenticationManagementActivity
+                // to handle the redirect URI and continue the authentication process
+                context.startActivity(
+                    RedirectAuthenticationManagementActivity.createStartIntent(
+                        context,
+                        redirectUri
+                    )
+                )
 
                 selectedAuthenticator = authenticatorType
 
@@ -130,18 +136,18 @@ class RedirectAuthenticationHandlerManagerImpl private constructor() :
                 }
             }
 
-            // Finish the [RedirectUriReceiverActivity] activity
-            if (context is ComponentActivity) {
-                context.finish()
-            }
-
             authenticatorAuthParamsMap = authParamsMap
-        } else {
-            throw (RedirectAuthenticationException(
-                RedirectAuthenticationException.AUTHENTICATOR_NOT_SELECTED
-            ))
         }
 
+        redirectAuthenticationResultDeferred.complete(Unit)
+    }
+
+    /**
+     * Handle the cancel event of the redirect authentication process.
+     *
+     * @throws [RedirectAuthenticationException] with the message [RedirectAuthenticationException.AUTHENTICATION_CANCELLED]
+     */
+    override fun handleRedirectAuthenticationCancel() {
         redirectAuthenticationResultDeferred.complete(Unit)
     }
 }

@@ -2,12 +2,12 @@ package io.wso2.android.api_authenticator.sdk.core.di
 
 import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.redirect.RedirectAuthenticationHandlerManager
 import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.redirect.impl.RedirectAuthenticationHandlerManagerImpl
-import io.wso2.android.api_authenticator.sdk.core.ui.RedirectUriReceiverActivity
+import io.wso2.android.api_authenticator.sdk.core.ui.RedirectAuthenticationManagementActivity
 
 /**
- * Dependency Injection container for [RedirectUriReceiverActivity]
+ * Dependency Injection container for [RedirectAuthenticationManagementActivity]
  */
-object RedirectUriReceiverActivityContainer {
+object RedirectAuthenticationManagementActivityContainer {
     /**
      * Get the [RedirectAuthenticationHandlerManager] instance
      *

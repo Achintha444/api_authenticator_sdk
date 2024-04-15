@@ -22,8 +22,12 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        manifestPlaceholders.putIfAbsent(
-            "appAuthRedirectScheme", "wso2.apiauth.sample.android://login-callback"
+        manifestPlaceholders.putAll(
+            mapOf(
+                "appAuthRedirectScheme" to "wso2.apiauth.sample.android://login-callback",
+                "redirectUriHost" to "login-callback",
+                "redirectUriScheme" to "wso2.apiauth.sample.android"
+            )
         )
     }
 
