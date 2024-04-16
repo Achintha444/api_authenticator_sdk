@@ -252,7 +252,9 @@ internal class AppAuthManagerImpl private constructor(
     }
 
     /**
-     * Perform an action with fresh tokens.
+     * Perform an action with the tokens. If the token is expired, it will perform the refresh the
+     * tokens, and then perform the action. This will also update the token in the data store
+     * as well.
      *
      * @param context The [Context] instance.
      * @param tokenState The [TokenState] instance.
@@ -260,7 +262,7 @@ internal class AppAuthManagerImpl private constructor(
      *
      * @return Updated [TokenState] instance.
      */
-    override suspend fun performActionWithFreshTokens(
+    override suspend fun performAction(
         context: Context,
         tokenState: TokenState,
         action: suspend (String?, String?) -> Unit

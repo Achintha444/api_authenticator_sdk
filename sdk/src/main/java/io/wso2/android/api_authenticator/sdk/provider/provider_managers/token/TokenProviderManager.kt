@@ -82,7 +82,7 @@ interface TokenProviderManager {
      * @param context The [Context] instance.
      * @param action The action to perform.
      */
-    suspend fun performActionWithFreshTokens(
+    suspend fun performAction(
         context: Context,
         action: suspend (String?, String?) -> Unit
     )

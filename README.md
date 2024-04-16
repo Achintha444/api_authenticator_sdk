@@ -212,10 +212,10 @@ val scope:String? = tokenProvider.getScope(context)
 
 ### Perform action based on the tokens
 
-If you want to perform any action based on the tokens that are returned, you can use the `performActionWithFreshTokens` function in the `TokenProvider`.
+If you want to perform any action based on the tokens that are returned, you can use the `performAction` function in the `TokenProvider`.
 
 ```kotlin
-tokenProvider.performActionWithFreshTokens(context) { accessToken, idToken, ->
+tokenProvider.performAction(context) { accessToken, idToken, ->
     action(accessToken, idToken)
 }
 ```

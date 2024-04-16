@@ -60,7 +60,7 @@ class UserProviderManagerImpl private constructor(
     override suspend fun getUserDetails(context: Context): LinkedHashMap<String, Any>? {
         var userDetails: LinkedHashMap<String, Any>? = null
 
-        tokenProviderManager.performActionWithFreshTokens(context) { accessToken, _ ->
+        tokenProviderManager.performAction(context) { accessToken, _ ->
             userDetails = authenticationCore.getUserDetails(accessToken)
         }
 

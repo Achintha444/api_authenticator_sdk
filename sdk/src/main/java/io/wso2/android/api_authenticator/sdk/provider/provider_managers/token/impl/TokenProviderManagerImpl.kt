@@ -115,12 +115,12 @@ internal class TokenProviderManagerImpl private constructor(
      * @param context The [Context] instance.
      * @param action The action to perform.
      */
-    override suspend fun performActionWithFreshTokens(
+    override suspend fun performAction(
         context: Context,
         action: suspend (String?, String?) -> Unit
     ) {
         var tokenState = authenticationCore.getTokenState(context)
-        tokenState = authenticationCore.performActionWithFreshTokens(context, tokenState!!, action)
+        tokenState = authenticationCore.performAction(context, tokenState!!, action)
         authenticationCore.saveTokenState(context, tokenState!!)
     }
 

@@ -28,7 +28,7 @@
     - [suspend fun getScope(context: Context): String?](#suspend-fun-getscopecontext-context-string)
     - [suspend fun validateAccessToken(context: Context): Boolean?](#suspend-fun-validateaccesstokencontext-context-boolean)
     - [suspend fun performRefreshTokenGrant(context: Context)](#suspend-fun-performrefreshtokengrantcontext-context)
-    - [suspend fun performActionWithFreshTokens(context: Context, action: suspend (String?, String?) -> Unit)](#suspend-fun-performactionwithfreshtokenscontext-context-action-suspend-string-string---unit)
+    - [suspend fun performAction(context: Context, action: suspend (String?, String?) -> Unit)](#suspend-fun-performActioncontext-context-action-suspend-string-string---unit)
     - [suspend fun clearTokens(context: Context): Unit?](#suspend-fun-cleartokenscontext-context-unit)
 
 # AuthenticationCoreConfig
@@ -304,11 +304,11 @@ val tokenProvider:TokenProvider = asgardeoAuth.getTokenProvider()
 
 ### suspend fun performRefreshTokenGrant(context: Context)
 
-- **Description**: Perform a refresh token grant. This method will perform the refresh token grant and save the updated token state in the data store. If the refresh token grant fails, it will throw an Exception.
+- **Description**: Perform an action with the tokens. If the token is expired, it will perform the refresh the tokens, and then perform the action. This will also update the token in the data store as well.
 - **Parameters**:
   - `context: Context`: The `Context` instance.
 
-### suspend fun performActionWithFreshTokens(context: Context, action: suspend (String?, String?) -> Unit)
+### suspend fun performAction(context: Context, action: suspend (String?, String?) -> Unit)
 
 - **Description**: Perform an action with fresh tokens. This method will perform the action with fresh tokens and save the updated token state in the data store. The developer can directly use this method to perform an action with fresh tokens, without worrying about refreshing the tokens. If this action fails, it will throw an Exception.
 - **Parameters**:

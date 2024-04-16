@@ -116,10 +116,10 @@ internal class TokenProviderImpl private constructor(
      * @param context The [Context] instance.
      * @param action The action to perform.
      */
-    override suspend fun performActionWithFreshTokens(
+    override suspend fun performAction(
         context: Context,
         action: suspend (String?, String?) -> Unit
-    ) = tokenProviderManager.performActionWithFreshTokens(context, action)
+    ) = tokenProviderManager.performAction(context, action)
 
     /**
      * Clear the tokens from the token data store. This method will clear the tokens from the
