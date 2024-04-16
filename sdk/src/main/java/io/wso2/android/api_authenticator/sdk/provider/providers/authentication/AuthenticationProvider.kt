@@ -117,6 +117,8 @@ interface AuthenticationProvider {
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     suspend fun authenticateWithGoogle(context: Context, authenticatorId: String)

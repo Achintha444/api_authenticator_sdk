@@ -107,7 +107,7 @@ class RedirectAuthenticationManagementActivity : AppCompatActivity() {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        
+
         // Set the new intent with the response URI
         setIntent(intent)
     }

@@ -6,6 +6,8 @@ import io.wso2.android.api_authenticator.sdk.util.JsonUtil
 
 /**
  * AuthenticatorType model class
+ *
+ * TODO: Change the class name to Authenticator
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 open class AuthenticatorType(
