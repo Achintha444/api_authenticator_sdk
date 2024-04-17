@@ -12,7 +12,7 @@ import io.wso2.android.api_authenticator.sdk.sample.domain.model.error.Authentic
 interface AuthenticationRepository {
     suspend fun authorize(): Either<AuthenticationError, AuthenticationFlow>
 
-    suspend fun authenticate(
+    suspend fun authn(
         authenticatorType: AuthenticatorType,
         authenticatorParameters: LinkedHashMap<String, String>
     ): Either<AuthenticationError, AuthenticationFlow>

@@ -9,7 +9,6 @@ import java.security.GeneralSecurityException
 import java.security.KeyStore
 import java.security.cert.Certificate
 import java.security.cert.CertificateFactory
-import java.util.Arrays
 import java.util.concurrent.TimeUnit.*
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext
@@ -28,6 +27,8 @@ import javax.net.ssl.X509TrustManager
  * a [InputStream].
  *
  * @deprecated This class is deprecated. Use [OkHttpClient] client directly instead.
+ *
+ * TODO: Remove this file
  */
 class SecureHttpClient private constructor(
     private val trustedCertificates: InputStream
@@ -107,7 +108,7 @@ class SecureHttpClient private constructor(
         if (trustManagers.size != 1 || trustManagers[0] !is X509TrustManager) {
             throw IllegalStateException(
                 "Unexpected default trust managers:"
-                        + Arrays.toString(trustManagers)
+                        + trustManagers.contentToString()
             )
         }
         return trustManagers[0] as X509TrustManager

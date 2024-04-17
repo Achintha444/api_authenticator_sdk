@@ -35,12 +35,12 @@ class AuthenticationRepositoryImpl @Inject constructor() : AuthenticationReposit
         }
     }
 
-    override suspend fun authenticate(
+    override suspend fun authn(
         authenticatorType: AuthenticatorType,
         authenticatorParameters: LinkedHashMap<String, String>
     ): Either<AuthenticationError, AuthenticationFlow> {
         return Either.catch {
-            authenticationCore.authenticate(
+            authenticationCore.authn(
                 authenticatorType,
                 authenticatorParameters
             )!!

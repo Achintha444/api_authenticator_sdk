@@ -120,7 +120,7 @@ fun AuthScreenPreview() {
                             end = 32.dp,
                             bottom = 32.dp
                         )
-                        .fillMaxSize(2f)
+                        .fillMaxSize(1f)
                 ) {
                     BasicAuthComponent(onLoginClick = { _, _ -> })
                     ContinueText()

@@ -14,7 +14,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import io.wso2.android.api_authenticator.sdk.petcare.features.home.presentation.screens.home.HomeScreen
 import io.wso2.android.api_authenticator.sdk.petcare.ui.theme.Api_authenticator_sdkTheme
 import io.wso2.android.api_authenticator.sdk.petcare.util.Event
 import io.wso2.android.api_authenticator.sdk.petcare.util.EventBus

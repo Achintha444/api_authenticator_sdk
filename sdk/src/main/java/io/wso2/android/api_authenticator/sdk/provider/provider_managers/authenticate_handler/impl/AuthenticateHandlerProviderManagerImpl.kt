@@ -3,7 +3,6 @@ package io.wso2.android.api_authenticator.sdk.provider.provider_managers.authent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
 import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.AuthenticationCoreDef
@@ -195,7 +194,7 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
             }
 
             runCatching {
-                authenticationCore.authenticate(authenticatorType, authParamsMap!!)
+                authenticationCore.authn(authenticatorType, authParamsMap!!)
             }.onSuccess {
                 authenticatorsInThisStep =
                     authenticationStateProviderManager.handleAuthenticationFlowResult(it!!, context)

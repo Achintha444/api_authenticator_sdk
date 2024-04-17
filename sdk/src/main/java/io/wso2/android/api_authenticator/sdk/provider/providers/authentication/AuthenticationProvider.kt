@@ -3,7 +3,6 @@ package io.wso2.android.api_authenticator.sdk.provider.providers.authentication
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState

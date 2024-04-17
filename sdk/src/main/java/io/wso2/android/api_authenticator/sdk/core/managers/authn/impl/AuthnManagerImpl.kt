@@ -146,7 +146,7 @@ internal class AuthnManagerImpl private constructor(
      *
      * TODO: In the AuthnManager class we can use retrofit to make the network calls.
      */
-    override suspend fun authenticate(
+    override suspend fun authn(
         authenticatorType: AuthenticatorType,
         authenticatorParameters: LinkedHashMap<String, String>
     ): AuthenticationFlow? = withContext(Dispatchers.IO) {

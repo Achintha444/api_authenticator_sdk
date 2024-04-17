@@ -75,7 +75,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:21.0.0")
 
     implementation ("androidx.browser:browser:1.8.0")
-    implementation("androidx.activity:activity:1.8.0")
+    implementation("androidx.activity:activity-ktx:1.8.2")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
     testImplementation("junit:junit:4.13.2")

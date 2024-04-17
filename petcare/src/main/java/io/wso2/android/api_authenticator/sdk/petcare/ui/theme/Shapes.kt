@@ -1,8 +1,6 @@
 package io.wso2.android.api_authenticator.sdk.petcare.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme.shapes
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Shapes
 import androidx.compose.ui.unit.dp
 

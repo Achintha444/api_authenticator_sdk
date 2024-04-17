@@ -3,7 +3,6 @@ package io.wso2.android.api_authenticator.sdk.core.managers.native_authenticatio
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount

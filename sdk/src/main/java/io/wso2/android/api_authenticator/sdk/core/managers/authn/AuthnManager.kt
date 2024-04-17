@@ -27,7 +27,7 @@ internal interface AuthnManager {
      *
      * @return [AuthenticationFlow] with the next step of the authentication flow
      */
-    suspend fun authenticate(
+    suspend fun authn(
         authenticatorType: AuthenticatorType,
         authenticatorParameters: LinkedHashMap<String, String>,
     ): AuthenticationFlow?

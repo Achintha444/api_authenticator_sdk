@@ -2,7 +2,6 @@ package io.wso2.android.api_authenticator.sdk.core.managers.native_authenticatio
 
 import android.content.Context
 import android.content.Intent
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 

@@ -130,10 +130,10 @@ class AuthenticationCore private constructor(
      *
      * @return [AuthenticationFlow] with the next step of the authentication flow
      */
-    override suspend fun authenticate(
+    override suspend fun authn(
         authenticatorType: AuthenticatorType,
         authenticatorParameters: LinkedHashMap<String, String>
-    ): AuthenticationFlow? = authnMangerInstance.authenticate(
+    ): AuthenticationFlow? = authnMangerInstance.authn(
         authenticatorType,
         authenticatorParameters
     )
