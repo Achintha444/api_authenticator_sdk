@@ -105,7 +105,7 @@ interface AuthenticationProvider {
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-     suspend fun authenticateWithMicrosoftRedirect(context: Context, authenticatorId: String)
+     suspend fun authenticateWithMicrosoft(context: Context, authenticatorId: String)
 
     /**
      * Authenticate the user with the Google authenticator. Uses credential management API.
@@ -120,7 +120,7 @@ interface AuthenticationProvider {
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    suspend fun authenticateWithGoogle(context: Context, authenticatorId: String)
+    suspend fun authenticateWithGoogleNative(context: Context, authenticatorId: String)
 
     /**
      * Authenticate the user with the Google authenticator using the legacy one tap method.
@@ -133,7 +133,7 @@ interface AuthenticationProvider {
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    suspend fun authenticateWithGoogleLegacy(
+    suspend fun authenticateWithGoogleNativeLegacy(
         context: Context,
         authenticatorId: String,
         googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
@@ -167,7 +167,7 @@ interface AuthenticationProvider {
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    suspend fun authenticateWithGithubRedirect(context: Context, authenticatorId: String)
+    suspend fun authenticateWithGithub(context: Context, authenticatorId: String)
 
     /**
      * Authenticate the user with the Passkey authenticator.

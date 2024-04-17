@@ -111,14 +111,14 @@ class AuthScreenViewModel @Inject constructor(
     }
 
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    fun authenticateWithGoogle(authenticatorId: String) {
+    fun authenticateWithGoogleNative(authenticatorId: String) {
         viewModelScope.launch {
             _state.update {
                 it.copy(
                     isLoading = true
                 )
             }
-            authenticationProvider.authenticateWithGoogle(applicationContext, authenticatorId)
+            authenticationProvider.authenticateWithGoogleNative(applicationContext, authenticatorId)
             _state.update {
                 it.copy(
                     isLoading = false
@@ -154,7 +154,7 @@ class AuthScreenViewModel @Inject constructor(
                     isLoading = true
                 )
             }
-            authenticationProvider.authenticateWithGoogleLegacy(
+            authenticationProvider.authenticateWithGoogleNativeLegacy(
                 applicationContext,
                 authenticatorId,
                 googleAuthenticateResultLauncher
@@ -177,14 +177,14 @@ class AuthScreenViewModel @Inject constructor(
         }
     }
 
-    fun authenticateWithGithubRedirect(authenticatorId: String) {
+    fun authenticateWithGithub(authenticatorId: String) {
         viewModelScope.launch {
             _state.update {
                 it.copy(
                     isLoading = true
                 )
             }
-            authenticationProvider.authenticateWithGithubRedirect(
+            authenticationProvider.authenticateWithGithub(
                 applicationContext,
                 authenticatorId
             )

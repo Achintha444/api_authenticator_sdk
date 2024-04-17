@@ -15,7 +15,7 @@ internal fun MicrosoftAuth(
 ) {
     MicrosoftAuthComponent(
         onSubmit = {
-            viewModel.authenticateWithGithubRedirect(authenticator.authenticatorId)
+            viewModel.authenticateWithGithub(authenticator.authenticatorId)
         }
     )
 }

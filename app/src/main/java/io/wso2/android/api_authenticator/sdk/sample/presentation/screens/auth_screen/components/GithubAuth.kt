@@ -9,18 +9,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import io.wso2.android.api_authenticator.sdk.models.autheniticator.AuthenticatorType
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import io.wso2.android.api_authenticator.sdk.sample.R
 import io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen.AuthScreenViewModel
 
 @Composable
 internal fun GithubNativeAuth(
     viewModel: AuthScreenViewModel = hiltViewModel(),
-    authenticatorType: AuthenticatorType
+    authenticatorType: Authenticator
 ) {
     GithubNativeAuthComponent(
         onSubmit = {
-            viewModel.authenticateWithGithubRedirect(
+            viewModel.authenticateWithGithub(
                 authenticatorType.authenticatorId
             )
         }

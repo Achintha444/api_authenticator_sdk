@@ -15,9 +15,7 @@ internal fun GithubAuth(
 ) {
     GithubAuthComponent(
         onSubmit = {
-            viewModel.authenticateWithGithubRedirect(
-                authenticator.authenticatorId
-            )
+            viewModel.authenticateWithGithub(authenticator.authenticatorId)
         }
     )
 }

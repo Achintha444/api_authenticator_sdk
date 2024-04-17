@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import io.wso2.android.api_authenticator.sdk.sample.R
 import io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen.AuthScreenViewModel
 import io.wso2.android.api_authenticator.sdk.sample.ui.theme.Api_authenticator_sdkTheme
@@ -30,12 +31,12 @@ import io.wso2.android.api_authenticator.sdk.sample.ui.theme.Api_authenticator_s
 @Composable
 internal fun BasicAuth(
     viewModel: AuthScreenViewModel = hiltViewModel(),
-    authenticatorType: io.wso2.android.api_authenticator.sdk.models.autheniticator.AuthenticatorType
+    authenticator: Authenticator
 ) {
     BasicAuthComponent(
         onLoginClick = { username, password ->
             viewModel.authenticateWithUsernamePassword(
-                authenticatorType.authenticatorId,
+                authenticator.authenticatorId,
                 username,
                 password
             )

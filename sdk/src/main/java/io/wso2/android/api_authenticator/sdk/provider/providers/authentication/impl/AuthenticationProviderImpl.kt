@@ -170,7 +170,7 @@ internal class AuthenticationProviderImpl private constructor(
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    override suspend fun authenticateWithGithubRedirect(context: Context, authenticatorId: String) =
+    override suspend fun authenticateWithGithub(context: Context, authenticatorId: String) =
         authenticationProviderManager.authenticateWithGithubRedirect(context, authenticatorId)
 
     /**
@@ -184,10 +184,8 @@ internal class AuthenticationProviderImpl private constructor(
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    override suspend fun authenticateWithMicrosoftRedirect(
-        context: Context,
-        authenticatorId: String
-    ) = authenticationProviderManager.authenticateWithMicrosoftRedirect(context, authenticatorId)
+    override suspend fun authenticateWithMicrosoft(context: Context, authenticatorId: String) =
+        authenticationProviderManager.authenticateWithMicrosoftRedirect(context, authenticatorId)
 
     /**
      * Authenticate the user with the Google authenticator.
@@ -199,7 +197,7 @@ internal class AuthenticationProviderImpl private constructor(
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    override suspend fun authenticateWithGoogle(context: Context, authenticatorId: String) =
+    override suspend fun authenticateWithGoogleNative(context: Context, authenticatorId: String) =
         authenticationProviderManager.authenticateWithGoogle(context, authenticatorId)
 
     /**
@@ -212,7 +210,7 @@ internal class AuthenticationProviderImpl private constructor(
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    override suspend fun authenticateWithGoogleLegacy(
+    override suspend fun authenticateWithGoogleNativeLegacy(
         context: Context,
         authenticatorId: String,
         googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
