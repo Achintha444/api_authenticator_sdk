@@ -16,8 +16,8 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data
-                    android:host="${redirectUriHost}"
-                    android:scheme="${redirectUriScheme}" />
+                    android:host="${callbackUriHost}"
+                    android:scheme="${callbackUriScheme}" />
             </intent-filter>
         </activity>
     </application>

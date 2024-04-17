@@ -25,8 +25,8 @@ android {
         manifestPlaceholders.putAll(
             mapOf(
                 "appAuthRedirectScheme" to "wso2.apiauth.sample.android://login-callback",
-                "redirectUriHost" to "login-callback",
-                "redirectUriScheme" to "wso2.apiauth.sample.android"
+                "callbackUriHost" to "login-callback",
+                "callbackUriScheme" to "wso2.apiauth.sample.android"
             )
         )
     }
