@@ -1,4 +1,4 @@
-package io.wso2.android.api_authenticator.sdk.models.autheniticator_type.passkey_related_data
+package io.wso2.android.api_authenticator.sdk.models.autheniticator.passkey_related_data
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import io.wso2.android.api_authenticator.sdk.util.JsonUtil

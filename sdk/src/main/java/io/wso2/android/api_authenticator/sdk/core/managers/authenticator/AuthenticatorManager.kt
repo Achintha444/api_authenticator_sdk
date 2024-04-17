@@ -1,7 +1,7 @@
 package io.wso2.android.api_authenticator.sdk.core.managers.authenticator
 
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
-import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorTypeException
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
+import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorException
 
 /**
  * Authenticator manager interface.
@@ -9,37 +9,19 @@ import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorType
  */
 internal interface AuthenticatorManager {
     /**
-     * Get full details of the authenticator type.
+     * Get full details of the authenticator.
      *
      * @param flowId Flow id of the authentication flow
-     * @param authenticatorType Authenticator type that is required to get the full details
+     * @param authenticator Authenticator object of the selected authenticator
      *
-     * @return Authenticator type with full details [AuthenticatorType]
+     * @return Authenticator type with full details [Authenticator]
      *
-     * @throws AuthenticatorTypeException
+     * @throws AuthenticatorException
      */
-    suspend fun getDetailsOfAuthenticatorType(
+    suspend fun getDetailsOfAuthenticator(
         flowId: String,
-        authenticatorType: AuthenticatorType
-    ): AuthenticatorType
-
-    /**
-     * Get full details of the all authenticators for the given flow.
-     *
-     * @param flowId Flow id of the authentication flow
-     * @param authenticatorTypes List of authenticator types
-     *
-     * @return List of authenticator types with full details [ArrayList<AuthenticatorType>]
-     *
-     * @throws AuthenticatorTypeException
-     *
-     * @deprecated This method is deprecated. It is not recommended to bring all the authenticator types at once.
-     * this can cause unforeseen issues.
-     */
-    suspend fun getDetailsOfAllAuthenticatorTypesGivenFlow(
-        flowId: String,
-        authenticatorTypes: ArrayList<AuthenticatorType>
-    ): ArrayList<AuthenticatorType>
+        authenticator: Authenticator
+    ): Authenticator
 
     /**
      * Remove the instance of the [AuthenticatorManager]

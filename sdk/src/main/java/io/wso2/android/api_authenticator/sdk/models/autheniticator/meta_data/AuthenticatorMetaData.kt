@@ -1,15 +1,15 @@
-package io.wso2.android.api_authenticator.sdk.models.autheniticator_type.meta_data
+package io.wso2.android.api_authenticator.sdk.models.autheniticator.meta_data
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import io.wso2.android.api_authenticator.sdk.util.JsonUtil
 
 /**
- * Meta data related to the authenticator type
+ * Meta data related to the authenticator
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-open class AuthenticatorTypeMetaData(
+open class AuthenticatorMetaData(
     /**
-     * I18n key related to the authenticator type
+     * I18n key related to the authenticator
      */
     open val i18nKey: String? = null,
     /**
@@ -17,19 +17,19 @@ open class AuthenticatorTypeMetaData(
      */
     open val promptType: String? = null,
     /**
-     * Params related to the authenticator type
+     * Params related to the authenticator
      */
-    open val params: ArrayList<AuthenticatorTypeParam>? = null,
+    open val params: ArrayList<AuthenticatorParam>? = null,
     /**
-     * Additional data related to the authenticator type
+     * Additional data related to the authenticator
      */
-    open val additionalData: AuthenticatorTypeAdditionalData? = null
+    open val additionalData: AuthenticatorAdditionalData? = null
 ) {
     /**
-     * Parameters related to the authenticator type
+     * Parameters related to the authenticator
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
-    open class AuthenticatorTypeParam(
+    open class AuthenticatorParam(
         open val param: String? = null,
         open val type: String? = null,
         open val order: Int? = null,
@@ -39,10 +39,10 @@ open class AuthenticatorTypeMetaData(
     )
 
     /**
-     * Additional data related to the authenticator type
+     * Additional data related to the authenticator
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
-    open class AuthenticatorTypeAdditionalData(
+    open class AuthenticatorAdditionalData(
         open val nonce: String? = null,
         open val clientId: String? = null,
         open val scope: String? = null,

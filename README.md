@@ -139,7 +139,7 @@ internal fun LoginForm() {
 }
 
 @Composable
-internal fun BasicAuth(authenticatorType: AuthenticatorType) {
+internal fun BasicAuth(authenticator: Authenticator) {
     BasicAuthComponent(
         onLoginClick = { username, password ->
             authenticationProvider.authenticateWithUsernameAndPassword(
@@ -239,7 +239,7 @@ Before utilizing these authenticators, you need to integrate them into your appl
 ```kotlin
 authenticationProvider.authenticateWithUsernameAndPassword(
     context = context,
-    authenticatorId = authenticatorType.authenticatorId,
+    authenticatorId = authenticator.authenticatorId,
     username = username,
     password = password
 )
@@ -250,7 +250,7 @@ authenticationProvider.authenticateWithUsernameAndPassword(
 ```kotlin
 authenticationProvider.authenticateWithTotp(
     context = context,
-    authenticatorId = authenticatorType.authenticatorId,
+    authenticatorId = authenticator.authenticatorId,
     token = token
 )
 ```
@@ -262,7 +262,7 @@ authenticationProvider.authenticateWithTotp(
 ```kotlin
 authenticationProvider.authenticateWithGoogle(
     context,    
-    authenticatorId = authenticatorType.authenticatorId
+    authenticatorId = authenticator.authenticatorId
 )
 ```
 
@@ -281,7 +281,7 @@ val launcher: ActivityResultLauncher<Intent> = rememberLauncherForActivityResult
 
 authenticationProvider.authenticateWithGoogleLegacy(
     context,
-    authenticatorId = authenticatorType.authenticatorId
+    authenticatorId = authenticator.authenticatorId
     launcher
 )
 ```
@@ -311,7 +311,7 @@ This will invoke the Google one tap authentication mechanism.
 ```kotlin
 authenticationProvider.authenticateWithPasskey(
     context,
-    authenticatorId = authenticatorType.authenticatorId,
+    authenticatorId = authenticator.authenticatorId,
 )
 ```
 
@@ -353,7 +353,7 @@ After authenticating with the federated IdP, normally, the IdP will redirect the
 ```kotlin
 authenticationProvider.authenticateWithGithubRedirect(
     context,
-    authenticatorId = authenticatorType.authenticatorId
+    authenticatorId = authenticator.authenticatorId
 )
 ```
 
@@ -362,7 +362,7 @@ authenticationProvider.authenticateWithGithubRedirect(
 ```kotlin
 authenticationProvider.authenticateWithMicrosoftRedirect(
     context,
-    authenticatorId = authenticatorType.authenticatorId
+    authenticatorId = authenticator.authenticatorId
 )
 ```
 
@@ -371,13 +371,13 @@ authenticationProvider.authenticateWithMicrosoftRedirect(
 ```kotlin
 authenticationProvider.authenticateWithOpenIdConnect(
    context,
-    authenticatorId = authenticatorType.authenticatorId
+    authenticatorId = authenticator.authenticatorId
 )
 ```
 
 ### Use other federated social authentication
 
-To perform authentication with other federated social IdPs, you can use the `authenticateWithOpenIdConnect` function. For this, you need to pass the authenticator id or authenticator type which can be retrieved from the `authenticationFlow` returned from the `Authentication.Unauthenticated` state.
+To perform authentication with other federated social IdPs, you can use the `authenticateWithOpenIdConnect` function. For this, you need to pass the authenticator id or authenticator which can be retrieved from the `authenticationFlow` returned from the `Authentication.Unauthenticated` state.
 
 ```kotlin
 @Composable
@@ -395,12 +395,12 @@ internal fun LoginForm() {
 }
 
 @Composable
-internal fun FederatedAuth(authenticatorType: AuthenticatorType) {
+internal fun FederatedAuth(authenticator: Authenticator) {
     FederatedAuthComponent(
         onLoginClick = { username, password ->
             authenticationProvider.authenticateWithOpenIdConnect(
                 context = context,
-                authenticatorId = authenticatorType.authenticatorId
+                authenticatorId = authenticator.authenticatorId
             )
         }
     )
@@ -409,7 +409,7 @@ internal fun FederatedAuth(authenticatorType: AuthenticatorType) {
 
 ### Use any other authentication mechanism
 
-If you are using any other authentication mechanism like email OTP, you can use the `authenticate` function. For this, you need to pass the authenticator id or authenticator type which can be retrieved from the `authenticationFlow` returned from the `Authentication.Unauthenticated` state.
+If you are using any other authentication mechanism like email OTP, you can use the `authenticate` function. For this, you need to pass the authenticator id or authenticator which can be retrieved from the `authenticationFlow` returned from the `Authentication.Unauthenticated` state.
 
 This can be used in two ways:
 
@@ -420,8 +420,8 @@ If you are aware of the authenticator parameters required for the authenticator 
 ```kotlin
 authenticationProvider.authenticate(
     context,
-    authenticatorId = authenticatorType.authenticatorId,
-    authenticatorTypeString = authenticatorType.authenticator,
+    authenticatorId = authenticator.authenticatorId,
+    authenticatorTypeString = authenticator.authenticator,
     authParams = < as a LinkedHashMap<String, String> >
 )
 ```
@@ -431,16 +431,16 @@ authenticationProvider.authenticate(
 If you are not aware of the authenticator parameters required for the authenticator, you first need to retrieve the parameters required to authenticate the user with this authenticator. For this, you can use the following function:
 
 ```kotlin
-val detailedAuthenticatorType: AuthenticatorType = authenticationProvider.authenticateWithAuthenticator(
-    authenticatorId = authenticatorType.authenticatorId,
-    authenticatorTypeString = authenticatorType.authenticator
+val detailedAuthenticator: Authenticator = authenticationProvider.authenticateWithAuthenticator(
+    authenticatorId = authenticator.authenticatorId,
+    authenticatorTypeString = authenticator.authenticator
 )
 ```
 
-This will return a fully detailed authenticator type object. In that object, you can get the required authentication parameters from:
+This will return a fully detailed authenticator object. In that object, you can get the required authentication parameters from:
 
 ```kotlin
-val requiredParams: List<String>? = detailedAuthenticatorType.requiredParams
+val requiredParams: List<String>? = detailedAuthenticator.requiredParams
 ```
 
 After that, you can manually set the relevant required authentication parameters and call the `authenticate` function:
@@ -448,8 +448,8 @@ After that, you can manually set the relevant required authentication parameters
 ```kotlin
 authenticationProvider.authenticate(
     context,
-    authenticatorId = authenticatorType.authenticatorId,
-    authenticatorTypeString = authenticatorType.authenticator,
+    authenticatorId = authenticator.authenticatorId,
+    authenticatorTypeString = authenticator.authenticator,
     authParams = < as a LinkedHashMap<String, String> >
 )
 ```

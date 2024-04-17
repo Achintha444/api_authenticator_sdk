@@ -3,7 +3,7 @@ package io.wso2.android.api_authenticator.sdk.models.authentication_flow
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.JsonNode
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import io.wso2.android.api_authenticator.sdk.util.JsonUtil
 
 /**
@@ -22,17 +22,17 @@ data class AuthenticationFlowNotSuccess(
     val flowType: String,
     var nextStep: AuthorizeFlowNotSuccessNextStep,
     val links: Any
-): AuthenticationFlow(flowStatus) {
+) : AuthenticationFlow(flowStatus) {
     /**
      * Authorize flow next step data class.
      *
      * @property stepType Type of the next step
-     * @property authenticators List of authenticator types of the next step
+     * @property authenticators List of authenticators of the next step
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class AuthorizeFlowNotSuccessNextStep(
         val stepType: String,
-        var authenticators: ArrayList<AuthenticatorType>,
+        var authenticators: ArrayList<Authenticator>,
         val messages: ArrayList<Any>?
     ) {
         /**

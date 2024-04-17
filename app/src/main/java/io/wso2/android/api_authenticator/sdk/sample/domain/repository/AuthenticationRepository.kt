@@ -2,7 +2,7 @@ package io.wso2.android.api_authenticator.sdk.sample.domain.repository
 
 import android.content.Context
 import arrow.core.Either
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 import io.wso2.android.api_authenticator.sdk.sample.domain.model.error.AuthenticationError
 
@@ -13,7 +13,7 @@ interface AuthenticationRepository {
     suspend fun authorize(): Either<AuthenticationError, AuthenticationFlow>
 
     suspend fun authn(
-        authenticatorType: AuthenticatorType,
+        authenticator: Authenticator,
         authenticatorParameters: LinkedHashMap<String, String>
     ): Either<AuthenticationError, AuthenticationFlow>
 

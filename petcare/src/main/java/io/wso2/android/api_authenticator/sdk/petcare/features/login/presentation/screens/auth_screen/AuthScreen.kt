@@ -29,7 +29,7 @@ import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation
 import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.util.common_component.ContinueText
 import io.wso2.android.api_authenticator.sdk.petcare.util.ui.LoadingDialog
 import io.wso2.android.api_authenticator.sdk.petcare.ui.theme.Api_authenticator_sdkTheme
-import io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen.components.PasskeyAuthComponent
+import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.screens.auth_screen.components.PasskeyAuthComponent
 
 @Composable
 internal fun AuthScreen(

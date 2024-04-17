@@ -6,7 +6,7 @@ import android.os.Build
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
 
 interface AuthenticateHandlerProviderManager {
@@ -16,17 +16,17 @@ interface AuthenticateHandlerProviderManager {
      * @param authenticatorsInThisStep The list of authenticators in this step
      */
     fun setAuthenticatorsInThisStep(
-        authenticatorsInThisStep: ArrayList<AuthenticatorType>?
+        authenticatorsInThisStep: ArrayList<Authenticator>?
     )
 
     /**
-     * Authenticate the user with the selected authenticator type. This method is used to
-     * get the full details of the selected authenticator type, then perform the passed
+     * Authenticate the user with the selected authenticator. This method is used to
+     * get the full details of the selected authenticator, then perform the passed
      * authentication process.
      *
      * @param authenticatorId The authenticator ID string
      * @param authenticatorTypeString The authenticator type string
-     * @param afterGetAuthenticatorType The function to be executed after getting the authenticator type
+     * @param afterGetAuthenticator The function to be executed after getting the authenticator
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
@@ -36,14 +36,14 @@ interface AuthenticateHandlerProviderManager {
     suspend fun authenticateWithAuthenticator(
         authenticatorId: String,
         authenticatorTypeString: String,
-        afterGetAuthenticatorType: suspend (AuthenticatorType) -> Unit
+        afterGetAuthenticator: suspend (Authenticator) -> Unit
     )
 
     /**
      * Common function in all authenticate methods
      *
      * @param context The context of the application
-     * @param userSelectedAuthenticatorType The selected authenticator type
+     * @param userSelectedAuthenticator The selected authenticator
      * @param authParams The authentication parameters of the selected authenticator
      * @param authParamsAsMap The authentication parameters of the selected authenticator as a LinkedHashMap<String, String>
      * with the key as the parameter name and the value as the parameter value
@@ -54,7 +54,7 @@ interface AuthenticateHandlerProviderManager {
      */
     suspend fun commonAuthenticate(
         context: Context,
-        userSelectedAuthenticatorType: AuthenticatorType? = null,
+        userSelectedAuthenticator: Authenticator? = null,
         authParams: AuthParams? = null,
         authParamsAsMap: LinkedHashMap<String, String>? = null
     )
@@ -63,13 +63,13 @@ interface AuthenticateHandlerProviderManager {
      * Redirect the user to the authenticator's authentication page.
      *
      * @param context The context of the application
-     * @param authenticatorType The authenticator type to redirect the user
+     * @param authenticator The authenticator to redirect the user
      *
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     suspend fun redirectAuthenticate(
         context: Context,
-        authenticatorType: AuthenticatorType
+        authenticator: Authenticator
     )
 
     /**
@@ -116,7 +116,7 @@ interface AuthenticateHandlerProviderManager {
      * Authenticate the user with the Passkey authenticator using Credential Manager API.
      *
      * @param context The context of the application
-     * @param authenticatorType The authenticator type to authenticate the user
+     * @param authenticator The authenticator selected to authenticate the user
      * @param allowCredentials The list of allowed credentials. Default is empty array.
      * @param timeout The timeout for the authentication. Default is 300000.
      * @param userVerification The user verification method. Default is "required"
@@ -128,7 +128,7 @@ interface AuthenticateHandlerProviderManager {
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     suspend fun passkeyAuthenticate(
         context: Context,
-        authenticatorType: AuthenticatorType,
+        authenticator: Authenticator,
         allowCredentials: List<String>? = null,
         timeout: Long? = null,
         userVerification: String? = null

@@ -1,11 +1,11 @@
-package io.wso2.android.api_authenticator.sdk.sample.presentation.screens.auth_screen.components
+package io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.screens.auth_screen.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import io.wso2.android.api_authenticator.sdk.petcare.R
 import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.screens.auth_screen.AuthScreenViewModel
 import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.util.common_component.AuthButton
@@ -14,11 +14,11 @@ import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation
 @Composable
 internal fun PasskeyAuth(
     viewModel: AuthScreenViewModel = hiltViewModel(),
-    authenticatorType: AuthenticatorType
+    authenticator: Authenticator
 ) {
     PasskeyAuthComponent(
         onSubmit = {
-            viewModel.authenticateWithPasskey(authenticatorType.authenticatorId)
+            viewModel.authenticateWithPasskey(authenticator.authenticatorId)
         }
     )
 }

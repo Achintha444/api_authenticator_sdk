@@ -1,6 +1,6 @@
 package io.wso2.android.api_authenticator.sdk.core.managers.authn.impl
 
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import io.wso2.android.api_authenticator.sdk.util.JsonUtil
 import okhttp3.FormBody
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -56,7 +56,7 @@ internal object AuthnManagerImplRequestBuilder {
      *
      * @param authnUri Authentication next step endpoint
      * @param flowId Flow id of the authentication flow
-     * @param authenticatorType Authenticator type of the selected authenticator
+     * @param authenticator Detailed object of the selected authenticator
      * @param authenticatorAuthParams Authenticator parameters of the selected authenticator
      * as a [LinkedHashMap]
      *
@@ -65,14 +65,14 @@ internal object AuthnManagerImplRequestBuilder {
     internal fun authenticateRequestBuilder(
         authnUri: String,
         flowId: String,
-        authenticatorType: AuthenticatorType,
+        authenticator: Authenticator,
         authenticatorAuthParams: LinkedHashMap<String, String>,
     ): Request {
         val authBody = LinkedHashMap<String, Any>()
         authBody["flowId"] = flowId
 
         val selectedAuthenticator = LinkedHashMap<String, Any>()
-        selectedAuthenticator["authenticatorId"] = authenticatorType.authenticatorId
+        selectedAuthenticator["authenticatorId"] = authenticator.authenticatorId
         selectedAuthenticator["params"] = authenticatorAuthParams
 
         authBody["selectedAuthenticator"] = selectedAuthenticator

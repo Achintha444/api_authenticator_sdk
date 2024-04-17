@@ -13,7 +13,7 @@ import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication
 import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.passkey.PasskeyAuthenticationHandlerManager
 import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.redirect.RedirectAuthenticationHandlerManager
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import java.lang.ref.WeakReference
 
 class NativeAuthenticationHandlerCore private constructor(
@@ -133,15 +133,15 @@ class NativeAuthenticationHandlerCore private constructor(
      * This method will redirect the user to the authenticator's authentication page.
      *
      * @param context The context of the application
-     * @param authenticatorType The authenticator type to redirect the user
+     * @param authenticator The authenticator to redirect the user
      *
      * @return The authentication parameters extracted from the redirect URI
      */
     override suspend fun handleRedirectAuthentication(
         context: Context,
-        authenticatorType: AuthenticatorType
+        authenticator: Authenticator
     ): LinkedHashMap<String, String>? =
-        redirectAuthenticationHandlerManager.redirectAuthenticate(context, authenticatorType)
+        redirectAuthenticationHandlerManager.redirectAuthenticate(context, authenticator)
 
     /**
      * Handle the passkey authentication process.

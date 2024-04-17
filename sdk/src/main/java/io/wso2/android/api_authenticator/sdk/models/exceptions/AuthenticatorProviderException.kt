@@ -1,9 +1,9 @@
 package io.wso2.android.api_authenticator.sdk.models.exceptions
 
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 
 /**
- * Exception to be thrown to the exception related to [AuthenticatorType]
+ * Exception to be thrown to the exception related to [Authenticator]
  *
  * @property message Message related to the exception
  */

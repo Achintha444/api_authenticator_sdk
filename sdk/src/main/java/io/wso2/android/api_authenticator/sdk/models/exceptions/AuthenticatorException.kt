@@ -1,13 +1,15 @@
 package io.wso2.android.api_authenticator.sdk.models.exceptions
 
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
+
 /**
- * Exception to be thrown to the exception related to an `AuthenticatorType`
+ * Exception to be thrown to the exception related to an [Authenticator]
  *
  * @property message Message related to the exception
  * @property authenticator Authenticator type
  * @property code Code of the exception
  */
-class AuthenticatorTypeException(
+class AuthenticatorException(
     override val message: String?,
     private val authenticator: String?,
     private val code: String? = null

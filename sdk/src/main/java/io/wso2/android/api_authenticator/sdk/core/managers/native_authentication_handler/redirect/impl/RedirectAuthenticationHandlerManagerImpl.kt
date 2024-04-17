@@ -4,7 +4,7 @@ import android.content.Context
 import android.net.Uri
 import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.redirect.RedirectAuthenticationHandlerManager
 import io.wso2.android.api_authenticator.sdk.core.ui.RedirectAuthenticationManagementActivity
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import io.wso2.android.api_authenticator.sdk.models.exceptions.RedirectAuthenticationException
 import io.wso2.android.api_authenticator.sdk.models.prompt_type.PromptTypes
 import kotlinx.coroutines.CompletableDeferred
@@ -46,7 +46,7 @@ class RedirectAuthenticationHandlerManagerImpl private constructor() :
     /**
      * The selected authenticator to redirect the user
      */
-    private var selectedAuthenticator: AuthenticatorType? = null
+    private var selectedAuthenticator: Authenticator? = null
 
     /**
      * The authentication parameters extracted from the redirect URI
@@ -64,18 +64,18 @@ class RedirectAuthenticationHandlerManagerImpl private constructor() :
      * Redirect the user to the authenticator's authentication page.
      *
      * @param context The context of the application
-     * @param authenticatorType The authenticator type to redirect the user
+     * @param authenticator The authenticator to redirect the user
      */
     override suspend fun redirectAuthenticate(
         context: Context,
-        authenticatorType: AuthenticatorType
+        authenticator: Authenticator
     ): LinkedHashMap<String, String>? {
         // Retrieving the prompt type of the authenticator
-        val promptType: String? = authenticatorType.metadata?.promptType
+        val promptType: String? = authenticator.metadata?.promptType
 
         if (promptType == PromptTypes.REDIRECTION_PROMPT.promptType) {
             // Retrieving the redirect URI of the authenticator
-            val redirectUri: String? = authenticatorType.metadata?.additionalData?.redirectUrl
+            val redirectUri: String? = authenticator.metadata?.additionalData?.redirectUrl
 
             if (redirectUri.isNullOrEmpty()) {
                 throw (RedirectAuthenticationException(
@@ -92,7 +92,7 @@ class RedirectAuthenticationHandlerManagerImpl private constructor() :
                     )
                 )
 
-                selectedAuthenticator = authenticatorType
+                selectedAuthenticator = authenticator
 
                 redirectAuthenticationResultDeferred.await()
 
@@ -124,7 +124,7 @@ class RedirectAuthenticationHandlerManagerImpl private constructor() :
         if (selectedAuthenticator != null) {
             val requiredParams: List<String> = selectedAuthenticator!!.requiredParams!!
 
-            // Extract required parameters from the authenticator type
+            // Extract required parameters from the authenticator
             val authParamsMap: LinkedHashMap<String, String> = LinkedHashMap()
 
             for (param in requiredParams) {

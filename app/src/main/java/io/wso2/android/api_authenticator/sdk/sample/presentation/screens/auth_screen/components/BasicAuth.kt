@@ -30,7 +30,7 @@ import io.wso2.android.api_authenticator.sdk.sample.ui.theme.Api_authenticator_s
 @Composable
 internal fun BasicAuth(
     viewModel: AuthScreenViewModel = hiltViewModel(),
-    authenticatorType: io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+    authenticatorType: io.wso2.android.api_authenticator.sdk.models.autheniticator.AuthenticatorType
 ) {
     BasicAuthComponent(
         onLoginClick = { username, password ->

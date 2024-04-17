@@ -5,7 +5,7 @@ import io.wso2.android.api_authenticator.sdk.core.managers.flow.FlowManager
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowNotSuccess
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowSuccess
-import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorTypeException
+import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorException
 import io.wso2.android.api_authenticator.sdk.models.exceptions.FlowManagerException
 import io.wso2.android.api_authenticator.sdk.models.flow_status.FlowStatus
 import java.lang.ref.WeakReference
@@ -59,13 +59,13 @@ internal class FlowManagerImpl private constructor() : FlowManager {
     }
 
     /**
-     * Handle the authorization flow and return the authenticator types in the next step.
+     * Handle the authorization flow and return the authenticators in the next step.
      *
      * @param responseBodyString Response body string of the authorization request
      *
-     * @return [AuthenticationFlow] with the authenticator types in the next step
+     * @return [AuthenticationFlow] with the authenticators in the next step
      *
-     * @throws [AuthenticatorTypeException]
+     * @throws [AuthenticatorException]
      */
     private fun handleAuthorizeFlow(
         responseBodyString: String
@@ -78,8 +78,8 @@ internal class FlowManagerImpl private constructor() : FlowManager {
      *
      * @param responseObject Response object of the authorization request
      *
-     * @return [AuthenticationFlow] with the authenticator types in the next step
-     * @throws [AuthenticatorTypeException] If the flow is failed
+     * @return [AuthenticationFlow] with the authenticators in the next step
+     * @throws [AuthenticatorException] If the flow is failed
      * @throws [FlowManagerException] If the flow is failed incomplete
      *
      * TODO: Need to check additional check to flowid to check if the flow is the same as the current flow

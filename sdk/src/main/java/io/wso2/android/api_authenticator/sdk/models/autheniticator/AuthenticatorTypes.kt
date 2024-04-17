@@ -1,7 +1,7 @@
-package io.wso2.android.api_authenticator.sdk.models.autheniticator_type
+package io.wso2.android.api_authenticator.sdk.models.autheniticator
 
 /**
- * Enum class for authenticator types
+ * Enum class for authenticators
  *
  * @property authenticatorType Authenticator type value
  */

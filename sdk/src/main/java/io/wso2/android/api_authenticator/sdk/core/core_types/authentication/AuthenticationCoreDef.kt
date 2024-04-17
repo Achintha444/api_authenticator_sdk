@@ -2,7 +2,7 @@ package io.wso2.android.api_authenticator.sdk.core.core_types.authentication
 
 import android.content.Context
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthnManagerException
 import io.wso2.android.api_authenticator.sdk.models.state.TokenState
@@ -24,7 +24,7 @@ interface AuthenticationCoreDef {
      * authentication flow. If the authentication flow has only one step, this method will return
      * the success response of the authentication flow if the authentication is successful.
      *
-     * @param authenticatorType Authenticator type of the selected authenticator
+     * @param authenticator Authenticator of the selected authenticator
      * @param authenticatorParameters Authenticator parameters of the selected authenticator
      * as a LinkedHashMap<String, String> with the key as the parameter name and the value as the
      * parameter value
@@ -32,20 +32,19 @@ interface AuthenticationCoreDef {
      * @return [AuthenticationFlow] with the next step of the authentication flow
      */
     suspend fun authn(
-        authenticatorType: AuthenticatorType,
+        authenticator: Authenticator,
         authenticatorParameters: LinkedHashMap<String, String>
     ): AuthenticationFlow?
 
     /**
-     * Get the authenticator details of the given authenticator type.
+     * Get the authenticator details of the given authenticator.
      * This should call before authenticating with the any authenticator.
      *
-     * @param authenticatorType Authenticator type
+     * @param authenticator Authenticator
      *
      * @return Authenticator details [AuthParams]
      */
-    suspend fun getDetailsOfAuthenticatorType(authenticatorType: AuthenticatorType)
-            : AuthenticatorType?
+    suspend fun getDetailsOfAuthenticator(authenticator: Authenticator): Authenticator?
 
     /**
      * Exchange the authorization code for the access token.

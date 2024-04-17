@@ -10,7 +10,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.models.auth_params.BasicAuthenticatorAuthParams
 import io.wso2.android.api_authenticator.sdk.models.auth_params.TotpAuthenticatorTypeAuthParams
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorTypes
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.AuthenticatorTypes
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authenticate_handler.AuthenticateHandlerProviderManager
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication.AuthenticationProviderManager
@@ -172,7 +172,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
         ) {
             authenticateHandlerProviderManager.commonAuthenticate(
                 context,
-                userSelectedAuthenticatorType = it,
+                userSelectedAuthenticator = it,
                 authParams = BasicAuthenticatorAuthParams(username, password)
             )
         }
@@ -201,7 +201,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
         ) {
             authenticateHandlerProviderManager.commonAuthenticate(
                 context,
-                userSelectedAuthenticatorType = it,
+                userSelectedAuthenticator = it,
                 authParams = TotpAuthenticatorTypeAuthParams(token)
             )
         }
@@ -428,7 +428,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
         ) {
             authenticateHandlerProviderManager.commonAuthenticate(
                 context,
-                userSelectedAuthenticatorType = it,
+                userSelectedAuthenticator = it,
                 authParamsAsMap = authParams
             )
         }

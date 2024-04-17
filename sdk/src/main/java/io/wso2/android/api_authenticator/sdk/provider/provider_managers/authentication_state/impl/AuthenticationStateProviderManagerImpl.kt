@@ -2,7 +2,7 @@ package io.wso2.android.api_authenticator.sdk.provider.provider_managers.authent
 
 import android.content.Context
 import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.AuthenticationCoreDef
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowNotSuccess
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowSuccess
@@ -91,12 +91,12 @@ internal class AuthenticationStateProviderManagerImpl private constructor(
      * @param authenticationFlow The [AuthenticationFlow] to handle
      * @param context The context of the application
      *
-     * @return The list of [AuthenticatorType] to use next
+     * @return The list of [Authenticator] to use next
      */
     override suspend fun handleAuthenticationFlowResult(
         authenticationFlow: AuthenticationFlow,
         context: Context
-    ): ArrayList<AuthenticatorType>? {
+    ): ArrayList<Authenticator>? {
         when (authenticationFlow.flowStatus) {
             FlowStatus.SUCCESS.flowStatus -> {
                 // Exchange the authorization code for the access token and save the tokens

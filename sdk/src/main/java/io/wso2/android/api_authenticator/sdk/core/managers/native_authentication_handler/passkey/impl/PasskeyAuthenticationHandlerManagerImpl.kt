@@ -11,9 +11,9 @@ import androidx.credentials.PublicKeyCredential
 import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.passkey.PasskeyAuthenticationHandlerManager
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.auth_params.PasskeyAuthenticatorTypeAuthParams
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.passkey_related_data.ChallengeInfo
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.passkey_related_data.PasskeyChallenge
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.passkey_related_data.PasskeyCredentialAuthParams
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.passkey_related_data.ChallengeInfo
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.passkey_related_data.PasskeyChallenge
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.passkey_related_data.PasskeyCredentialAuthParams
 import io.wso2.android.api_authenticator.sdk.models.exceptions.PasskeyAuthenticationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

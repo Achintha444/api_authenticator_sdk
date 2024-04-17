@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.AuthnManager
 import io.wso2.android.api_authenticator.sdk.core.managers.flow.FlowManager
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
-import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorTypeException
+import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorException
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthnManagerException
 import io.wso2.android.api_authenticator.sdk.models.exceptions.FlowManagerException
 import io.wso2.android.api_authenticator.sdk.util.JsonUtil
@@ -132,13 +132,13 @@ internal class AuthnManagerImpl private constructor(
      * authentication flow. If the authentication flow has only one step, this method will return
      * the success response of the authentication flow if the authentication is successful.
      *
-     * @param authenticatorType Authenticator type of the selected authenticator
+     * @param authenticator Detailed object of the selected authenticator
      * @param authenticatorParameters Authenticator parameters of the selected authenticator
      * as a LinkedHashMap<String, String> with the key as the parameter name and the value as the
      * parameter value
      *
      * @throws [AuthnManagerException] If the authentication fails
-     * @throws [AuthenticatorTypeException] If the authenticator type is not valid
+     * @throws [AuthenticatorException] If the authenticator is not valid
      * @throws [FlowManagerException] If the flow is incomplete
      * @throws [IOException] If the request fails due to a network error
      *
@@ -147,14 +147,14 @@ internal class AuthnManagerImpl private constructor(
      * TODO: In the AuthnManager class we can use retrofit to make the network calls.
      */
     override suspend fun authn(
-        authenticatorType: AuthenticatorType,
+        authenticator: Authenticator,
         authenticatorParameters: LinkedHashMap<String, String>
     ): AuthenticationFlow? = withContext(Dispatchers.IO) {
         suspendCoroutine { continuation ->
             val request: Request = authenticationCoreRequestBuilder.authenticateRequestBuilder(
                 authenticationCoreConfig.getAuthnUrl(),
                 flowManager.getFlowId(),
-                authenticatorType,
+                authenticator,
                 authenticatorParameters
             )
 
@@ -166,7 +166,7 @@ internal class AuthnManagerImpl private constructor(
                 @Throws(
                     IOException::class,
                     AuthnManagerException::class,
-                    AuthenticatorTypeException::class
+                    AuthenticatorException::class
                 )
                 override fun onResponse(call: Call, response: Response) {
                     try {

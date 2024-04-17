@@ -6,7 +6,7 @@ import android.os.Build
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 
 /**
  * Native Authentication Handler Core class interface which has the core functionality to
@@ -55,13 +55,13 @@ interface NativeAuthenticationHandlerCoreDef {
      * This method will redirect the user to the authenticator's authentication page.
      *
      * @param context The context of the application
-     * @param authenticatorType The authenticator type to redirect the user
+     * @param authenticator The authenticator to redirect the user
      *
      * @return The authentication parameters extracted from the redirect URI
      */
     suspend fun handleRedirectAuthentication(
         context: Context,
-        authenticatorType: AuthenticatorType
+        authenticator: Authenticator
     ): LinkedHashMap<String, String>?
 
     /**

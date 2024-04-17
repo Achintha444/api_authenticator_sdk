@@ -12,24 +12,24 @@ import okhttp3.RequestBody.Companion.toRequestBody
 internal object AuthenticatorManagerImplRequestBuilder {
 
     /**
-     * Build the request to get details of the authenticator type.
+     * Build the request to get details of the authenticator.
      *
      * @param authnUri Authentication next step endpoint
      * @param flowId Flow id of the authentication flow
-     * @param authenticatorTypeId Authenticator type id of the authenticator
+     * @param authenticatorId Authenticator type id of the authenticator
      *
-     * @return [okhttp3.Request] to get details of the authenticator type
+     * @return [okhttp3.Request] to get details of the authenticator
      */
-    internal fun getAuthenticatorTypeRequestBuilder(
+    internal fun getAuthenticatorRequestBuilder(
         authnUri: String,
         flowId: String,
-        authenticatorTypeId: String
+        authenticatorId: String
     ): Request {
         val authBody = LinkedHashMap<String, Any>()
         authBody["flowId"] = flowId
 
         val selectedAuthenticator = LinkedHashMap<String, String>()
-        selectedAuthenticator["authenticatorId"] = authenticatorTypeId
+        selectedAuthenticator["authenticatorId"] = authenticatorId
 
         authBody["selectedAuthenticator"] = selectedAuthenticator
 

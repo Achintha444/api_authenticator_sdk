@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import io.wso2.android.api_authenticator.sdk.petcare.R
 import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.screens.auth_screen.AuthScreenViewModel
 import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.util.common_component.AuthButton
@@ -30,11 +31,11 @@ import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation
 @Composable
 internal fun TotpAuth(
     viewModel: AuthScreenViewModel = hiltViewModel(),
-    authenticatorType: io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+    authenticator: Authenticator
 ) {
     TotpAuthComponent(
         onSubmit = { token ->
-            viewModel.authenticateWithTotp(authenticatorType.authenticatorId, token)
+            viewModel.authenticateWithTotp(authenticator.authenticatorId, token)
         }
     )
 }

@@ -18,10 +18,7 @@ object HttpClientBuilder {
      * @return [OkHttpClient] instance.
      */
     internal fun getHttpClientInstance(isDevelopment: Boolean?): OkHttpClient {
-        return if (isDevelopment == true) {
-            LessSecureHttpClient.getInstance().getClient()
-        } else {
-            OkHttpClient()
-        }
+        return if (isDevelopment == true) LessSecureHttpClient.getInstance().getClient()
+        else OkHttpClient()
     }
 }

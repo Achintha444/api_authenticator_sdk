@@ -12,10 +12,10 @@ import io.wso2.android.api_authenticator.sdk.core.managers.logout.LogoutManager
 import io.wso2.android.api_authenticator.sdk.core.managers.token.TokenManager
 import io.wso2.android.api_authenticator.sdk.core.managers.user.UserManager
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
-import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticationCoreException
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AppAuthManagerException
+import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticationCoreException
 import io.wso2.android.api_authenticator.sdk.models.exceptions.LogoutException
 import io.wso2.android.api_authenticator.sdk.models.state.TokenState
 import java.io.IOException
@@ -87,7 +87,8 @@ class AuthenticationCore private constructor(
         fun getInstance(authenticationCoreConfig: AuthenticationCoreConfig): AuthenticationCore {
             var authenticationCore = authenticationCoreInstance.get()
             if (authenticationCore == null ||
-                authenticationCore.authenticationCoreConfig != authenticationCoreConfig) {
+                authenticationCore.authenticationCoreConfig != authenticationCoreConfig
+            ) {
                 authenticationCore = AuthenticationCore(authenticationCoreConfig)
                 authenticationCoreInstance = WeakReference(authenticationCore)
             }
@@ -121,7 +122,7 @@ class AuthenticationCore private constructor(
      * authentication flow. If the authentication flow has only one step, this method will return
      * the success response of the authentication flow if the authentication is successful.
      *
-     * @param authenticatorType Authenticator type of the selected authenticator
+     * @param authenticator Authenticator object of the selected authenticator
      * @param authenticatorParameters Authenticator parameters of the selected authenticator as a
      * [LinkedHashMap] with the key as the parameter name and the value as the parameter value
      *
@@ -131,27 +132,24 @@ class AuthenticationCore private constructor(
      * @return [AuthenticationFlow] with the next step of the authentication flow
      */
     override suspend fun authn(
-        authenticatorType: AuthenticatorType,
+        authenticator: Authenticator,
         authenticatorParameters: LinkedHashMap<String, String>
-    ): AuthenticationFlow? = authnMangerInstance.authn(
-        authenticatorType,
-        authenticatorParameters
-    )
+    ): AuthenticationFlow? = authnMangerInstance.authn(authenticator, authenticatorParameters)
 
     /**
-     * Get the authenticator details of the given authenticator type.
+     * Get the authenticator details of the given authenticator.
      * This should call before authenticating with the any authenticator.
      *
-     * @param authenticatorType Authenticator type
+     * @param authenticator Authenticator object of the selected authenticator
      *
      * @return Authenticator details [AuthParams]
      */
-    override suspend fun getDetailsOfAuthenticatorType(
-        authenticatorType: AuthenticatorType
-    ): AuthenticatorType {
+    override suspend fun getDetailsOfAuthenticator(
+        authenticator: Authenticator,
+    ): Authenticator {
         val flowId: String = flowManager.getFlowId()
 
-        return authenticatorManager.getDetailsOfAuthenticatorType(flowId, authenticatorType)
+        return authenticatorManager.getDetailsOfAuthenticator(flowId, authenticator)
     }
 
     /**

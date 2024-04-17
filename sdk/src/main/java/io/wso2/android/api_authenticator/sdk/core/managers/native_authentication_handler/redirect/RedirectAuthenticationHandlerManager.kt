@@ -2,7 +2,7 @@ package io.wso2.android.api_authenticator.sdk.core.managers.native_authenticatio
 
 import android.content.Context
 import android.net.Uri
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import io.wso2.android.api_authenticator.sdk.models.exceptions.RedirectAuthenticationException
 
 /**
@@ -14,11 +14,11 @@ interface RedirectAuthenticationHandlerManager {
      * Redirect the user to the authenticator's authentication page.
      *
      * @param context The context of the application
-     * @param authenticatorType The authenticator type to redirect the user
+     * @param authenticator The authenticator to redirect the user
      */
     suspend fun redirectAuthenticate(
         context: Context,
-        authenticatorType: AuthenticatorType
+        authenticator: Authenticator
     ): LinkedHashMap<String, String>?
 
     /**

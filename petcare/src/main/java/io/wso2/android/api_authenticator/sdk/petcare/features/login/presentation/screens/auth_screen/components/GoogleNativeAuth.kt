@@ -7,7 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import io.wso2.android.api_authenticator.sdk.petcare.R
 import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.screens.auth_screen.AuthScreenViewModel
 import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.util.common_component.AuthButton
@@ -16,7 +16,7 @@ import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation
 @Composable
 internal fun GoogleNativeAuth(
     viewModel: AuthScreenViewModel = hiltViewModel(),
-    authenticatorType: AuthenticatorType
+    authenticator: Authenticator
 ) {
     val launcher: ActivityResultLauncher<Intent> = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -27,7 +27,7 @@ internal fun GoogleNativeAuth(
     GoogleNativeAuthComponent(
         onSubmit = {
             viewModel.authenticateWithGoogleNativeLegacy(
-                authenticatorType.authenticatorId,
+                authenticator.authenticatorId,
                 launcher
             )
             //viewModel.authenticateWithGoogle(authenticatorType.authenticatorId)

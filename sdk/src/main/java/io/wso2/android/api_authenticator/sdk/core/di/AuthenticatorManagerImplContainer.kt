@@ -2,7 +2,7 @@ package io.wso2.android.api_authenticator.sdk.core.di
 
 import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.impl.AuthenticatorManagerImpl
 import io.wso2.android.api_authenticator.sdk.core.managers.authenticator.impl.AuthenticatorManagerImplRequestBuilder
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.authenticator_type_factory.AuthenticatorTypeFactory
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.authenticator_factory.AuthenticatorFactory
 import io.wso2.android.api_authenticator.sdk.models.http_client.LessSecureHttpClient
 import io.wso2.android.api_authenticator.sdk.models.http_client.http_client_builder.HttpClientBuilder
 import okhttp3.OkHttpClient
@@ -26,12 +26,12 @@ internal object AuthenticatorManagerImplContainer {
     }
 
     /**
-     * Returns an instance of the [AuthenticatorTypeFactory] class.
+     * Returns an instance of the [AuthenticatorFactory] class.
      *
-     * @return [AuthenticatorTypeFactory] instance.
+     * @return [AuthenticatorFactory] instance.
      */
-    internal fun getAuthenticatorTypeFactory(): AuthenticatorTypeFactory {
-        return AuthenticatorTypeFactory
+    internal fun getAuthenticatorFactory(): AuthenticatorFactory {
+        return AuthenticatorFactory
     }
 
     /**

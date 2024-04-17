@@ -8,7 +8,7 @@ import androidx.annotation.RequiresApi
 import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.core.core_types.native_authentication_handler.NativeAuthenticationHandlerCoreDef
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import io.wso2.android.api_authenticator.sdk.models.exceptions.AuthenticatorProviderException
 import io.wso2.android.api_authenticator.sdk.models.exceptions.GoogleNativeAuthenticationException
 import io.wso2.android.api_authenticator.sdk.models.exceptions.PasskeyAuthenticationException
@@ -16,7 +16,7 @@ import io.wso2.android.api_authenticator.sdk.models.exceptions.RedirectAuthentic
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authenticate_handler.AuthenticateHandlerProviderManager
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication_state.AuthenticationStateProviderManager
-import io.wso2.android.api_authenticator.sdk.util.AuthenticatorTypeUtil
+import io.wso2.android.api_authenticator.sdk.util.AuthenticatorUtil
 import java.lang.ref.WeakReference
 
 /**
@@ -79,12 +79,12 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
     /**
      * List of authenticators in this step of the authentication flow.
      */
-    private var authenticatorsInThisStep: ArrayList<AuthenticatorType>? = null
+    private var authenticatorsInThisStep: ArrayList<Authenticator>? = null
 
     /**
      * The selected authenticator for the authentication process.
      */
-    private var selectedAuthenticator: AuthenticatorType? = null
+    private var selectedAuthenticator: Authenticator? = null
 
     /**
      * Set the authenticators in this step of the authentication flow.
@@ -92,19 +92,19 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
      * @param authenticatorsInThisStep The list of authenticators in this step
      */
     override fun setAuthenticatorsInThisStep(
-        authenticatorsInThisStep: ArrayList<AuthenticatorType>?
+        authenticatorsInThisStep: ArrayList<Authenticator>?
     ) {
         this.authenticatorsInThisStep = authenticatorsInThisStep
     }
 
     /**
-     * Authenticate the user with the selected authenticator type. This method is used to
-     * get the full details of the selected authenticator type, then perform the passed
+     * Authenticate the user with the selected authenticator . This method is used to
+     * get the full details of the selected authenticator , then perform the passed
      * authentication process.
      *
      * @param authenticatorId The authenticator ID string
      * @param authenticatorTypeString The authenticator type string
-     * @param afterGetAuthenticatorType The function to be executed after getting the authenticator type
+     * @param afterGetAuthenticator The function to be executed after getting the authenticator
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
@@ -112,24 +112,24 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
     override suspend fun authenticateWithAuthenticator(
         authenticatorId: String,
         authenticatorTypeString: String,
-        afterGetAuthenticatorType: suspend (AuthenticatorType) -> Unit
+        afterGetAuthenticator: suspend (Authenticator) -> Unit
     ) {
         authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Loading)
 
-        val authenticatorType: AuthenticatorType? =
-            AuthenticatorTypeUtil.getAuthenticatorTypeFromAuthenticatorTypeList(
+        val authenticator: Authenticator? =
+            AuthenticatorUtil.getAuthenticatorFromAuthenticatorsList(
                 authenticatorsInThisStep!!,
                 authenticatorId,
                 authenticatorTypeString
             ) ?: selectedAuthenticator
 
-        if (authenticatorType != null) {
+        if (authenticator != null) {
             runCatching {
-                authenticationCore.getDetailsOfAuthenticatorType(authenticatorType)
+                authenticationCore.getDetailsOfAuthenticator(authenticator)
             }.onSuccess {
                 selectedAuthenticator = it
                 if (it != null) {
-                    afterGetAuthenticatorType(it)
+                    afterGetAuthenticator(it)
                 } else {
                     authenticationStateProviderManager.emitAuthenticationState(
                         AuthenticationState.Error(
@@ -161,7 +161,7 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
      * Common function in all authenticate methods
      *
      * @param context The context of the application
-     * @param userSelectedAuthenticatorType The selected authenticator type
+     * @param userSelectedAuthenticator The selected authenticator
      * @param authParams The authentication parameters of the selected authenticator
      * @param authParamsAsMap The authentication parameters of the selected authenticator as a LinkedHashMap<String, String>
      * with the key as the parameter name and the value as the parameter value
@@ -172,29 +172,29 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
      */
     override suspend fun commonAuthenticate(
         context: Context,
-        userSelectedAuthenticatorType: AuthenticatorType?,
+        userSelectedAuthenticator: Authenticator?,
         authParams: AuthParams?,
         authParamsAsMap: LinkedHashMap<String, String>?
     ) {
         authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Loading)
 
-        // setting up the authenticator type
-        val authenticatorType: AuthenticatorType? =
-            userSelectedAuthenticatorType ?: selectedAuthenticator
+        // setting up the authenticator
+        val authenticator: Authenticator? =
+            userSelectedAuthenticator ?: selectedAuthenticator
 
-        if (authenticatorType != null) {
-            selectedAuthenticator = authenticatorType
+        if (authenticator != null) {
+            selectedAuthenticator = authenticator
 
             var authParamsMap: LinkedHashMap<String, String>? = authParamsAsMap
 
             if (authParams != null) {
                 authParamsMap = authParams.getParameterBodyAuthenticator(
-                    authenticatorType.requiredParams!!
+                    authenticator.requiredParams!!
                 )
             }
 
             runCatching {
-                authenticationCore.authn(authenticatorType, authParamsMap!!)
+                authenticationCore.authn(authenticator, authParamsMap!!)
             }.onSuccess {
                 authenticatorsInThisStep =
                     authenticationStateProviderManager.handleAuthenticationFlowResult(it!!, context)
@@ -222,16 +222,16 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
      * Redirect the user to the authenticator's authentication page.
      *
      * @param context The context of the application
-     * @param authenticatorType The authenticator type to redirect the user
+     * @param authenticator The authenticator to redirect the user
      *
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     override suspend fun redirectAuthenticate(
         context: Context,
-        authenticatorType: AuthenticatorType
+        authenticator: Authenticator
     ) {
         runCatching {
-            nativeAuthenticationHandlerCore.handleRedirectAuthentication(context, authenticatorType)
+            nativeAuthenticationHandlerCore.handleRedirectAuthentication(context, authenticator)
         }.onSuccess {
             val authParamsMap: LinkedHashMap<String, String>? = it
 
@@ -365,7 +365,7 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
      * Authenticate the user with the Passkey authenticator using Credential Manager API.
      *
      * @param context The context of the application
-     * @param authenticatorType The authenticator type to authenticate the user
+     * @param authenticator The authenticator to authenticate the user
      * @param allowCredentials The list of allowed credentials. Default is empty array.
      * @param timeout The timeout for the authentication. Default is 300000.
      * @param userVerification The user verification method. Default is "required"
@@ -377,7 +377,7 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override suspend fun passkeyAuthenticate(
         context: Context,
-        authenticatorType: AuthenticatorType,
+        authenticator: Authenticator,
         allowCredentials: List<String>?,
         timeout: Long?,
         userVerification: String?
@@ -385,7 +385,7 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
         runCatching {
             nativeAuthenticationHandlerCore.handlePasskeyAuthentication(
                 context,
-                authenticatorType.metadata?.additionalData?.challengeData,
+                authenticator.metadata?.additionalData?.challengeData,
                 allowCredentials,
                 timeout,
                 userVerification

@@ -75,7 +75,7 @@ internal object AuthenticationCoreContainer {
         AuthenticatorManagerImplContainer.getClient(
             authenticationCoreConfig.getIsDevelopment()
         ),
-        AuthenticatorManagerImplContainer.getAuthenticatorTypeFactory(),
+        AuthenticatorManagerImplContainer.getAuthenticatorFactory(),
         AuthenticatorManagerImplContainer.getAuthenticatorManagerImplRequestBuilder(),
         AuthenticatorManagerImplContainer.getAuthnUrl(
             authenticationCoreConfig.getAuthnUrl()

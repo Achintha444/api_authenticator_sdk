@@ -4,7 +4,7 @@ import android.content.Context
 import arrow.core.Either
 import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.impl.AuthenticationCore
-import io.wso2.android.api_authenticator.sdk.models.autheniticator_type.AuthenticatorType
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 import io.wso2.android.api_authenticator.sdk.sample.data.impl.mapper.toAuthenticationError
 import io.wso2.android.api_authenticator.sdk.sample.domain.model.error.AuthenticationError
@@ -36,14 +36,11 @@ class AuthenticationRepositoryImpl @Inject constructor() : AuthenticationReposit
     }
 
     override suspend fun authn(
-        authenticatorType: AuthenticatorType,
+        authenticator: Authenticator,
         authenticatorParameters: LinkedHashMap<String, String>
     ): Either<AuthenticationError, AuthenticationFlow> {
         return Either.catch {
-            authenticationCore.authn(
-                authenticatorType,
-                authenticatorParameters
-            )!!
+            authenticationCore.authn(authenticator, authenticatorParameters)!!
         }.mapLeft {
             it.toAuthenticationError()
         }
