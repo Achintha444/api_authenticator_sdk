@@ -409,7 +409,7 @@ internal fun FederatedAuth(authenticatorType: AuthenticatorType) {
 
 ### Use any other authentication mechanism
 
-If you are using any other authentication mechanism like email OTP, you can use the `authenticateWithAnyAuthenticator` function. For this, you need to pass the authenticator id or authenticator type which can be retrieved from the `authenticationFlow` returned from the `Authentication.Unauthenticated` state.
+If you are using any other authentication mechanism like email OTP, you can use the `authenticate` function. For this, you need to pass the authenticator id or authenticator type which can be retrieved from the `authenticationFlow` returned from the `Authentication.Unauthenticated` state.
 
 This can be used in two ways:
 
@@ -418,7 +418,7 @@ This can be used in two ways:
 If you are aware of the authenticator parameters required for the authenticator (which can be found in the following link), you can directly call this function to authenticate the user with this authenticator.
 
 ```kotlin
-authenticationProvider.authenticateWithAnyAuthenticator(
+authenticationProvider.authenticate(
     context,
     authenticatorId = authenticatorType.authenticatorId,
     authenticatorTypeString = authenticatorType.authenticator,
@@ -443,10 +443,10 @@ This will return a fully detailed authenticator type object. In that object, you
 val requiredParams: List<String>? = detailedAuthenticatorType.requiredParams
 ```
 
-After that, you can manually set the relevant required authentication parameters and call the `authenticateWithAnyAuthenticator` function:
+After that, you can manually set the relevant required authentication parameters and call the `authenticate` function:
 
 ```kotlin
-authenticationProvider.authenticateWithAnyAuthenticator(
+authenticationProvider.authenticate(
     context,
     authenticatorId = authenticatorType.authenticatorId,
     authenticatorTypeString = authenticatorType.authenticator,

@@ -416,7 +416,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    override suspend fun authenticateWithAnyAuthenticator(
+    override suspend fun authenticate(
         context: Context,
         authenticatorId: String,
         authenticatorTypeString: String,

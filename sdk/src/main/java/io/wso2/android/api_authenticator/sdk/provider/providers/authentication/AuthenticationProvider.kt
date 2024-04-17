@@ -208,7 +208,7 @@ interface AuthenticationProvider {
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    suspend fun authenticateWithAnyAuthenticator(
+    suspend fun authenticate(
         context: Context,
         authenticatorId: String,
         authenticatorTypeString: String,

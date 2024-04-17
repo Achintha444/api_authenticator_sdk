@@ -16,7 +16,7 @@
     - [suspend fun handleGoogleNativeLegacyAuthenticateResult(context: Context, resultCode: Int, data: Intent)](#suspend-fun-handlegooglenativelegacyauthenticateresultcontext-context-resultcode-int-data-intent)
     - [suspend fun authenticateWithGithubRedirect(context: Context, authenticatorId: String)](#suspend-fun-authenticatewithgithubredirectcontext-context-authenticatorid-string)
     - [suspend fun authenticateWithPasskey(context: Context, authenticatorId: String, allowCredentials: List<String>? = null, timeout: Long? = null, userVerification: String? = null)](#suspend-fun-authenticatewithpasskeycontext-context-authenticatorid-string-allowcredentials-liststring--null-timeout-long--null-userverification-string--null)
-    - [suspend fun authenticateWithAnyAuthenticator(context: Context, authenticatorId: String, authenticatorTypeString: String, authParams: LinkedHashMap<String, String>)](#suspend-fun-authenticatewithanyauthenticatorcontext-context-authenticatorid-string-authenticatortypestring-string-authparams-linkedhashmapstring-string)
+    - [suspend fun authenticate(context: Context, authenticatorId: String, authenticatorTypeString: String, authParams: LinkedHashMap<String, String>)](#suspend-fun-authenticatewithanyauthenticatorcontext-context-authenticatorid-string-authenticatortypestring-string-authparams-linkedhashmapstring-string)
     - [suspend fun getUserDetails(context: Context): LinkedHashMap<String, Any>?](#suspend-fun-getuserdetailscontext-context-linkedhashmapstring-any)
     - [suspend fun logout(context: Context)](#suspend-fun-logoutcontext-context)
 - [TokenProvider](#tokenprovider)
@@ -213,7 +213,7 @@ AuthenticationProvider handles the authentication process using SharedFlow. This
   - `AuthenticationState.Unauthenticated`: The user is not authenticated to access the application.
   - `AuthenticationState.Error`: An error occurred during the authentication process.
  
-### suspend fun authenticateWithAnyAuthenticator(context: Context, authenticatorId: String, authenticatorTypeString: String, authParams: LinkedHashMap<String, String>)
+### suspend fun authenticate(context: Context, authenticatorId: String, authenticatorTypeString: String, authParams: LinkedHashMap<String, String>)
 
 - **Description**: Authenticate the user with any selected authenticator.
 - **Parameters**:

@@ -124,15 +124,9 @@ fun AuthScreenPreview() {
                 ) {
                     BasicAuthComponent(onLoginClick = { _, _ -> })
                     ContinueText()
-                    GoogleNativeAuthComponent {
-
-                    }
-                    PasskeyAuthComponent {
-
-                    }
-                    GithubAuthComponent {
-
-                    }
+                    GoogleNativeAuthComponent {}
+                    PasskeyAuthComponent {}
+                    GithubAuthComponent {}
                 }
             }
             Box(
