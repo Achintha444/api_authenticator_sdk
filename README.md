@@ -31,7 +31,7 @@ Add the latest released SDK in the `build.gradle` file of your Android applicati
 
 ```groovy
 dependencies {
-    implementation 'io.wso2.android.api_authenticator.sdk:1.0.0'
+  implementation 'io.asgardeo.android.core:1.0.0'
 }
 ```
 
@@ -234,6 +234,53 @@ The Asgardeo Auth SDK provides out-of-the-box support for some authenticators, w
 
 Before utilizing these authenticators, you need to integrate them into your application's login flow. You can find more information about this in the following link: [link_to_documentation].
 
+### Use any authentication mechanism
+
+If you are using any other authentication mechanism like email OTP, you can use the `authenticate` function. For this, you need to pass the authenticator id or authenticator which can be retrieved from the `authenticationFlow` returned from the `Authentication.Unauthenticated` state.
+
+This can be used in two ways:
+
+#### Authenticator parameters are known
+
+If you are aware of the authenticator parameters required for the authenticator (which can be found in the following link), you can directly call this function to authenticate the user with this authenticator.
+
+```kotlin
+authenticationProvider.authenticate(
+    context,
+    authenticatorId = authenticator.authenticatorId,
+    authenticatorTypeString = authenticator.authenticator,
+    authParams = < as a LinkedHashMap<String, String> >
+)
+```
+
+#### Authenticator parameters are not known
+
+If you are not aware of the authenticator parameters required for the authenticator, you first need to retrieve the parameters required to authenticate the user with this authenticator. For this, you can use the following function:
+
+```kotlin
+val detailedAuthenticator: Authenticator = authenticationProvider.authenticateWithAuthenticator(
+    authenticatorId = authenticator.authenticatorId,
+    authenticatorTypeString = authenticator.authenticator
+)
+```
+
+This will return a fully detailed authenticator object. In that object, you can get the required authentication parameters from:
+
+```kotlin
+val requiredParams: List<String>? = detailedAuthenticator.requiredParams
+```
+
+After that, you can manually set the relevant required authentication parameters and call the `authenticate` function:
+
+```kotlin
+authenticationProvider.authenticate(
+    context,
+    authenticatorId = authenticator.authenticatorId,
+    authenticatorTypeString = authenticator.authenticator,
+    authParams = < as a LinkedHashMap<String, String> >
+)
+```
+
 ### Use Basic authentication
 
 ```kotlin
@@ -315,28 +362,17 @@ authenticationProvider.authenticateWithPasskey(
 )
 ```
 
-### Use federated authentication
+### Use redirect based authentication
 
-To perform federated authentication, first, you need to add the following code snippet to your application's `AndroidManifest` file. This will add a separate activity that will handle the redirection on your behalf.
+To perform redirect based authentication using a federated IdP, first, you need to add the following code snippet to your application build.gradle file. This will add a separate activity that will handle the redirection on your behalf.
 
-```xml
-<application ...>
-    ...
-    <activity
-        android:name="io.wso2.android.api_authenticator.sdk.core.ui.RedirectUriReceiverActivity"
-        android:exported="true"
-    >
-        <intent-filter>
-            <category android:name="android.intent.category.BROWSABLE" />
-            <action android:name="android.intent.action.VIEW" />
-            <category android:name="android.intent.category.DEFAULT" />
-            <data
-                android:host="<host>"
-                android:scheme="<scheme>" 
-            />
-        </intent-filter>
-    </activity>
-</application>
+```gradle
+android.defaultConfig.manifestPlaceholders = [
+     ...
+     'redirectUriHost': '<host>',
+     'redirectUriScheme': '<scheme>'
+     ...	
+]
 ```
 
 After authenticating with the federated IdP, normally, the IdP will redirect the user to the WSO2 Identity Server/Asgardeo's common auth endpoint to continue the flow. However, with API-based authentication, this is changed. The IdP should redirect to the application. To support this, you should configure the deep link in the federated IdP side. Add that deep link in the `<data>` section. For example, if you are using the `wso2sample://oauth2` deep link, you should fill the `<data>` section as follows:
@@ -348,7 +384,7 @@ After authenticating with the federated IdP, normally, the IdP will redirect the
 />
 ```
 
-### Use federated Github authentication
+### Use redirect Github authentication
 
 ```kotlin
 authenticationProvider.authenticateWithGithubRedirect(
@@ -357,7 +393,7 @@ authenticationProvider.authenticateWithGithubRedirect(
 )
 ```
 
-### Use federated Microsoft authentication
+### Use redirect Microsoft authentication
 
 ```kotlin
 authenticationProvider.authenticateWithMicrosoftRedirect(
@@ -370,86 +406,7 @@ authenticationProvider.authenticateWithMicrosoftRedirect(
 
 ```kotlin
 authenticationProvider.authenticateWithOpenIdConnect(
-   context,
-    authenticatorId = authenticator.authenticatorId
-)
-```
-
-### Use other federated social authentication
-
-To perform authentication with other federated social IdPs, you can use the `authenticateWithOpenIdConnect` function. For this, you need to pass the authenticator id or authenticator which can be retrieved from the `authenticationFlow` returned from the `Authentication.Unauthenticated` state.
-
-```kotlin
-@Composable
-internal fun LoginForm() {
-    authenticationFlow: AuthenticationFlowNotSuccess,
-    onSuccessfulLogin: (User) -> Unit
-) {
-    authenticationFlow.nextStep.authenticators.forEach {
-        when (it.authenticator) {
-            "Federated" -> {
-                FederatedAuth(authenticatorType = it)
-            }
-        }
-    }
-}
-
-@Composable
-internal fun FederatedAuth(authenticator: Authenticator) {
-    FederatedAuthComponent(
-        onLoginClick = { username, password ->
-            authenticationProvider.authenticateWithOpenIdConnect(
-                context = context,
-                authenticatorId = authenticator.authenticatorId
-            )
-        }
-    )
-}
-```
-
-### Use any other authentication mechanism
-
-If you are using any other authentication mechanism like email OTP, you can use the `authenticate` function. For this, you need to pass the authenticator id or authenticator which can be retrieved from the `authenticationFlow` returned from the `Authentication.Unauthenticated` state.
-
-This can be used in two ways:
-
-#### Authenticator parameters are known
-
-If you are aware of the authenticator parameters required for the authenticator (which can be found in the following link), you can directly call this function to authenticate the user with this authenticator.
-
-```kotlin
-authenticationProvider.authenticate(
-    context,
-    authenticatorId = authenticator.authenticatorId,
-    authenticatorTypeString = authenticator.authenticator,
-    authParams = < as a LinkedHashMap<String, String> >
-)
-```
-
-#### Authenticator parameters are not known
-
-If you are not aware of the authenticator parameters required for the authenticator, you first need to retrieve the parameters required to authenticate the user with this authenticator. For this, you can use the following function:
-
-```kotlin
-val detailedAuthenticator: Authenticator = authenticationProvider.authenticateWithAuthenticator(
-    authenticatorId = authenticator.authenticatorId,
-    authenticatorTypeString = authenticator.authenticator
-)
-```
-
-This will return a fully detailed authenticator object. In that object, you can get the required authentication parameters from:
-
-```kotlin
-val requiredParams: List<String>? = detailedAuthenticator.requiredParams
-```
-
-After that, you can manually set the relevant required authentication parameters and call the `authenticate` function:
-
-```kotlin
-authenticationProvider.authenticate(
-    context,
-    authenticatorId = authenticator.authenticatorId,
-    authenticatorTypeString = authenticator.authenticator,
-    authParams = < as a LinkedHashMap<String, String> >
+  context,
+  authenticatorId = authenticator.authenticatorId
 )
 ```
