@@ -35,6 +35,15 @@ interface TokenProvider {
     suspend fun getIDToken(context: Context): String?
 
     /**
+     * Get the decoded ID token
+     *
+     * @param context The [Context] instance.
+     *
+     * @return The decoded ID token [String]
+     */
+    suspend fun getDecodedIDToken(context: Context): LinkedHashMap<String, Any>
+
+    /**
      * Get the access token expiration time from the token.
      *
      * @param context The [Context] instance.

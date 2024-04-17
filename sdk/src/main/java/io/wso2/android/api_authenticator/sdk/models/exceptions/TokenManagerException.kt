@@ -15,15 +15,9 @@ class TokenManagerException(
         const val TOKEN_MANAGER_EXCEPTION = "TokenManager Exception"
 
         /**
-         * Message to be shown when token is not initialized
+         * Invalid ID token message
          */
-        const val TOKEN_NOT_SAVED = "Token is not saved due to save failure"
-
-        /**
-         *
-         */
-        const val CANNOT_GET_TOKEN =
-            "Cannot get the token from the token data store due to an error"
+        const val INVALID_ID_TOKEN = "Invalid ID token"
     }
 
     override fun toString(): String {

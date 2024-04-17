@@ -133,6 +133,16 @@ interface AuthenticationCoreDef {
     suspend fun getIDToken(context: Context): String?
 
     /**
+     * Get the decoded ID token
+     *
+     * @param context Context of the application
+     * @param idToken The ID token
+     *
+     * @return The decoded ID token [String]
+     */
+    fun getDecodedIDToken(context: Context, idToken: String): LinkedHashMap<String, Any>
+
+    /**
      * Get the access token expiration time from the token data store.
      *
      * @param context Context of the application

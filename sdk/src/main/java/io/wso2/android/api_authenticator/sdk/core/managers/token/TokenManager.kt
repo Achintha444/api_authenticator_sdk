@@ -12,14 +12,14 @@ internal interface TokenManager {
      *
      * @param tokenState The [TokenState] instance.
      */
-     suspend fun saveTokenState(tokenState: TokenState): Unit?
+    suspend fun saveTokenState(tokenState: TokenState): Unit?
 
     /**
      * Get the [TokenState] from the data store.
      *
      * @return The [TokenState] instance.
      */
-     suspend fun getTokenState(): TokenState?
+    suspend fun getTokenState(): TokenState?
 
     /**
      * Get the access token from the token data store.
@@ -41,6 +41,15 @@ internal interface TokenManager {
      * @return The ID token [String]
      */
     suspend fun getIDToken(): String?
+
+    /**
+     * Get the decoded ID token
+     *
+     * @param idToken The ID token
+     *
+     * @return The decoded ID token [String]
+     */
+    fun getDecodedIDToken(idToken: String): LinkedHashMap<String, Any>
 
     /**
      * Get the access token expiration time from the token data store.

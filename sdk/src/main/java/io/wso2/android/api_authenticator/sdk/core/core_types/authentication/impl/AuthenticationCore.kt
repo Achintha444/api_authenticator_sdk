@@ -251,6 +251,17 @@ class AuthenticationCore private constructor(
         getTokenManagerInstance(context).getIDToken()
 
     /**
+     * Get the decoded ID token
+     *
+     * @param context Context of the application
+     * @param idToken The ID token
+     *
+     * @return The decoded ID token [String]
+     */
+    override fun getDecodedIDToken(context: Context, idToken: String): LinkedHashMap<String, Any> =
+        getTokenManagerInstance(context).getDecodedIDToken(idToken)
+
+    /**
      * Get the access token expiration time from the token data store.
      *
      * @return The access token expiration time [Long]

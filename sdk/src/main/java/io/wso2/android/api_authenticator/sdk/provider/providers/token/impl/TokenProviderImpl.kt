@@ -13,7 +13,7 @@ import java.lang.ref.WeakReference
  */
 internal class TokenProviderImpl private constructor(
     private val tokenProviderManager: TokenProviderManager
-): TokenProvider {
+) : TokenProvider {
     companion object {
         /**
          * Instance of the [TokenProviderImpl] that will be used throughout the application
@@ -65,7 +65,18 @@ internal class TokenProviderImpl private constructor(
      *
      * @return The ID token [String]
      */
-    override suspend fun getIDToken(context: Context): String? = tokenProviderManager.getIDToken(context)
+    override suspend fun getIDToken(context: Context): String? =
+        tokenProviderManager.getIDToken(context)
+
+    /**
+     * Get the decoded ID token
+     *
+     * @param context The [Context] instance.
+     *
+     * @return The decoded ID token [String]
+     */
+    override suspend fun getDecodedIDToken(context: Context): LinkedHashMap<String, Any> =
+        tokenProviderManager.getDecodedIDToken(context)
 
     /**
      * Get the access token expiration time from the token.
@@ -84,7 +95,8 @@ internal class TokenProviderImpl private constructor(
      *
      * @return The scope [String]
      */
-    override suspend fun getScope(context: Context): String? = tokenProviderManager.getScope(context)
+    override suspend fun getScope(context: Context): String? =
+        tokenProviderManager.getScope(context)
 
 
     /**
@@ -128,5 +140,6 @@ internal class TokenProviderImpl private constructor(
      *
      * @param context The [Context] instance.
      */
-    override suspend fun clearTokens(context: Context): Unit? = tokenProviderManager.clearTokens(context)
+    override suspend fun clearTokens(context: Context): Unit? =
+        tokenProviderManager.clearTokens(context)
 }

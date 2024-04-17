@@ -1,10 +1,16 @@
 package io.wso2.android.api_authenticator.sdk.core.managers.token.impl
 
 import android.content.Context
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.JsonNode
 import io.wso2.android.api_authenticator.sdk.core.di.TokenManagerImplContainer
 import io.wso2.android.api_authenticator.sdk.core.managers.token.TokenManager
 import io.wso2.android.api_authenticator.sdk.data.token.TokenDataStore
+import io.wso2.android.api_authenticator.sdk.models.exceptions.TokenManagerException
 import io.wso2.android.api_authenticator.sdk.models.state.TokenState
+import io.wso2.android.api_authenticator.sdk.util.Base64Util
+import io.wso2.android.api_authenticator.sdk.util.JsonUtil
+import kotlin.coroutines.resume
 
 /**
  * Use to manage the tokens.
@@ -54,6 +60,31 @@ internal class TokenManagerImpl internal constructor(private val context: Contex
      */
     override suspend fun getIDToken(): String? =
         getTokenState()?.getAppAuthState()?.idToken
+
+    /**
+     * Get the decoded ID token
+     *
+     * @param idToken The ID token
+     *
+     * @return The decoded ID token [String]
+     */
+    override fun getDecodedIDToken(idToken: String): LinkedHashMap<String, Any> {
+        val idTokenParts: List<String> = idToken.split(".")
+
+        if (idTokenParts.size != 3) {
+            // Invalid ID token format
+            throw TokenManagerException(TokenManagerException.INVALID_ID_TOKEN)
+        }
+
+        // reading the json from the payload body string
+        val payloadBodyObject: JsonNode =
+            JsonUtil.getJsonObject(Base64Util.base64UrlDecode(idTokenParts[1]))
+
+        val stepTypeReference =
+            object : TypeReference<LinkedHashMap<String, Any>>() {}
+
+        return JsonUtil.jsonNodeToObject(payloadBodyObject, stepTypeReference)
+    }
 
     /**
      * Get the access token expiration time from the token data store.

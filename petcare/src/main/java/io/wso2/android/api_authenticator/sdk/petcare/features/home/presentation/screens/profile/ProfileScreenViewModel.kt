@@ -29,9 +29,11 @@ class ProfileScreenViewModel @Inject constructor(
     val state = _state
 
     private val authenticationProvider = asgardeoAuthRepository.getAuthenticationProvider()
+    private val tokenProvider = asgardeoAuthRepository.getTokenProvider()
 
     init {
         getBasicUserInfo()
+        getDecodedIdToken()
     }
 
     fun navigateToHome() {
@@ -76,6 +78,12 @@ class ProfileScreenViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    private fun getDecodedIdToken() {
+        viewModelScope.launch {
+            tokenProvider.getDecodedIDToken(applicationContext)
         }
     }
 

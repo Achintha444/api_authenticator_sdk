@@ -64,6 +64,20 @@ internal class TokenProviderManagerImpl private constructor(
         authenticationCore.getIDToken(context)
 
     /**
+     * Get the decoded ID token
+     *
+     * @param context The [Context] instance.
+     *
+     * @return The decoded ID token [String]
+     */
+    override suspend fun getDecodedIDToken(context: Context): LinkedHashMap<String, Any> {
+        val idToken: String? = authenticationCore.getIDToken(context)
+
+        return authenticationCore.getDecodedIDToken(context, idToken!!)
+    }
+
+
+    /**
      * Get the access token expiration time from the token.
      *
      * @param context The [Context] instance.
