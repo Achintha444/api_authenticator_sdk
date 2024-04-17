@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import io.wso2.android.api_authenticator.sdk.models.state.AuthenticationState
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.authentication.AuthenticationProviderManager
 import io.wso2.android.api_authenticator.sdk.provider.provider_managers.user.UserProviderManager
@@ -245,8 +246,7 @@ internal class AuthenticationProviderImpl private constructor(
      * Authenticate the user with the selected authenticator.
      *
      * @param context The context of the application
-     * @param authenticatorId The authenticator id of the selected authenticator
-     * @param authenticatorTypeString The authenticator type of the selected authenticator
+     * @param authenticator The selected authenticator
      * @param authParams The authentication parameters of the selected authenticator
      * as a LinkedHashMap<String, String> with the key as the parameter name and the value as the
      * parameter value
@@ -258,13 +258,11 @@ internal class AuthenticationProviderImpl private constructor(
      */
     override suspend fun authenticate(
         context: Context,
-        authenticatorId: String,
-        authenticatorTypeString: String,
+        authenticator: Authenticator,
         authParams: LinkedHashMap<String, String>
     ) = authenticationProviderManager.authenticate(
         context,
-        authenticatorId,
-        authenticatorTypeString,
+        authenticator,
         authParams
     )
 
