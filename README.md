@@ -33,7 +33,7 @@ Add the latest released SDK in the `build.gradle` file of your Android applicati
 
 ```groovy
 dependencies {
-    implementation 'io.asgardeo.android.core:1.0.0'
+  implementation 'io.asgardeo.android.core:1.0.0'
 }
 ```
 
@@ -45,7 +45,7 @@ For example, if you have configured the `callBackUrl` as `wso2sample://oauth2`, 
 
 ```groovy
 android.defaultConfig.manifestPlaceholders = [
-    'appAuthRedirectScheme': 'wso2sample'
+        'appAuthRedirectScheme': 'wso2sample'
 ]
 ```
 
@@ -55,12 +55,12 @@ android.defaultConfig.manifestPlaceholders = [
 
 ```kotlin
 private val asgardeoAuth: AsgardeoAuth = AsgardeoAuth.getInstance(
-    AuthenticationCoreConfig(
-        baseUrl = "https://localhost:9443",
-        redirectUri = "wso2sample://oauth2",
-        clientId = "<client_id>",
-        scope = "openid"
-    )
+  AuthenticationCoreConfig(
+    baseUrl = "https://localhost:9443",
+    redirectUri = "wso2sample://oauth2",
+    clientId = "<client_id>",
+    scope = "openid"
+  )
 )
 ```
 > [!IMPORTANT]
@@ -88,32 +88,32 @@ After that, you can call the `authenticationProvider.initializeAuthentication` t
 ```kotlin
 @Composable
 internal fun LandingScreen() {
-    val state = authenticationProvider.getAuthenticationStateFlow()
-    authenticationProvider.isLoggedInStateFlow(context)
-    handleAuthenticationState(state)
+  val state = authenticationProvider.getAuthenticationStateFlow()
+  authenticationProvider.isLoggedInStateFlow(context)
+  handleAuthenticationState(state)
 }
 
 private fun handleAuthenticationState(state: AuthenticationState) {
-    authStateJob = state.collect {
-        when (it) {
-            is AuthenticationState.Initial -> {
-                authenticationProvider.initializeAuthentication(context)
-            }
-            is AuthenticationState.Unauthorized -> {
-                // Display login form
-                LoginForm(it.authenticationFlow)
-            }
-            is AuthenticationState.Error -> {
-                // Display Error Toast
-            }
-            is AuthenticationState.Authorized -> {
-                onSuccessfulLogin()
-            }
-            is AuthenticationState.Loading -> {
-                // Show loading
-            }
-        }
+  authStateJob = state.collect {
+    when (it) {
+      is AuthenticationState.Initial -> {
+        authenticationProvider.initializeAuthentication(context)
+      }
+      is AuthenticationState.Unauthorized -> {
+        // Display login form
+        LoginForm(it.authenticationFlow)
+      }
+      is AuthenticationState.Error -> {
+        // Display Error Toast
+      }
+      is AuthenticationState.Authorized -> {
+        onSuccessfulLogin()
+      }
+      is AuthenticationState.Loading -> {
+        // Show loading
+      }
     }
+  }
 }
 ```
 
@@ -124,56 +124,56 @@ private fun handleAuthenticationState(state: AuthenticationState) {
  */
 @Composable
 internal fun LoginForm() {
-    authenticationFlow: AuthenticationFlowNotSuccess,
-    onSuccessfulLogin: (User) -> Unit
-) {
+  authenticationFlow: AuthenticationFlowNotSuccess,
+  onSuccessfulLogin: (User) -> Unit
+  ) {
     authenticationFlow.nextStep.authenticators.forEach {
-        when (it.authenticator) {
-            AuthenticatorTypes.BASIC_AUTHENTICATOR.authenticatorType -> {
-                BasicAuth(authenticatorType = it)
-            }
-
-            AuthenticatorTypes.TOTP_AUTHENTICATOR.authenticatorType -> {
-                TotpAuth(authenticatorType = it)
-            }
+      when (it.authenticator) {
+        AuthenticatorTypes.BASIC_AUTHENTICATOR.authenticatorType -> {
+          BasicAuth(authenticatorType = it)
         }
-    }
-}
 
-@Composable
-internal fun BasicAuth(authenticator: Authenticator) {
+        AuthenticatorTypes.TOTP_AUTHENTICATOR.authenticatorType -> {
+          TotpAuth(authenticatorType = it)
+        }
+      }
+    }
+  }
+
+  @Composable
+  internal fun BasicAuth(authenticator: Authenticator) {
     BasicAuthComponent(
-        onLoginClick = { username, password ->
-            authenticationProvider.authenticateWithUsernameAndPassword(
-                username = username,
-                password = password
-            )
-        }
+      onLoginClick = { username, password ->
+        authenticationProvider.authenticateWithUsernameAndPassword(
+          username = username,
+          password = password
+        )
+      }
     )
-}
+  }
 
-@Composable
-fun BasicAuthComponent(
+  @Composable
+  fun BasicAuthComponent(
     onLoginClick: (username: String, password: String) -> Unit
-) {
+  ) {
     Column() {
-        var username by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
-        OutlinedTextField(
-            value = username,
-            onValueChange = { username = it },
-            label = "Username"
-        )
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = "Password"
-        )
-        Button(onClick = { onLoginClick(username, password) }) {
-            Text(text = "Login")
-        }
+      var username by remember { mutableStateOf("") }
+      var password by remember { mutableStateOf("") }
+      OutlinedTextField(
+        value = username,
+        onValueChange = { username = it },
+        label = "Username"
+      )
+      OutlinedTextField(
+        value = password,
+        onValueChange = { password = it },
+        label = "Password"
+      )
+      Button(onClick = { onLoginClick(username, password) }) {
+        Text(text = "Login")
+      }
     }
-}
+  }
 ```
 
 You will not need to handle the authentication state in multiple places, you can do it at the start of the application, and it will handle the state accordingly.
@@ -184,13 +184,13 @@ After the user is authenticated, to get user-related information, we can use the
 
 ```kotlin
 coroutineScope.launch {
-    runCatching {
-        authenticationProvider.getUserDetails(<context>)
-    }.onSuccess { userDetails ->
-        Profile(userDetails)
-    }.onFailure { e ->
-        // Display error message
-    }
+  runCatching {
+    authenticationProvider.getUserDetails(<context>)
+  }.onSuccess { userDetails ->
+    Profile(userDetails)
+  }.onFailure { e ->
+    // Display error message
+  }
 }
 ```
 
@@ -218,7 +218,7 @@ If you want to perform any action based on the tokens that are returned, you can
 
 ```kotlin
 tokenProvider.performAction(context) { accessToken, idToken, ->
-    action(accessToken, idToken)
+  action(accessToken, idToken)
 }
 ```
 
@@ -266,10 +266,6 @@ private val asgardeoAuth: AsgardeoAuth = AsgardeoAuth.getInstance(
     )
 )
 ```
-
-#### Steps
-
-To test the client attestation you need to test the application from a real device, where the app downloaded from the playstore, for this you will require a Google play account. This application is bound to one of my Google cloud projects, hence you need to change the package name of the application and associate the project with a new Google Project, for this you can use the Google project that you created for the step 3.
 
 ## Use authenticators with the SDK
 
