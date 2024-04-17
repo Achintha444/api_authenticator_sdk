@@ -106,7 +106,7 @@ interface AuthenticationProvider {
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-     suspend fun authenticateWithMicrosoft(context: Context, authenticatorId: String)
+    suspend fun authenticateWithMicrosoft(context: Context, authenticatorId: String)
 
     /**
      * Authenticate the user with the Google authenticator. Uses credential management API.
@@ -215,13 +215,13 @@ interface AuthenticationProvider {
     )
 
     /**
-     * Get the user details of the authenticated user.
+     * Get the basic user information of the authenticated.
      *
      * @param context The context of the application
      *
-     * @return The user details [LinkedHashMap] that contains the user details
+     * @return User details as a [LinkedHashMap]
      */
-    suspend fun getUserDetails(context: Context): LinkedHashMap<String, Any>?
+    suspend fun getBasicUserInfo(context: Context): LinkedHashMap<String, Any>?
 
     /**
      * Logout the user from the application.

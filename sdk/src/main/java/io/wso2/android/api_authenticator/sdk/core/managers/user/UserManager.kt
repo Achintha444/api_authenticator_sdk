@@ -5,11 +5,11 @@ package io.wso2.android.api_authenticator.sdk.core.managers.user
  */
 interface UserManager {
     /**
-     * get the user details from the Identity Server.
+     * Get the basic user information of the authenticated.
      *
      * @param accessToken Access token to authorize the request
      *
      * @return User details as a [LinkedHashMap]
      */
-    suspend fun getUserDetails(accessToken: String?): LinkedHashMap<String, Any>?
+    suspend fun getBasicUserInfo(accessToken: String?): LinkedHashMap<String, Any>?
 }

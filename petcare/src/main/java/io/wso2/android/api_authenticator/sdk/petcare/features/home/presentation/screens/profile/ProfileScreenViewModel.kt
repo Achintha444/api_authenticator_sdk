@@ -31,7 +31,7 @@ class ProfileScreenViewModel @Inject constructor(
     private val authenticationProvider = asgardeoAuthRepository.getAuthenticationProvider()
 
     init {
-        getUserDetails()
+        getBasicUserInfo()
     }
 
     fun navigateToHome() {
@@ -42,7 +42,7 @@ class ProfileScreenViewModel @Inject constructor(
         }
     }
 
-    private fun getUserDetails() {
+    private fun getBasicUserInfo() {
         _state.update {
             it.copy(
                 isLoading = true
@@ -50,18 +50,15 @@ class ProfileScreenViewModel @Inject constructor(
         }
         viewModelScope.launch {
             runCatching {
-                authenticationProvider.getUserDetails(applicationContext)
+                authenticationProvider.getBasicUserInfo(applicationContext)
             }.onSuccess { userDetails ->
                 _state.update {
                     it.copy(
                         user = UserDetails(
-                            username = userDetails?.get("userName").toString(),
-                            firstName = (userDetails?.get("name") as LinkedHashMap<String, String>?)?.get(
-                                "givenName"
-                            ).toString(),
-                            lastName = (userDetails?.get("name") as LinkedHashMap<String, String>?)?.get(
-                                "familyName"
-                            ).toString()
+                            username = userDetails?.get("sub").toString(),
+                            firstName = userDetails?.get("given_name").toString(),
+                            lastName = userDetails?.get("family_name").toString(),
+                            email = userDetails?.get("email").toString()
                         ),
                         isLoading = false
                     )

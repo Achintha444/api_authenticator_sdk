@@ -7,11 +7,11 @@ import android.content.Context
  */
 internal interface UserProviderManager {
     /**
-     * Get the user details.
+     * Get the basic user information of the authenticated.
      *
      * @param context The [Context] of the application
      *
-     * @return The user details [LinkedHashMap] that contains the user details
+     * @return User details as a [LinkedHashMap]
      */
-    suspend fun getUserDetails(context: Context): LinkedHashMap<String, Any>?
+     suspend fun getBasicUserInfo(context: Context): LinkedHashMap<String, Any>?
 }

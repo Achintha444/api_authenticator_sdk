@@ -20,7 +20,7 @@ internal object AuthenticatorFactory {
      */
     internal fun getAuthenticator(
         authenticatorId: String,
-        authenticator: String?,
+        authenticator: String,
         idp: String?,
         metadata: AuthenticatorMetaData?,
         requiredParams: List<String>?

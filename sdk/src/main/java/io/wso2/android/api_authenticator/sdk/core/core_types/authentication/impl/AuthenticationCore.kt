@@ -289,14 +289,14 @@ class AuthenticationCore private constructor(
         getTokenManagerInstance(context).validateAccessToken()
 
     /**
-     * Get the user details from the Identity Server.
+     * Get the basic user information of the authenticated.
      *
      * @param accessToken Access token to authorize the request
      *
      * @return User details as a [LinkedHashMap]
      */
-    override suspend fun getUserDetails(accessToken: String?): LinkedHashMap<String, Any>? =
-        userManagerInstance.getUserDetails(accessToken)
+    override suspend fun getBasicUserInfo(accessToken: String?): LinkedHashMap<String, Any>? =
+        userManagerInstance.getBasicUserInfo(accessToken)
 
     /**
      * Logout the user from the application.

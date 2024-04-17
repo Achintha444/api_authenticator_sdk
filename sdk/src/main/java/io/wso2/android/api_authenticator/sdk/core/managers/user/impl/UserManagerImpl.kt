@@ -67,17 +67,17 @@ class UserManagerImpl private constructor(
     }
 
     /**
-     * get the user details from the Identity Server.
+     * Get the basic user information of the authenticated.
      *
      * @param accessToken Access token to authorize the request
      *
      * @return User details as a [LinkedHashMap]
      */
-    override suspend fun getUserDetails(accessToken: String?): LinkedHashMap<String, Any>? =
+    override suspend fun getBasicUserInfo(accessToken: String?): LinkedHashMap<String, Any>? =
         withContext(Dispatchers.IO) {
             suspendCoroutine { continuation ->
                 val request: Request = userManagerImplRequestBuilder.getUserDetailsRequestBuilder(
-                    authenticationCoreConfig.getMeEndpoint(),
+                    authenticationCoreConfig.getUserinfoEndpoint(),
                     accessToken!!
                 )
 

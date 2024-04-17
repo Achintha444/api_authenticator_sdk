@@ -51,17 +51,17 @@ class UserProviderManagerImpl private constructor(
     }
 
     /**
-     * Get the user details.
+     * Get the basic user information of the authenticated.
      *
      * @param context The [Context] of the application
      *
      * @return The user details [LinkedHashMap] that contains the user details
      */
-    override suspend fun getUserDetails(context: Context): LinkedHashMap<String, Any>? {
+    override suspend fun getBasicUserInfo(context: Context): LinkedHashMap<String, Any>? {
         var userDetails: LinkedHashMap<String, Any>? = null
 
         tokenProviderManager.performAction(context) { accessToken, _ ->
-            userDetails = authenticationCore.getUserDetails(accessToken)
+            userDetails = authenticationCore.getBasicUserInfo(accessToken)
         }
 
         return userDetails

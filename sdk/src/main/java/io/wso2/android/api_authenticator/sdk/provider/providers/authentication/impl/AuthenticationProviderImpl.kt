@@ -296,14 +296,14 @@ internal class AuthenticationProviderImpl private constructor(
     )
 
     /**
-     * Get the user details of the authenticated user.
+     * Get the basic user information of the authenticated.
      *
      * @param context The context of the application
      *
-     * @return The user details [LinkedHashMap] that contains the user details
+     * @return User details as a [LinkedHashMap]
      */
-    override suspend fun getUserDetails(context: Context): LinkedHashMap<String, Any>? =
-        userProviderManager.getUserDetails(context)
+    override suspend fun getBasicUserInfo(context: Context): LinkedHashMap<String, Any>? =
+        userProviderManager.getBasicUserInfo(context)
 
     /**
      * Logout the user from the application.

@@ -65,12 +65,12 @@ class AuthenticationCoreConfig(
     }
 
     /**
-     * @example https://localhost:9443/scim2/Me
+     * @example https://localhost:9443/oauth2/userinfo
      *
      * @return Me endpoint of the WSO2 identity server.
      */
-    fun getMeEndpoint(): String {
-        return "$baseUrl/scim2/Me"
+    fun getUserinfoEndpoint(): String {
+        return "$baseUrl/oauth2/userinfo"
     }
 
     /**
