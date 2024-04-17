@@ -19,11 +19,13 @@ The Asgardeo Auth Android SDK enables Android applications (written in Kotlin) t
 
 1. Download the latest version of WSO2 Identity Server, and start the WSO2 Identity Server.
 2. Register a Mobile Application to integrate your application with WSO2 Identity Server. You will obtain a `client_ID` from WSO2 Identity Server for your application which will need to be embedded later for the SDK integration. Also note the redirect URI that you used to create the application, this is also required for the SDK integration.
+3. In the created mobile application go to the "Advanced" section and enable the application native authentication for your Android application.
 
 #### Asgardeo
 
 1. Register to Asgardeo and create an organization if you don't already have one. The organization name you choose will be referred to as `<org_name>` throughout this document.
 2. Register a Mobile Application in Asgardeo to integrate your application with Asgardeo. You will obtain a `client_ID` from Asgardeo for your application which will need to be embedded later for the SDK integration. Also note the redirect URI that you used to create the application, this is also required for the SDK integration.
+3. In the created mobile application go to the "Advanced" section and enable the application native authentication for your Android application.
 
 ### Installing the SDK
 
@@ -31,7 +33,7 @@ Add the latest released SDK in the `build.gradle` file of your Android applicati
 
 ```groovy
 dependencies {
-  implementation 'io.asgardeo.android.core:1.0.0'
+    implementation 'io.asgardeo.android.core:1.0.0'
 }
 ```
 
@@ -54,10 +56,10 @@ android.defaultConfig.manifestPlaceholders = [
 ```kotlin
 private val asgardeoAuth: AsgardeoAuth = AsgardeoAuth.getInstance(
     AuthenticationCoreConfig(
-        "https://localhost:9443",
-        "wso2sample://oauth2",
-        "<client_id>",
-        "openid"
+        baseUrl = "https://localhost:9443",
+        redirectUri = "wso2sample://oauth2",
+        clientId = "<client_id>",
+        scope = "openid"
     )
 )
 ```
@@ -228,6 +230,47 @@ If you want to perform a logout, you can call the `logout` function in the `Auth
 authenticationProvider.logout(context)
 ```
 
+### Client attestation
+You can also use client attestation with the SDK as well.
+
+#### How to setup client attestation for your application
+1. In the created mobile application in the WSO2 Identity Server/Asgardeo, go to the advanced section and enable the client attestation.
+2. You need to subscribe to the "Google Play Integrity API" from your Google cloud project, you can do this from Enabled API's & Services in your Google cloud project.
+3. After that you need to create a new service account in the google project. You can create a Service Account for yourself with the following scopes.
+
+  1. Go to IAM& Admin -> Service Accounts
+  2. Click Create Service Account.
+  3. Fill the name and click create and continue.
+  4. You need to grant your service account the roles of Service Account User and Service Usage Consumer.
+  5. Click continue and then Done
+  6. You can see the service account added without keys, click : Actions -> Manage Keys for the service account.
+  7. Click Add key and Select JSON.
+  8. Save the JSON in secure place (We need this for Android Attestation Credentials for application metadata)
+
+4. After that, Update Application Advanced properties. The application you created requires 2 properties to perform android attestation.
+
+  1. Android package name
+  2. androidAttestationServiceCredentials
+     The JSON secret of Service Account downloaded. Note that this attribute is defined as a JSON object hence use the JSON key as it is.
+
+5. Now you can call the "Google Play Integrity API" from your application and pass the integrity token that you will get from the API result to the integrityToken value of the AuthenticationCoreConfig
+
+```kotlin
+private val asgardeoAuth: AsgardeoAuth = AsgardeoAuth.getInstance(
+    AuthenticationCoreConfig(
+        baseUrl = "https://localhost:9443",
+        redirectUri = "wso2sample://oauth2",
+        clientId = "<client_id>",
+        scope = "openid",
+        integrityToken = "<integrity_token>"
+    )
+)
+```
+
+#### Steps
+
+To test the client attestation you need to test the application from a real device, where the app downloaded from the playstore, for this you will require a Google play account. This application is bound to one of my Google cloud projects, hence you need to change the package name of the application and associate the project with a new Google Project, for this you can use the Google project that you created for the step 3.
+
 ## Use authenticators with the SDK
 
 The Asgardeo Auth SDK provides out-of-the-box support for some authenticators, which are accessible via the `AuthenticationProvider`. Each of the following functions will emit the aforementioned `AuthenticationStates`, except for the `AuthenticationState.Initial`.
@@ -364,7 +407,7 @@ authenticationProvider.authenticateWithPasskey(
 
 ### Use redirect based authentication
 
-To perform redirect based authentication using a federated IdP, first, you need to add the following code snippet to your application build.gradle file. This will add a separate activity that will handle the redirection on your behalf.
+To perform redirect based authentication using a federated authenticator, first, you need to add the following code snippet to your application build.gradle file. This will add a separate activity that will handle the redirection on your behalf.
 
 ```gradle
 android.defaultConfig.manifestPlaceholders = [

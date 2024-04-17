@@ -7,8 +7,6 @@ import io.wso2.android.api_authenticator.sdk.provider.providers.token.TokenProvi
  * Use as a repository to handle the authentication related operations using Asgardeo authentication SDK.
  */
 interface AsgardeoAuthRepository {
-
     fun getAuthenticationProvider(): AuthenticationProvider
-
     fun getTokenProvider(): TokenProvider
 }

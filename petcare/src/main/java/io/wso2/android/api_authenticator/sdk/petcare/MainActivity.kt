@@ -24,8 +24,6 @@ import io.wso2.android.api_authenticator.sdk.petcare.util.navigation.NavigationV
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
