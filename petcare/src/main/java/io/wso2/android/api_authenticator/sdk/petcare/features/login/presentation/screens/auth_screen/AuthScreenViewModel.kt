@@ -87,6 +87,46 @@ class AuthScreenViewModel @Inject constructor(
         }
     }
 
+    fun authenticateWithEmailOTP(authenticatorId: String, otpCode: String) {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    isLoading = true
+                )
+            }
+            authenticationProvider.authenticateWithEmailOtp(
+                applicationContext,
+                authenticatorId,
+                otpCode
+            )
+            _state.update {
+                it.copy(
+                    isLoading = false
+                )
+            }
+        }
+    }
+
+    fun authenticateWithSMSOTP(authenticatorId: String, otpCode: String) {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    isLoading = true
+                )
+            }
+            authenticationProvider.authenticateWithSMSOtp(
+                applicationContext,
+                authenticatorId,
+                otpCode
+            )
+            _state.update {
+                it.copy(
+                    isLoading = false
+                )
+            }
+        }
+    }
+
     fun authenticateWithOpenIdConnect(authenticatorId: String) {
         viewModelScope.launch {
             _state.update {

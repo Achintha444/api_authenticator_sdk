@@ -9,6 +9,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.models.auth_params.BasicAuthenticatorAuthParams
+import io.wso2.android.api_authenticator.sdk.models.auth_params.EmailOTPAuthenticatorTypeAuthParams
+import io.wso2.android.api_authenticator.sdk.models.auth_params.SMSOTPAuthenticatorTypeAuthParams
 import io.wso2.android.api_authenticator.sdk.models.auth_params.TotpAuthenticatorTypeAuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import io.wso2.android.api_authenticator.sdk.models.autheniticator.AuthenticatorTypes
@@ -203,7 +205,65 @@ internal class AuthenticationProviderManagerImpl private constructor(
             authenticateHandlerProviderManager.commonAuthenticate(
                 context,
                 userSelectedAuthenticator = it,
-                authParams = TotpAuthenticatorTypeAuthParams(token)
+                authParams = TotpAuthenticatorTypeAuthParams(token = token)
+            )
+        }
+    }
+
+    /**
+     * Authenticate the user with the Email OTP authenticator.
+     *
+     * @param context The context of the application
+     * @param authenticatorId The authenticator id of the selected authenticator
+     * @param otpCode The OTP code received to the user
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     */
+    override suspend fun authenticateWithEmailOTP(
+        context: Context,
+        authenticatorId: String,
+        otpCode: String
+    ) {
+        authenticateHandlerProviderManager.authenticateWithAuthenticator(
+            authenticatorId = authenticatorId,
+            authenticatorTypeString = AuthenticatorTypes.EMAIL_OTP_AUTHENTICATOR.authenticatorType
+        ) {
+            authenticateHandlerProviderManager.commonAuthenticate(
+                context,
+                userSelectedAuthenticator = it,
+                authParams = EmailOTPAuthenticatorTypeAuthParams(otpCode = otpCode)
+            )
+        }
+    }
+
+    /**
+     * Authenticate the user with the SMS OTP authenticator.
+     *
+     * @param context The context of the application
+     * @param authenticatorId The authenticator id of the selected authenticator
+     * @param otpCode The OTP code received to the user
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     */
+    override suspend fun authenticateWithSMSOTP(
+        context: Context,
+        authenticatorId: String,
+        otpCode: String
+    ) {
+        authenticateHandlerProviderManager.authenticateWithAuthenticator(
+            authenticatorId = authenticatorId,
+            authenticatorTypeString = AuthenticatorTypes.SMS_OTP_AUTHENTICATOR.authenticatorType
+        ) {
+            authenticateHandlerProviderManager.commonAuthenticate(
+                context,
+                userSelectedAuthenticator = it,
+                authParams = SMSOTPAuthenticatorTypeAuthParams(otpCode = otpCode)
             )
         }
     }
@@ -423,7 +483,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
     ) {
         authenticateHandlerProviderManager.authenticateWithAuthenticator(
             authenticatorId = authenticator.authenticatorId,
-            authenticatorTypeString = authenticator.authenticator
+            authenticatorTypeString = authenticator.authenticator!!
         ) {
             authenticateHandlerProviderManager.commonAuthenticate(
                 context,

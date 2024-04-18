@@ -18,7 +18,7 @@ open class Authenticator(
     /**
      * Name of the authenticator
      */
-    open val authenticator: String,
+    open val authenticator: String?,
     /**
      * Id of the idp of the authenticator
      */

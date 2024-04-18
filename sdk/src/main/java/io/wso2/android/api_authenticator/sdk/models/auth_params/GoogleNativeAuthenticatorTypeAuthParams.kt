@@ -12,10 +12,7 @@ data class GoogleNativeAuthenticatorTypeAuthParams(
      * id token retrieved from the Google authenticator
      */
     override val idToken: String
-) : AuthParams(
-    accessToken = accessToken,
-    idToken = idToken
-) {
+) : AuthParams(accessToken = accessToken, idToken = idToken) {
     /**
      * Get the parameter body for the authenticator to be sent to the server
      *

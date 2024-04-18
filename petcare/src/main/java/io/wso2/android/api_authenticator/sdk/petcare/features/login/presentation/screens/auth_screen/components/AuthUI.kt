@@ -49,6 +49,14 @@ internal fun AuthUI(authenticationFlow: AuthenticationFlowNotSuccess) {
                 TotpAuth(authenticator = it)
             }
 
+            AuthenticatorTypes.EMAIL_OTP_AUTHENTICATOR.authenticatorType -> {
+                EmailOTPAuth(authenticator = it)
+            }
+
+            AuthenticatorTypes.SMS_OTP_AUTHENTICATOR.authenticatorType -> {
+                SMSOTPAuth(authenticator = it)
+            }
+
             else -> {}
         }
     }

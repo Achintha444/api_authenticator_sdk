@@ -72,7 +72,7 @@ object AuthenticatorUtil {
             authenticators,
             authenticatorIdString
         )
-
+        
         return if (hasDuplicates) null else {
             if (authenticator?.authenticator == authenticatorTypeString) authenticator
             else null

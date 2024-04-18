@@ -7,7 +7,7 @@ import io.wso2.android.api_authenticator.sdk.util.JsonUtil
  */
 abstract class AuthParams(
     /**
-     * Username of the user - For Basic Authenticator
+     * Username of the user - For Basic Authenticator, TOTP Authenticator, Email OTP Authenticator, SMS OTP Authenticator
      */
     open val username: String? = null,
     /**
@@ -28,9 +28,12 @@ abstract class AuthParams(
     open val token: String? = null,
     /**
      * Token response retrieved from the passkey authenticator - For Passkey Authenticator
-     * TODO: Improve the comment
      */
-    open val tokenResponse: String? = null
+    open val tokenResponse: String? = null,
+    /**
+     * OTP code retrieved from the authenticator application - For SMS OTP Authenticator, Email OTP Authenticator
+     */
+    open val otpCode: String? = null
 ) {
     fun toJsonString(): String {
         return JsonUtil.getJsonString(this)

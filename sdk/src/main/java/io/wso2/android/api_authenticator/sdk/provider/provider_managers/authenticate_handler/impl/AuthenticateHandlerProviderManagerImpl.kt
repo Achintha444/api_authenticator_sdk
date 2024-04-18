@@ -203,8 +203,6 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
                     AuthenticationState.Error(it)
                 )
             }
-
-            selectedAuthenticator = null
         } else {
             authenticationStateProviderManager.emitAuthenticationState(
                 AuthenticationState.Error(
@@ -213,9 +211,9 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
                     )
                 )
             )
-
-            selectedAuthenticator = null
         }
+
+        selectedAuthenticator = null
     }
 
     /**

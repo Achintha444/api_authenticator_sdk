@@ -12,10 +12,7 @@ data class BasicAuthenticatorAuthParams(
      * Password of the user
      */
     override val password: String
-) : AuthParams(
-    username = username,
-    password = password
-) {
+) : AuthParams(username = username, password = password) {
     /**
      * Get the parameter body for the authenticator to be sent to the server
      *

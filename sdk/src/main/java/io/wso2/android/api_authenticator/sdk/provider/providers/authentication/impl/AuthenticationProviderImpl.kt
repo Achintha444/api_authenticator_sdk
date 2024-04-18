@@ -147,6 +147,42 @@ internal class AuthenticationProviderImpl private constructor(
     ) = authenticationProviderManager.authenticateWithTotp(context, authenticatorId, token)
 
     /**
+     * Authenticate the user with the Email OTP authenticator.
+     *
+     * @param context The context of the application
+     * @param authenticatorId The authenticator id of the selected authenticator
+     * @param otpCode The OTP code of the user
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     */
+    override suspend fun authenticateWithEmailOtp(
+        context: Context,
+        authenticatorId: String,
+        otpCode: String
+    ) = authenticationProviderManager.authenticateWithEmailOTP(context, authenticatorId, otpCode)
+
+    /**
+     * Authenticate the user with the SMS OTP authenticator.
+     *
+     * @param context The context of the application
+     * @param authenticatorId The authenticator id of the selected authenticator
+     * @param otpCode The OTP code of the user
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     */
+    override suspend fun authenticateWithSMSOtp(
+        context: Context,
+        authenticatorId: String,
+        otpCode: String
+    ) = authenticationProviderManager.authenticateWithSMSOTP(context, authenticatorId, otpCode)
+
+    /**
      * Authenticate the user with the OpenID Connect authenticator.
      *
      * @param context The context of the application

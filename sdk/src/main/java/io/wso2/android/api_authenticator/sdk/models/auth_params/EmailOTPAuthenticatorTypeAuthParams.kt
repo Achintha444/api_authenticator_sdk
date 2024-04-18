@@ -3,33 +3,31 @@ package io.wso2.android.api_authenticator.sdk.models.auth_params
 /**
  * Authenticator parameters class - For TOTP Authenticator
  */
-data class TotpAuthenticatorTypeAuthParams(
+data class EmailOTPAuthenticatorTypeAuthParams(
     /**
-     * Code retrieved from the authenticator application
+     * Email OTP code received to the user
      */
-    override val token: String? = null,
+    override val otpCode: String? = null,
     /**
      * Username of the user - if the authenticator used in the first step
      */
     override val username: String? = null
-) : AuthParams(
-    token = token
-) {
+) : AuthParams(otpCode = otpCode) {
     /**
      * Get the parameter body for the authenticator to be sent to the server
      *
      * @return LinkedHashMap<String, String> - Parameter body for the authenticator
-     * ex: [<"totp", totp>]
+     * ex: [<"OTPcode", otpCode>]
      */
     override fun getParameterBodyAuthenticator(requiredParams: List<String>)
             : LinkedHashMap<String, String> {
         val paramBody = LinkedHashMap<String, String>()
 
-        if (token == null || username == null) {
-            paramBody[requiredParams[0]] = token ?: username!!
+        if (otpCode == null || username == null) {
+            paramBody[requiredParams[0]] = otpCode ?: username!!
         } else {
             paramBody[requiredParams[0]] = username
-            paramBody[requiredParams[1]] = token
+            paramBody[requiredParams[1]] = otpCode
         }
 
         return paramBody

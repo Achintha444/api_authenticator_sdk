@@ -30,9 +30,16 @@ enum class AuthenticatorTypes(val authenticatorType: String) {
      * Github authenticator type
      */
     GITHUB_REDIRECT_AUTHENTICATOR("Github"),
-
     /**
      * Microsoft authenticator type
      */
     MICROSOFT_REDIRECT_AUTHENTICATOR("openidconnect"),
+    /**
+     * Email OTP authenticator type
+     */
+    EMAIL_OTP_AUTHENTICATOR("Email OTP"),
+    /**
+     * SMS OTP authenticator type
+     */
+    SMS_OTP_AUTHENTICATOR("SMS OTP")
 }

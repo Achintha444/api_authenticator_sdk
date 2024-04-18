@@ -9,9 +9,7 @@ data class PasskeyAuthenticatorTypeAuthParams(
      * TODO: Improve the comment
      */
     override val tokenResponse: String
-) : AuthParams(
-    tokenResponse = tokenResponse
-) {
+) : AuthParams(tokenResponse = tokenResponse) {
     /**
      * Get the parameter body for the authenticator to be sent to the server
      *
