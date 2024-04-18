@@ -269,7 +269,7 @@ interface AuthenticationProvider {
      * Authenticate the user with the selected authenticator.
      *
      * @param context The context of the application
-     * @param authenticator The selected authenticator
+     * @param detailedAuthenticator The selected authenticator
      * @param authParams The authentication parameters of the selected authenticator
      * as a LinkedHashMap<String, String> with the key as the parameter name and the value as the
      * parameter value
@@ -281,7 +281,7 @@ interface AuthenticationProvider {
      */
     suspend fun authenticate(
         context: Context,
-        authenticator: Authenticator,
+        detailedAuthenticator: Authenticator?,
         authParams: LinkedHashMap<String, String>
     )
 

@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlowNotSuccess
 import io.wso2.android.api_authenticator.sdk.petcare.features.login.domain.repository.AsgardeoAuthRepository
@@ -39,6 +40,47 @@ class AuthScreenViewModel @Inject constructor(
                 authenticationFlow = authenticationFlow as AuthenticationFlowNotSuccess,
                 isLoading = false
             )
+        }
+    }
+
+    fun selectAuthenticator(authenticator: Authenticator) {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    isLoading = true
+                )
+            }
+            val detailedAuthenticator: Authenticator? =
+                authenticationProvider.selectAuthenticator(authenticator)
+            _state.update {
+                it.copy(
+                    isLoading = false,
+                    detailedAuthenticator = detailedAuthenticator
+                )
+            }
+        }
+    }
+
+    fun authenticate(
+        detailedAuthenticator: Authenticator?,
+        authParams: LinkedHashMap<String, String>
+    ) {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    isLoading = true
+                )
+            }
+            authenticationProvider.authenticate(
+                applicationContext,
+                detailedAuthenticator,
+                authParams
+            )
+            _state.update {
+                it.copy(
+                    isLoading = false
+                )
+            }
         }
     }
 

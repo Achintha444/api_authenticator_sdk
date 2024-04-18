@@ -599,7 +599,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
      */
     override suspend fun authenticate(
         context: Context,
-        detailedAuthenticator: Authenticator,
+        detailedAuthenticator: Authenticator?,
         authParams: LinkedHashMap<String, String>
     ) {
         authenticateHandlerProviderManager.commonAuthenticate(

@@ -335,18 +335,18 @@ internal class AuthenticationProviderImpl private constructor(
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      *
      * @param context The context of the application
-     * @param authenticator The selected authenticator
+     * @param detailedAuthenticator The detailed authenticator object of the selected authenticator
      * @param authParams The authentication parameters of the selected authenticator
      * as a LinkedHashMap<String, String> with the key as the parameter name and the value as the
      * parameter value
      */
     override suspend fun authenticate(
         context: Context,
-        authenticator: Authenticator,
+        detailedAuthenticator: Authenticator?,
         authParams: LinkedHashMap<String, String>
     ) = authenticationProviderManager.authenticate(
         context,
-        authenticator,
+        detailedAuthenticator,
         authParams
     )
 

@@ -12,6 +12,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import io.wso2.android.api_authenticator.sdk.petcare.features.login.presentation.screens.auth_screen.AuthScreenViewModel
 import io.wso2.android.api_authenticator.sdk.petcare.ui.theme.Api_authenticator_sdkTheme
@@ -31,12 +33,21 @@ internal fun BasicAuth(
     viewModel: AuthScreenViewModel = hiltViewModel(),
     authenticator: Authenticator
 ) {
+    val state = viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(key1 = authenticator.authenticatorId) {
+        viewModel.selectAuthenticator(authenticator)
+    }
     BasicAuthComponent(
         onLoginClick = { username, password ->
-            viewModel.authenticateWithUsernamePassword(
-                authenticator.authenticatorId,
-                username,
-                password
+            viewModel.authenticate(
+                state.value.detailedAuthenticator,
+                LinkedHashMap(
+                    mapOf(
+                        "username" to username,
+                        "password" to password
+                    )
+                )
             )
         }
     )

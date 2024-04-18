@@ -352,7 +352,7 @@ internal interface AuthenticationProviderManager {
      */
     suspend fun authenticate(
         context: Context,
-        detailedAuthenticator: Authenticator,
+        detailedAuthenticator: Authenticator?,
         authParams: LinkedHashMap<String, String>
     )
 
