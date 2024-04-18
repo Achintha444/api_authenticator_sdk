@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.AuthenticationCoreDef
+import io.wso2.android.api_authenticator.sdk.core.core_types.native_authentication_handler.NativeAuthenticationHandlerCoreDef
 import io.wso2.android.api_authenticator.sdk.models.auth_params.BasicAuthenticatorAuthParams
 import io.wso2.android.api_authenticator.sdk.models.auth_params.EmailOTPAuthenticatorTypeAuthParams
 import io.wso2.android.api_authenticator.sdk.models.auth_params.SMSOTPAuthenticatorTypeAuthParams
@@ -33,10 +34,13 @@ import java.lang.ref.WeakReference
  * emit: [AuthenticationState.Error] - An error occurred during the authentication process
  *
  * @property authenticationCore The [AuthenticationCoreDef] instance
+ * @property nativeAuthenticationHandlerCore The [NativeAuthenticationHandlerCoreDef] instance
  * @property authenticationStateProviderManager The [AuthenticationStateProviderManager] instance
+ * @property authenticateHandlerProviderManager The [AuthenticateHandlerProviderManager] instance
  */
 internal class AuthenticationProviderManagerImpl private constructor(
     private val authenticationCore: AuthenticationCoreDef,
+    private val nativeAuthenticationHandlerCore: NativeAuthenticationHandlerCoreDef,
     private val authenticationStateProviderManager: AuthenticationStateProviderManager,
     private val authenticateHandlerProviderManager: AuthenticateHandlerProviderManager
 ) : AuthenticationProviderManager {
@@ -53,12 +57,15 @@ internal class AuthenticationProviderManagerImpl private constructor(
          * Initialize the [AuthenticationProviderManagerImpl] instance and return the instance.
          *
          * @param authenticationCore The [AuthenticationCoreDef] instance
+         * @param nativeAuthenticationHandlerCore The [NativeAuthenticationHandlerCoreDef] instance
          * @param authenticationStateProviderManager The [AuthenticationStateProviderManager] instance
+         * @param authenticateHandlerProviderManager The [AuthenticateHandlerProviderManager] instance
          *
          * @return The [AuthenticationProviderManagerImpl] instance
          */
         fun getInstance(
             authenticationCore: AuthenticationCoreDef,
+            nativeAuthenticationHandlerCore: NativeAuthenticationHandlerCoreDef,
             authenticationStateProviderManager: AuthenticationStateProviderManager,
             authenticateHandlerProviderManager: AuthenticateHandlerProviderManager
         ): AuthenticationProviderManagerImpl {
@@ -66,6 +73,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
             if (authenticationProviderManager == null) {
                 authenticationProviderManager = AuthenticationProviderManagerImpl(
                     authenticationCore,
+                    nativeAuthenticationHandlerCore,
                     authenticationStateProviderManager,
                     authenticateHandlerProviderManager
                 )
@@ -112,13 +120,10 @@ internal class AuthenticationProviderManagerImpl private constructor(
      *
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      *
-     * @oaram context The context of the application
+     * @param context The context of the application
      */
     override suspend fun isLoggedInStateFlow(context: Context) {
         authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Loading)
-
-        // TODO: Remove this block
-        authenticationCore.clearTokens(context)
 
         runCatching {
             authenticationCore.validateAccessToken(context)
@@ -628,11 +633,15 @@ internal class AuthenticationProviderManagerImpl private constructor(
             // Call the logout endpoint
             authenticationCore.logout(idToken!!)
 
-            // Sign out from google if the user is signed in from google
-            GoogleSignIn.getClient(
-                context,
-                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
-            ).signOut()
+            // Sign out from google legacy if the user is signed in from google legacy
+            nativeAuthenticationHandlerCore.handleGoogleNativeLegacyAuthenticationLogout(context)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                // Sign out from google if the user is signed in from google
+                nativeAuthenticationHandlerCore.handleGoogleNativeAuthenticationLogout(context)
+                // Sign out from passkey if the user is signed in from passkey
+                nativeAuthenticationHandlerCore.handlePasskeyAuthenticationLogout(context)
+            }
 
             // clear the tokens
             authenticationCore.clearTokens(context)

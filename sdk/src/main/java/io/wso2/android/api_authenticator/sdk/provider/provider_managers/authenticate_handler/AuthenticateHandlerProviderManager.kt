@@ -24,15 +24,14 @@ interface AuthenticateHandlerProviderManager {
      * get the full details of the selected authenticator, then perform the passed
      * authentication process.
      *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
      * @param authenticatorId The authenticator ID string
      * @param authenticatorTypeString The authenticator type string
      * @param afterGetAuthenticator The function to be executed after getting the authenticator
-     *
-     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
-     *
-     * TODO: This also need to be exposed from the Authentication Provider to support for authenticate with any authenticator
-     */
+     **/
     suspend fun authenticateWithAuthenticator(
         authenticatorId: String,
         authenticatorTypeString: String,

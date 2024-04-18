@@ -26,6 +26,7 @@ internal object AuthenticationProviderImplContainer {
     ): AuthenticationProviderManager =
         AuthenticationProviderManagerImpl.getInstance(
             authenticationCore,
+            nativeAuthenticationHandlerCore,
             AuthenticationProviderManagerImplContainer.getAuthenticationStateProviderManager(
                 authenticationCore
             ),

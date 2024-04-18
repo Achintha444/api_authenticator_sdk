@@ -10,7 +10,6 @@ import io.wso2.android.api_authenticator.sdk.models.exceptions.TokenManagerExcep
 import io.wso2.android.api_authenticator.sdk.models.state.TokenState
 import io.wso2.android.api_authenticator.sdk.util.Base64Util
 import io.wso2.android.api_authenticator.sdk.util.JsonUtil
-import kotlin.coroutines.resume
 
 /**
  * Use to manage the tokens.

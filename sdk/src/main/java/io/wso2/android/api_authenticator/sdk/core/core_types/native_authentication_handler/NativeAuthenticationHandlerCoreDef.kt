@@ -22,7 +22,17 @@ interface NativeAuthenticationHandlerCoreDef {
      *
      * @return idToken sent by the Google Native Authentication
      */
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     suspend fun handleGoogleNativeAuthentication(context: Context, nonce: String): AuthParams?
+
+    /**
+     * Handle the Google Native Authentication logout.
+     * This method will logout the user from the Google Native Authentication.
+     *
+     * @param context Context of the application
+     */
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    suspend fun handleGoogleNativeAuthenticationLogout(context: Context)
 
     /**
      * Handle the Google Native Authentication result using the legacy one tap method.
@@ -36,6 +46,14 @@ interface NativeAuthenticationHandlerCoreDef {
         context: Context,
         googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
     )
+
+    /**
+     * Handle the Google Native Authentication logout using the legacy one tap method.
+     * This method will logout the user from the Google Native Authentication using the legacy one tap method.
+     *
+     * @param context [Context] of the application
+     */
+    suspend fun handleGoogleNativeLegacyAuthenticationLogout(context: Context)
 
     /**
      * Handle the Google native authentication result using the legacy one tap method.
@@ -83,4 +101,12 @@ interface NativeAuthenticationHandlerCoreDef {
         timeout: Long?,
         userVerification: String?
     ): AuthParams?
+
+    /**
+     * Handle the passkey authentication logout.
+     *
+     * @param context [Context] of the application
+     */
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    suspend fun handlePasskeyAuthenticationLogout(context: Context)
 }

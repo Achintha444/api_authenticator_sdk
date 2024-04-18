@@ -94,6 +94,17 @@ class NativeAuthenticationHandlerCore private constructor(
         googleNativeAuthenticationHandlerManager.authenticateWithGoogleNative(context, nonce)
 
     /**
+     * Handle the Google Native Authentication logout.
+     * This method will logout the user from the Google Native Authentication.
+     *
+     * @param context Context of the application
+     */
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    override suspend fun handleGoogleNativeAuthenticationLogout(context: Context) {
+        googleNativeAuthenticationHandlerManager.logout(context)
+    }
+
+    /**
      * Handle the Google Native Authentication result using the legacy one tap method.
      * This method will authenticate the user with the Google Native Authentication using the legacy one tap method.
      * This is not recommended to use for new applications that support Android 14(API 34) and above.
@@ -109,6 +120,16 @@ class NativeAuthenticationHandlerCore private constructor(
             context,
             googleAuthenticateResultLauncher
         )
+    }
+
+    /**
+     * Handle the Google Native Authentication logout using the legacy one tap method.
+     * This method will logout the user from the Google Native Authentication using the legacy one tap method.
+     *
+     * @param context [Context] of the application
+     */
+    override suspend fun handleGoogleNativeLegacyAuthenticationLogout(context: Context) {
+        googleNativeLegacyAuthenticationHandlerManager.logout(context)
     }
 
     /**
@@ -169,4 +190,14 @@ class NativeAuthenticationHandlerCore private constructor(
             timeout,
             userVerification
         )
+
+    /**
+     * Handle the passkey authentication logout.
+     *
+     * @param context [Context] of the application
+     */
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    override suspend fun handlePasskeyAuthenticationLogout(context: Context) {
+        passkeyAuthenticationHandlerManager.logout(context)
+    }
 }
