@@ -113,7 +113,7 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
         authenticatorId: String,
         authenticatorTypeString: String,
         afterGetAuthenticator: suspend (Authenticator) -> Unit
-    ) {
+    ): Authenticator? {
         authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Loading)
 
         val authenticator: Authenticator? =
@@ -155,6 +155,8 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
                 )
             )
         }
+
+        return selectedAuthenticator
     }
 
     /**

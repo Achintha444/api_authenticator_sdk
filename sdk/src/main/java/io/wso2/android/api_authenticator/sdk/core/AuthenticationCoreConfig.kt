@@ -29,7 +29,7 @@ class AuthenticationCoreConfig(
     private val isDevelopment: Boolean? = false
 ) {
     /**
-     * @example https://localhost:9443/oauth2/authorize
+     * @sample `https://localhost:9443/oauth2/authorize`
      *
      * @return Authorization url of the WSO2 identity server.
      */
@@ -38,7 +38,7 @@ class AuthenticationCoreConfig(
     }
 
     /**
-     * @example https://localhost:9443/oauth2/authn
+     * @sample `https://localhost:9443/oauth2/authn`
      *
      * @return Authentication url of the WSO2 identity server.
      */
@@ -47,7 +47,7 @@ class AuthenticationCoreConfig(
     }
 
     /**
-     * @example https://localhost:9443/oauth2/token
+     * @sample `https://localhost:9443/oauth2/token`
      *
      * @return Token url of the WSO2 identity server.
      */
@@ -56,7 +56,7 @@ class AuthenticationCoreConfig(
     }
 
     /**
-     * @example https://localhost:9443/oidc/logout
+     * @sample `https://localhost:9443/oidc/logout`
      *
      * @return Logout url of the WSO2 identity server.
      */
@@ -65,7 +65,7 @@ class AuthenticationCoreConfig(
     }
 
     /**
-     * @example https://localhost:9443/oauth2/userinfo
+     * @sample `https://localhost:9443/oauth2/userinfo`
      *
      * @return Me endpoint of the WSO2 identity server.
      */
@@ -74,7 +74,7 @@ class AuthenticationCoreConfig(
     }
 
     /**
-     * @example https://example-app.com/redirect
+     * @sample `https://example-app.com/redirect`
      *
      * @return Redirect uri of the application.
      */

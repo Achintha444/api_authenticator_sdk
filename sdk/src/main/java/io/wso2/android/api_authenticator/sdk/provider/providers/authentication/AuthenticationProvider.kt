@@ -69,7 +69,8 @@ interface AuthenticationProvider {
     )
 
     /**
-     * Authenticate the user with the TOTP token.
+     * Authenticate the user with the TOTP token, only if the TOTP not added as a first factor authenticator.
+     * If the TOTP is added as a first factor authenticator, use the [authenticate] method to authenticate the user.
      *
      * @param context The context of the application
      * @param authenticatorId The authenticator id of the selected authenticator
@@ -83,7 +84,8 @@ interface AuthenticationProvider {
     suspend fun authenticateWithTotp(context: Context, authenticatorId: String, token: String)
 
     /**
-     * Authenticate the user with the Email OTP authenticator.
+     * Authenticate the user with the Email OTP authenticator, only if the Email OTP not added as a first factor authenticator.
+     * If the Email OTP is added as a first factor authenticator, use the [authenticate] method to authenticate the user.
      *
      * @param context The context of the application
      * @param authenticatorId The authenticator id of the selected authenticator
@@ -97,7 +99,8 @@ interface AuthenticationProvider {
     suspend fun authenticateWithEmailOtp(context: Context, authenticatorId: String, otpCode: String)
 
     /**
-     * Authenticate the user with the SMS OTP authenticator.
+     * Authenticate the user with the SMS OTP authenticator, only if the SMS OTP not added as a first factor authenticator.
+     * If the SMS OTP is added as a first factor authenticator, use the [authenticate] method to authenticate the user.
      *
      * @param context The context of the application
      * @param authenticatorId The authenticator id of the selected authenticator
@@ -221,6 +224,46 @@ interface AuthenticationProvider {
         userVerification: String? = null
     )
 
+    /**
+     * Select the authenticator to authenticate the user. This method will select the authenticator
+     * to authenticate the user and get the details of the selected authenticator.
+     *
+     * This method will only select the authenticator and will not authenticate the user.
+     * This method should be called before calling the [authenticate] method, and does not require
+     * to call before other specific authenticate methods.
+     *
+     * Example:
+     * Assume you want to authenticate the user with the Email OTP authenticator as a first factor
+     * authenticator.
+     * ```
+     * val detailedAuthenticator = authenticationProvider.selectAuthenticator(authenticator = authenticator)
+     * ...
+     * // for username
+     * authenticationProvider.authenticate(
+     * context = context,
+     *        authenticator: detailedAuthenticator,
+     *        authParams = <Parameters as a LinkedHashMap>
+     * )
+     *
+     * ...
+     *
+     * // for email otp
+     * authenticationProvider.authenticate(
+     * context = context,
+     *        authenticator: detailedAuthenticator,
+     *        authParams = <Parameters as a LinkedHashMap>
+     * )
+     * ```
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
+     * @param authenticator The selected authenticator
+     *
+     * @return The selected authenticator with the details as a [Authenticator] object
+     */
+    suspend fun selectAuthenticator(authenticator: Authenticator): Authenticator?
 
     /**
      * Authenticate the user with the selected authenticator.

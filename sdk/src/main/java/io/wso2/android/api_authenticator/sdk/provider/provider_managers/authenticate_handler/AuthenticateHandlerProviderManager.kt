@@ -37,7 +37,7 @@ interface AuthenticateHandlerProviderManager {
         authenticatorId: String,
         authenticatorTypeString: String,
         afterGetAuthenticator: suspend (Authenticator) -> Unit
-    )
+    ): Authenticator?
 
     /**
      * Common function in all authenticate methods
