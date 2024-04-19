@@ -32,9 +32,14 @@ interface AuthenticationProvider {
      * Handle the authentication flow initially to check whether the user is authenticated or not.
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
      * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
      * emit: [AuthenticationState.Initial] - The user is not authenticated to access the application
+     *
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
+     * @param context The context of the application
      */
     suspend fun isLoggedInStateFlow(context: Context)
 
@@ -43,23 +48,30 @@ interface AuthenticationProvider {
      * This method will initialize the authentication process and emit the state of the authentication process.
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
+     * @param context The context of the application
      */
     suspend fun initializeAuthentication(context: Context)
 
     /**
      * Authenticate the user with the username and password.
      *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
      * @param context The context of the application
      * @param authenticatorId The authenticator id of the selected authenticator
      * @param username The username of the user
      * @param password The password of the user
-     *
-     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     suspend fun authenticateWithUsernameAndPassword(
         context: Context,
@@ -72,98 +84,147 @@ interface AuthenticationProvider {
      * Authenticate the user with the TOTP token, only if the TOTP not added as a first factor authenticator.
      * If the TOTP is added as a first factor authenticator, use the [authenticate] method to authenticate the user.
      *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
      * @param context The context of the application
      * @param authenticatorId The authenticator id of the selected authenticator
      * @param token The TOTP token of the user
-     *
-     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    suspend fun authenticateWithTotp(context: Context, authenticatorId: String, token: String)
+    suspend fun authenticateWithTotp(
+        context: Context,
+        authenticatorId: String,
+        token: String
+    )
 
     /**
      * Authenticate the user with the Email OTP authenticator, only if the Email OTP not added as a first factor authenticator.
      * If the Email OTP is added as a first factor authenticator, use the [authenticate] method to authenticate the user.
      *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
      * @param context The context of the application
      * @param authenticatorId The authenticator id of the selected authenticator
      * @param otpCode The OTP code of the user
-     *
-     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    suspend fun authenticateWithEmailOtp(context: Context, authenticatorId: String, otpCode: String)
+    suspend fun authenticateWithEmailOtp(
+        context: Context,
+        authenticatorId: String,
+        otpCode: String
+    )
 
     /**
      * Authenticate the user with the SMS OTP authenticator, only if the SMS OTP not added as a first factor authenticator.
      * If the SMS OTP is added as a first factor authenticator, use the [authenticate] method to authenticate the user.
      *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
      * @param context The context of the application
      * @param authenticatorId The authenticator id of the selected authenticator
      * @param otpCode The OTP code of the user
-     *
-     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
-    suspend fun authenticateWithSMSOtp(context: Context, authenticatorId: String, otpCode: String)
+    suspend fun authenticateWithSMSOtp(
+        context: Context,
+        authenticatorId: String,
+        otpCode: String
+    )
 
     /**
      * Authenticate the user with the OpenID Connect authenticator.
      *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
      * @param context The context of the application
      * @param authenticatorId The authenticator id of the selected authenticator
-     *
-     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     suspend fun authenticateWithOpenIdConnect(context: Context, authenticatorId: String)
 
     /**
-     * Authenticate the user with the Microsoft authenticator (Redirect).
+     * Authenticate the user with the Github authenticator (Redirect).
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      *
      * @param context The context of the application
      * @param authenticatorId The authenticator id of the selected authenticator
+     */
+    suspend fun authenticateWithGithub(context: Context, authenticatorId: String)
+
+    /**
+     * Authenticate the user with the Microsoft authenticator (Redirect).
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
      * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
+     * @param context The context of the application
+     * @param authenticatorId The authenticator id of the selected authenticator
      */
     suspend fun authenticateWithMicrosoft(context: Context, authenticatorId: String)
 
     /**
-     * Authenticate the user with the Google authenticator. Uses credential management API.
-     * This is the recommended method to authenticate with Google for newer API versions.
+     * Authenticate the user with the Google authenticator.
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      *
      * @param context The context of the application
      * @param authenticatorId The authenticator id of the selected authenticator
-     *
-     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     suspend fun authenticateWithGoogleNative(context: Context, authenticatorId: String)
 
     /**
      * Authenticate the user with the Google authenticator using the legacy one tap method.
-     * This method is not recommended for newer API versions.
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      *
      * @param context The context of the application
      * @param authenticatorId The authenticator id of the selected authenticator
      * @param googleAuthenticateResultLauncher The result launcher for the Google authentication process
-     *
-     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     suspend fun authenticateWithGoogleNativeLegacy(
         context: Context,
@@ -174,54 +235,20 @@ interface AuthenticationProvider {
     /**
      * Handle the Google authentication result.
      *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
      * @param context The context of the application
      * @param resultCode The result code of the Google authentication process
      * @param data The [Intent] object that contains the result of the Google authentication process
-     *
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      */
     suspend fun handleGoogleNativeLegacyAuthenticateResult(
         context: Context,
         resultCode: Int,
         data: Intent
-    )
-
-    /**
-     * Authenticate the user with the Github authenticator (Redirect).
-     *
-     * @param context The context of the application
-     * @param authenticatorId The authenticator id of the selected authenticator
-     *
-     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
-     */
-    suspend fun authenticateWithGithub(context: Context, authenticatorId: String)
-
-    /**
-     * Authenticate the user with the Passkey authenticator.
-     *
-     * @param context The context of the application
-     * @param authenticatorId The authenticator id of the selected authenticator
-     * @param allowCredentials The list of allowed credentials. Default is empty array.
-     * @param timeout Timeout for the authentication. Default is 300000.
-     * @param userVerification User verification method. Default is "required"
-     *
-     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
-     */
-    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    suspend fun authenticateWithPasskey(
-        context: Context,
-        authenticatorId: String,
-        allowCredentials: List<String>? = null,
-        timeout: Long? = null,
-        userVerification: String? = null
     )
 
     /**
@@ -268,21 +295,50 @@ interface AuthenticationProvider {
     /**
      * Authenticate the user with the selected authenticator.
      *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
      * @param context The context of the application
-     * @param detailedAuthenticator The selected authenticator
+     * @param detailedAuthenticator The detailed authenticator object of the selected authenticator
      * @param authParams The authentication parameters of the selected authenticator
      * as a LinkedHashMap<String, String> with the key as the parameter name and the value as the
      * parameter value
-     *
-     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     suspend fun authenticate(
         context: Context,
         detailedAuthenticator: Authenticator?,
         authParams: LinkedHashMap<String, String>
+    )
+
+    /**
+     * Authenticate the user with the Passkey authenticator.
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
+     * @param context The context of the application
+     * @param authenticatorId The authenticator id of the selected authenticator
+     * @param allowCredentials The list of allowed credentials. Default is empty array.
+     * @param timeout Timeout for the authentication. Default is 300000.
+     * @param userVerification User verification method. Default is "required"
+     */
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    suspend fun authenticateWithPasskey(
+        context: Context,
+        authenticatorId: String,
+        allowCredentials: List<String>? = emptyList(),
+        timeout: Long? = null,
+        userVerification: String? = null
     )
 
     /**
@@ -297,11 +353,13 @@ interface AuthenticationProvider {
     /**
      * Logout the user from the application.
      *
-     * @param context The context of the application
-     *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
      * emit: [AuthenticationState.Initial] - The user is not authenticated to access the application
+     *
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
+     * @param context The context of the application
      */
     suspend fun logout(context: Context)
 }

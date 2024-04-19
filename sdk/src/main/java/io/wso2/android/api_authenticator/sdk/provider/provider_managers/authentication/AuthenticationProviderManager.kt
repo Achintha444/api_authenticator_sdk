@@ -48,7 +48,7 @@ internal interface AuthenticationProviderManager {
      *
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      *
-     * @oaram context The context of the application
+     * @param context The context of the application
      */
     suspend fun isLoggedInStateFlow(context: Context)
 
@@ -168,7 +168,7 @@ internal interface AuthenticationProviderManager {
      * @param context The context of the application
      * @param authenticatorId The authenticator id of the selected authenticator
      */
-    suspend fun authenticateWithGithubRedirect(context: Context, authenticatorId: String)
+    suspend fun authenticateWithGithub(context: Context, authenticatorId: String)
 
     /**
      * Authenticate the user with the Microsoft authenticator (Redirect).
@@ -184,7 +184,7 @@ internal interface AuthenticationProviderManager {
      * @param context The context of the application
      * @param authenticatorId The authenticator id of the selected authenticator
      */
-    suspend fun authenticateWithMicrosoftRedirect(context: Context, authenticatorId: String)
+    suspend fun authenticateWithMicrosoft(context: Context, authenticatorId: String)
 
     /**
      * Authenticate the user with the Google authenticator using the Credential Manager API.
@@ -201,7 +201,7 @@ internal interface AuthenticationProviderManager {
      * @param authenticatorId The authenticator id of the selected authenticator
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    suspend fun authenticateWithGoogle(context: Context, authenticatorId: String)
+    suspend fun authenticateWithGoogleNative(context: Context, authenticatorId: String)
 
     /**
      * Authenticate the user with the Google authenticator using the legacy one tap method.
@@ -214,7 +214,7 @@ internal interface AuthenticationProviderManager {
      * @param authenticatorId The authenticator id of the selected authenticator
      * @param googleAuthenticateResultLauncher The result launcher for the Google authentication process
      */
-    suspend fun authenticateWithGoogleLegacy(
+    suspend fun authenticateWithGoogleNativeLegacy(
         context: Context,
         authenticatorId: String,
         googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
@@ -281,7 +281,7 @@ internal interface AuthenticationProviderManager {
      * ...
      * // for username
      * authenticationProvider.authenticate(
-     * context = context,
+     *        context = context,
      *        authenticator: detailedAuthenticator,
      *        authParams = <Parameters as a LinkedHashMap>
      * )
@@ -290,7 +290,7 @@ internal interface AuthenticationProviderManager {
      *
      * // for email otp
      * authenticationProvider.authenticate(
-     * context = context,
+     *        context = context,
      *        authenticator: detailedAuthenticator,
      *        authParams = <Parameters as a LinkedHashMap>
      * )

@@ -7,7 +7,7 @@ import io.wso2.android.api_authenticator.sdk.provider.provider_managers.user.Use
 import java.lang.ref.WeakReference
 
 /**
- * UserProviderManagerImpl is responsible for managing the user details.
+ * UserProviderManagerImpl is responsible for managing the actions related to the user details.
  *
  * @property authenticationCore [AuthenticationCoreDef] instance to get the user details
  * @property tokenProviderManager [TokenProviderManager] instance to get the access token
@@ -51,7 +51,8 @@ class UserProviderManagerImpl private constructor(
     }
 
     /**
-     * Get the basic user information of the authenticated.
+     * Get the basic user information of the authenticated user from the server using the
+     * userinfo endpoint.
      *
      * @param context The [Context] of the application
      *

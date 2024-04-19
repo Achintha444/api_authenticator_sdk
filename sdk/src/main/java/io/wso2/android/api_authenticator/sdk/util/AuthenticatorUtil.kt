@@ -79,7 +79,6 @@ object AuthenticatorUtil {
         }
     }
 
-
     /**
      * Get the authenticator  from the authenticator  list.
      * Done by checking the authenticator id or authenticator .

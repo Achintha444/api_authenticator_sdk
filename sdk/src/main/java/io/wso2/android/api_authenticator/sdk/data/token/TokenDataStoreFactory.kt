@@ -20,9 +20,8 @@ internal object TokenDataStoreFactory {
      *
      * @return The [TokenDataStore] instance.
      */
-    fun getTokenDataStore(context: Context): TokenDataStore {
-        return instances.getOrPut(context) {
+    fun getTokenDataStore(context: Context): TokenDataStore =
+        instances.getOrPut(context) {
             TokenDataStoreImpl(context)
         }
-    }
 }

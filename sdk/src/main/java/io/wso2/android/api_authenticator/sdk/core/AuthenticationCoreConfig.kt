@@ -33,89 +33,67 @@ class AuthenticationCoreConfig(
      *
      * @return Authorization url of the WSO2 identity server.
      */
-    fun getAuthorizeUrl(): String {
-        return "$baseUrl/oauth2/authorize"
-    }
+    fun getAuthorizeUrl(): String = "$baseUrl/oauth2/authorize"
 
     /**
      * @sample `https://localhost:9443/oauth2/authn`
      *
      * @return Authentication url of the WSO2 identity server.
      */
-    fun getAuthnUrl(): String {
-        return "$baseUrl/oauth2/authn"
-    }
+    fun getAuthnUrl(): String = "$baseUrl/oauth2/authn"
 
     /**
      * @sample `https://localhost:9443/oauth2/token`
      *
      * @return Token url of the WSO2 identity server.
      */
-    fun getTokenUrl(): String {
-        return "$baseUrl/oauth2/token"
-    }
+    fun getTokenUrl(): String = "$baseUrl/oauth2/token"
 
     /**
      * @sample `https://localhost:9443/oidc/logout`
      *
      * @return Logout url of the WSO2 identity server.
      */
-    fun getLogoutUrl(): String {
-        return "$baseUrl/oidc/logout"
-    }
+    fun getLogoutUrl(): String = "$baseUrl/oidc/logout"
 
     /**
      * @sample `https://localhost:9443/oauth2/userinfo`
      *
      * @return Me endpoint of the WSO2 identity server.
      */
-    fun getUserinfoEndpoint(): String {
-        return "$baseUrl/oauth2/userinfo"
-    }
+    fun getUserinfoEndpoint(): String = "$baseUrl/oauth2/userinfo"
 
     /**
      * @sample `https://example-app.com/redirect`
      *
      * @return Redirect uri of the application.
      */
-    fun getRedirectUri(): String {
-        return redirectUri
-    }
+    fun getRedirectUri(): String = redirectUri
 
     /**
      * @return Client id of the application.
      */
-    fun getClientId(): String {
-        return clientId
-    }
+    fun getClientId(): String = clientId
 
     /**
      * @return Scope of the application (ex: openid profile email).
      */
-    fun getScope(): String {
-        return scope
-    }
+    fun getScope(): String = scope
 
     /**
      * @return Client attestation integrity token.
      */
-    fun getIntegrityToken(): String? {
-        return integrityToken
-    }
+    fun getIntegrityToken(): String? = integrityToken
 
     /**
      * @return Google web client id.
      */
-    fun getGoogleWebClientId(): String? {
-        return googleWebClientId
-    }
+    fun getGoogleWebClientId(): String? = googleWebClientId
 
     /**
      * @return The flag to check whether the app is in development mode or not [Boolean].
      */
-    fun getIsDevelopment(): Boolean? {
-        return isDevelopment
-    }
+    fun getIsDevelopment(): Boolean? = isDevelopment
 
     /**
      * Checks the equality of the passed object with the current object.

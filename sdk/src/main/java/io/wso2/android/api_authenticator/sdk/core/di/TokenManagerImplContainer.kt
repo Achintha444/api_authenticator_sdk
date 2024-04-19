@@ -12,7 +12,5 @@ internal object TokenManagerImplContainer {
      *
      * @return [TokenDataStoreFactory] instance.
      */
-    internal fun getTokenDataStoreFactory(): TokenDataStoreFactory {
-        return TokenDataStoreFactory
-    }
+    internal fun getTokenDataStoreFactory(): TokenDataStoreFactory = TokenDataStoreFactory
 }

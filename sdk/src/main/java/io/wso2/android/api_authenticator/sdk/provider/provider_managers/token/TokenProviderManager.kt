@@ -67,7 +67,12 @@ interface TokenProviderManager {
     /**
      * Validate the access token, by checking the expiration time of the access token, and
      * by checking if the access token is null or empty.
-     * **Here we are not calling the introspection endpoint to validate the access token!**
+     *
+     * **Here we are not calling the introspection endpoint to validate the access token!.
+     * We are checking the expiration time of the access token and
+     * if the access token is null or empty.**
+     *
+     * @param context The [Context] instance.
      *
      * @return `true` if the access token is valid, `false` otherwise.
      */

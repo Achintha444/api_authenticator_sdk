@@ -22,9 +22,8 @@ internal object AppAuthManagerImplContainer {
      *
      * @return [OkHttpClient] instance.
      */
-    internal fun getCustomTrustClient(isDevelopment: Boolean?): OkHttpClient {
-        return HttpClientBuilder.getHttpClientInstance(isDevelopment)
-    }
+    internal fun getCustomTrustClient(isDevelopment: Boolean?): OkHttpClient =
+        HttpClientBuilder.getHttpClientInstance(isDevelopment)
 
     /**
      * Returns the client ID passed as a parameter.
@@ -33,9 +32,7 @@ internal object AppAuthManagerImplContainer {
      *
      * @return The client ID.
      */
-    internal fun getClientId(clientId: String): String {
-        return clientId
-    }
+    internal fun getClientId(clientId: String): String = clientId
 
     /**
      * Returns the redirect URI passed as a parameter.
@@ -44,9 +41,7 @@ internal object AppAuthManagerImplContainer {
      *
      * @return The redirect URI.
      */
-    internal fun getRedirectUri(redirectUri: String): Uri {
-        return Uri.parse(redirectUri)
-    }
+    internal fun getRedirectUri(redirectUri: String): Uri = Uri.parse(redirectUri)
 
     /**
      * Returns the [AuthorizationServiceConfiguration] instance, based on the given parameters.
@@ -59,11 +54,8 @@ internal object AppAuthManagerImplContainer {
     internal fun getServiceConfig(
         authorizeEndpoint: String,
         tokenEndpoint: String
-    ): AuthorizationServiceConfiguration {
-        return AuthorizationServiceConfiguration(
-            Uri.parse(authorizeEndpoint),
-            Uri.parse(tokenEndpoint),
-
-            )
-    }
+    ): AuthorizationServiceConfiguration = AuthorizationServiceConfiguration(
+        Uri.parse(authorizeEndpoint),
+        Uri.parse(tokenEndpoint)
+    )
 }

@@ -192,5 +192,4 @@ internal class AuthnManagerImpl private constructor(
             })
         }
     }
-
 }

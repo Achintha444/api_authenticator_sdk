@@ -5,6 +5,11 @@ import io.wso2.android.api_authenticator.sdk.util.JsonUtil
 
 /**
  * Meta data related to the authenticator
+ *
+ * @param i18nKey I18n key related to the authenticator
+ * @param promptType Prompt type
+ * @param params Params related to the authenticator
+ * @param additionalData Additional data related to the authenticator
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 open class AuthenticatorMetaData(
@@ -27,6 +32,13 @@ open class AuthenticatorMetaData(
 ) {
     /**
      * Parameters related to the authenticator
+     *
+     * @param param Parameter related to the authenticator
+     * @param type Type of the parameter
+     * @param order Order of the parameter
+     * @param i18nKey I18n key related to the parameter
+     * @param displayName Display name of the parameter
+     * @param confidential Is the parameter confidential
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
     open class AuthenticatorParam(
@@ -40,6 +52,13 @@ open class AuthenticatorMetaData(
 
     /**
      * Additional data related to the authenticator
+     *
+     * @param nonce Nonce
+     * @param clientId Client id
+     * @param scope Scope
+     * @param challengeData Challenge data
+     * @param state State
+     * @param redirectUrl Redirect URL
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
     open class AuthenticatorAdditionalData(
@@ -51,6 +70,9 @@ open class AuthenticatorMetaData(
         open val redirectUrl: String? = null
     )
 
+    /**
+     * Convert the [AuthenticatorMetaData] object to a JSON string
+     */
     fun toJsonString(): String {
         return JsonUtil.getJsonString(this)
     }

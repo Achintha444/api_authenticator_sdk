@@ -23,10 +23,10 @@ class TokenState(private var appAuthState: AuthState) {
 
     /**
      * Get the [AuthState] instance.
+     *
+     * @return The [AuthState] instance.
      */
-    fun getAppAuthState(): AuthState {
-        return appAuthState
-    }
+    fun getAppAuthState(): AuthState = appAuthState
 
     /**
      * Update the [AuthState] instance.
@@ -42,7 +42,5 @@ class TokenState(private var appAuthState: AuthState) {
      *
      * @return [String] converted from the [TokenState]
      */
-    fun toJsonString(): String {
-        return appAuthState.jsonSerializeString()
-    }
+    fun toJsonString(): String = appAuthState.jsonSerializeString()
 }

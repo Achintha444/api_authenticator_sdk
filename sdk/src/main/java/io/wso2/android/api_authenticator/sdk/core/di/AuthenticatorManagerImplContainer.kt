@@ -21,27 +21,23 @@ internal object AuthenticatorManagerImplContainer {
      *
      * @return [OkHttpClient] instance.
      */
-    internal fun getClient(isDevelopment: Boolean?): OkHttpClient {
-        return HttpClientBuilder.getHttpClientInstance(isDevelopment)
-    }
+    internal fun getClient(isDevelopment: Boolean?): OkHttpClient =
+        HttpClientBuilder.getHttpClientInstance(isDevelopment)
 
     /**
      * Returns an instance of the [AuthenticatorFactory] class.
      *
      * @return [AuthenticatorFactory] instance.
      */
-    internal fun getAuthenticatorFactory(): AuthenticatorFactory {
-        return AuthenticatorFactory
-    }
+    internal fun getAuthenticatorFactory(): AuthenticatorFactory = AuthenticatorFactory
 
     /**
      * Returns an instance of the [AuthenticatorManagerImplRequestBuilder] class.
      *
      * @return [AuthenticatorManagerImplRequestBuilder] instance.
      */
-    internal fun getAuthenticatorManagerImplRequestBuilder(): AuthenticatorManagerImplRequestBuilder {
-        return AuthenticatorManagerImplRequestBuilder
-    }
+    internal fun getAuthenticatorManagerImplRequestBuilder()
+            : AuthenticatorManagerImplRequestBuilder = AuthenticatorManagerImplRequestBuilder
 
     /**
      * Returns the authn url of the WSO2 identity server.
@@ -50,7 +46,5 @@ internal object AuthenticatorManagerImplContainer {
      *
      * @return The authnUrl url.
      */
-    internal fun getAuthnUrl(authnUrl: String): String {
-        return authnUrl
-    }
+    internal fun getAuthnUrl(authnUrl: String): String = authnUrl
 }

@@ -18,12 +18,15 @@ import java.lang.ref.WeakReference
 /**
  * Authentication state provider manager that is used to manage the authentication state.
  *
- * @property authenticationCore The [AuthenticationCoreDef] instance
- *
  * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+ *
  * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+ *
  * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+ *
  * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+ *
+ * @property authenticationCore The [AuthenticationCoreDef] instance
  */
 internal class AuthenticationStateProviderManagerImpl private constructor(
     private val authenticationCore: AuthenticationCoreDef,

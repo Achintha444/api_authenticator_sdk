@@ -16,12 +16,15 @@ import java.lang.ref.WeakReference
 /**
  * Authentication provider class that is used to manage the authentication process.
  *
- * @param authenticationProviderManager The [AuthenticationProviderManager] instance
- *
  * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+ *
  * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+ *
  * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+ *
  * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+ *
+ * @param authenticationProviderManager The [AuthenticationProviderManager] instance
  */
 internal class AuthenticationProviderImpl private constructor(
     private val authenticationProviderManager: AuthenticationProviderManager,
@@ -85,9 +88,14 @@ internal class AuthenticationProviderImpl private constructor(
      * Handle the authentication flow initially to check whether the user is authenticated or not.
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
      * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
      * emit: [AuthenticationState.Initial] - The user is not authenticated to access the application
+     *
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
+     * @param context The context of the application
      */
     override suspend fun isLoggedInStateFlow(context: Context) =
         authenticationProviderManager.isLoggedInStateFlow(context)
@@ -97,8 +105,12 @@ internal class AuthenticationProviderImpl private constructor(
      * This method will initialize the authentication process and emit the state of the authentication process.
      *
      * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
      * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
      * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
+     * @param context The context of the application
      */
     override suspend fun initializeAuthentication(context: Context) =
         authenticationProviderManager.initializeAuthentication(context)
@@ -106,15 +118,18 @@ internal class AuthenticationProviderImpl private constructor(
     /**
      * Authenticate the user with the username and password.
      *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
      * @param context The context of the application
      * @param authenticatorId The authenticator id of the selected authenticator
      * @param username The username of the user
      * @param password The password of the user
-     *
-     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     override suspend fun authenticateWithUsernameAndPassword(
         context: Context,
@@ -132,14 +147,17 @@ internal class AuthenticationProviderImpl private constructor(
      * Authenticate the user with the TOTP token, only if the TOTP not added as a first factor authenticator.
      * If the TOTP is added as a first factor authenticator, use the [authenticate] method to authenticate the user.
      *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
      * @param context The context of the application
      * @param authenticatorId The authenticator id of the selected authenticator
      * @param token The TOTP token of the user
-     *
-     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     override suspend fun authenticateWithTotp(
         context: Context,
@@ -151,14 +169,17 @@ internal class AuthenticationProviderImpl private constructor(
      * Authenticate the user with the Email OTP authenticator, only if the Email OTP not added as a first factor authenticator.
      * If the Email OTP is added as a first factor authenticator, use the [authenticate] method to authenticate the user.
      *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
      * @param context The context of the application
      * @param authenticatorId The authenticator id of the selected authenticator
      * @param otpCode The OTP code of the user
-     *
-     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     override suspend fun authenticateWithEmailOtp(
         context: Context,
@@ -170,14 +191,17 @@ internal class AuthenticationProviderImpl private constructor(
      * Authenticate the user with the SMS OTP authenticator, only if the SMS OTP not added as a first factor authenticator.
      * If the SMS OTP is added as a first factor authenticator, use the [authenticate] method to authenticate the user.
      *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
      * @param context The context of the application
      * @param authenticatorId The authenticator id of the selected authenticator
      * @param otpCode The OTP code of the user
-     *
-     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     override suspend fun authenticateWithSMSOtp(
         context: Context,
@@ -188,13 +212,16 @@ internal class AuthenticationProviderImpl private constructor(
     /**
      * Authenticate the user with the OpenID Connect authenticator.
      *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
      * @param context The context of the application
      * @param authenticatorId The authenticator id of the selected authenticator
-     *
-     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     override suspend fun authenticateWithOpenIdConnect(context: Context, authenticatorId: String) =
         authenticationProviderManager.authenticateWithOpenIdConnect(context, authenticatorId)
@@ -202,59 +229,75 @@ internal class AuthenticationProviderImpl private constructor(
     /**
      * Authenticate the user with the Github authenticator (Redirect).
      *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
      * @param context The context of the application
      * @param authenticatorId The authenticator id of the selected authenticator
-     *
-     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     override suspend fun authenticateWithGithub(context: Context, authenticatorId: String) =
-        authenticationProviderManager.authenticateWithGithubRedirect(context, authenticatorId)
+        authenticationProviderManager.authenticateWithGithub(context, authenticatorId)
 
     /**
      * Authenticate the user with the Microsoft authenticator (Redirect).
      *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
      * @param context The context of the application
      * @param authenticatorId The authenticator id of the selected authenticator
-     *
-     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     override suspend fun authenticateWithMicrosoft(context: Context, authenticatorId: String) =
-        authenticationProviderManager.authenticateWithMicrosoftRedirect(context, authenticatorId)
+        authenticationProviderManager.authenticateWithMicrosoft(context, authenticatorId)
 
     /**
      * Authenticate the user with the Google authenticator.
      *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
      * @param context The context of the application
      * @param authenticatorId The authenticator id of the selected authenticator
-     *
-     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override suspend fun authenticateWithGoogleNative(context: Context, authenticatorId: String) =
-        authenticationProviderManager.authenticateWithGoogle(context, authenticatorId)
+        authenticationProviderManager.authenticateWithGoogleNative(context, authenticatorId)
 
     /**
      * Authenticate the user with the Google authenticator using the legacy one tap method.
      *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
      * @param context The context of the application
      * @param authenticatorId The authenticator id of the selected authenticator
      * @param googleAuthenticateResultLauncher The result launcher for the Google authentication process
-     *
-     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     override suspend fun authenticateWithGoogleNativeLegacy(
         context: Context,
         authenticatorId: String,
         googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
-    ) = authenticationProviderManager.authenticateWithGoogleLegacy(
+    ) = authenticationProviderManager.authenticateWithGoogleNativeLegacy(
         context,
         authenticatorId,
         googleAuthenticateResultLauncher
@@ -263,13 +306,15 @@ internal class AuthenticationProviderImpl private constructor(
     /**
      * Handle the Google authentication result.
      *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
      * @param context The context of the application
      * @param resultCode The result code of the Google authentication process
      * @param data The [Intent] object that contains the result of the Google authentication process
-     *
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      */
     override suspend fun handleGoogleNativeLegacyAuthenticateResult(
         context: Context,

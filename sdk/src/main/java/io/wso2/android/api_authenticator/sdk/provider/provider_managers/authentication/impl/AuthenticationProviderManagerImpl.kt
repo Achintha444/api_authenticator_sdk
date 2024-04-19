@@ -191,7 +191,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
         username: String,
         password: String
     ) {
-        authenticateHandlerProviderManager.authenticateWithAuthenticator(
+        authenticateHandlerProviderManager.selectAuthenticator(
             authenticatorId = authenticatorId,
             authenticatorTypeString = AuthenticatorTypes.BASIC_AUTHENTICATOR.authenticatorType
         ) {
@@ -223,7 +223,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
         authenticatorId: String,
         token: String
     ) {
-        authenticateHandlerProviderManager.authenticateWithAuthenticator(
+        authenticateHandlerProviderManager.selectAuthenticator(
             authenticatorId = authenticatorId,
             authenticatorTypeString = AuthenticatorTypes.TOTP_AUTHENTICATOR.authenticatorType
         ) {
@@ -255,7 +255,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
         authenticatorId: String,
         otpCode: String
     ) {
-        authenticateHandlerProviderManager.authenticateWithAuthenticator(
+        authenticateHandlerProviderManager.selectAuthenticator(
             authenticatorId = authenticatorId,
             authenticatorTypeString = AuthenticatorTypes.EMAIL_OTP_AUTHENTICATOR.authenticatorType
         ) {
@@ -285,7 +285,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
         authenticatorId: String,
         otpCode: String
     ) {
-        authenticateHandlerProviderManager.authenticateWithAuthenticator(
+        authenticateHandlerProviderManager.selectAuthenticator(
             authenticatorId = authenticatorId,
             authenticatorTypeString = AuthenticatorTypes.SMS_OTP_AUTHENTICATOR.authenticatorType
         ) {
@@ -315,7 +315,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
         authenticatorId: String,
         authenticatorTypeString: String
     ) {
-        authenticateHandlerProviderManager.authenticateWithAuthenticator(
+        authenticateHandlerProviderManager.selectAuthenticator(
             authenticatorId = authenticatorId,
             authenticatorTypeString = authenticatorTypeString
         ) {
@@ -359,7 +359,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * @param context The context of the application
      * @param authenticatorId The authenticator id of the selected authenticator
      */
-    override suspend fun authenticateWithGithubRedirect(context: Context, authenticatorId: String) {
+    override suspend fun authenticateWithGithub(context: Context, authenticatorId: String) {
         authenticateWithRedirectUri(
             context,
             authenticatorId = authenticatorId,
@@ -382,7 +382,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * @param context The context of the application
      * @param authenticatorId The authenticator id of the selected authenticator
      */
-    override suspend fun authenticateWithMicrosoftRedirect(
+    override suspend fun authenticateWithMicrosoft(
         context: Context,
         authenticatorId: String
     ) {
@@ -409,8 +409,8 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * @param authenticatorId The authenticator id of the selected authenticator
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    override suspend fun authenticateWithGoogle(context: Context, authenticatorId: String) {
-        authenticateHandlerProviderManager.authenticateWithAuthenticator(
+    override suspend fun authenticateWithGoogleNative(context: Context, authenticatorId: String) {
+        authenticateHandlerProviderManager.selectAuthenticator(
             authenticatorId = authenticatorId,
             authenticatorTypeString = AuthenticatorTypes.GOOGLE_AUTHENTICATOR.authenticatorType
         ) {
@@ -432,12 +432,12 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * @param authenticatorId The authenticator id of the selected authenticator
      * @param googleAuthenticateResultLauncher The result launcher for the Google authentication process
      */
-    override suspend fun authenticateWithGoogleLegacy(
+    override suspend fun authenticateWithGoogleNativeLegacy(
         context: Context,
         authenticatorId: String,
         googleAuthenticateResultLauncher: ActivityResultLauncher<Intent>
     ) {
-        authenticateHandlerProviderManager.authenticateWithAuthenticator(
+        authenticateHandlerProviderManager.selectAuthenticator(
             authenticatorId = authenticatorId,
             authenticatorTypeString = AuthenticatorTypes.GOOGLE_AUTHENTICATOR.authenticatorType
         ) {
@@ -498,7 +498,7 @@ internal class AuthenticationProviderManagerImpl private constructor(
         timeout: Long?,
         userVerification: String?
     ) {
-        authenticateHandlerProviderManager.authenticateWithAuthenticator(
+        authenticateHandlerProviderManager.selectAuthenticator(
             authenticatorId = authenticatorId,
             authenticatorTypeString = AuthenticatorTypes.PASSKEY_AUTHENTICATOR.authenticatorType
         ) {
@@ -552,10 +552,10 @@ internal class AuthenticationProviderManagerImpl private constructor(
      * @return The selected authenticator with the details as a [Authenticator] object
      */
     override suspend fun selectAuthenticator(authenticator: Authenticator): Authenticator? =
-        authenticateHandlerProviderManager.authenticateWithAuthenticator(
+        authenticateHandlerProviderManager.selectAuthenticator(
             authenticatorId = authenticator.authenticatorId,
             authenticatorTypeString = authenticator.authenticator!!,
-            afterGetAuthenticator = {}
+            afterSelectingAuthenticator = {}
         )
 
     /**

@@ -23,7 +23,6 @@ import java.lang.ref.WeakReference
 class AsgardeoAuth private constructor(
     private val authenticationCoreConfig: AuthenticationCoreConfig
 ) {
-
     /**
      * Instance of the [AuthenticationCore] that will be used throughout the application
      */
@@ -31,6 +30,9 @@ class AsgardeoAuth private constructor(
         AsgardeoAuthContainer.getAuthenticationCoreDef(authenticationCoreConfig)
     }
 
+    /**
+     * Instance of the [NativeAuthenticationHandlerCoreDef] that will be used throughout the application
+     */
     private val nativeAuthenticationHandlerCore: NativeAuthenticationHandlerCoreDef by lazy {
         AsgardeoAuthContainer.getNativeAuthenticationHandlerCoreDef(authenticationCoreConfig)
     }

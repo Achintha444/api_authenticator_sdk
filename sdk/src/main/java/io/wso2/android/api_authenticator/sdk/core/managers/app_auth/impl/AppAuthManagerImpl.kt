@@ -15,7 +15,6 @@ import net.openid.appauth.AuthState
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationService
 import net.openid.appauth.AuthorizationServiceConfiguration
-import net.openid.appauth.GrantTypeValues
 import net.openid.appauth.TokenRequest
 import okhttp3.OkHttpClient
 import java.lang.ref.WeakReference
@@ -81,8 +80,8 @@ internal class AppAuthManagerImpl private constructor(
      *
      * @return The [AuthorizationService] instance.
      */
-    private fun getAuthorizationService(context: Context): AuthorizationService {
-        return AuthorizationService(
+    private fun getAuthorizationService(context: Context): AuthorizationService =
+        AuthorizationService(
             context,
             AppAuthConfiguration.Builder()
                 .setConnectionBuilder { url ->
@@ -94,19 +93,6 @@ internal class AppAuthManagerImpl private constructor(
                 }
                 .build()
         )
-    }
-
-    /**
-     * Use to get the [TokenRequest.Builder] instance.
-     *
-     * @return The [TokenRequest.Builder] instance.
-     */
-    private fun getTokenRequestBuilder(): TokenRequest.Builder {
-        return TokenRequest.Builder(
-            serviceConfig,
-            clientId
-        )
-    }
 
     /**
      * Use to exchange the authorization code for the access token.
@@ -122,11 +108,13 @@ internal class AppAuthManagerImpl private constructor(
         context: Context,
     ): TokenState? = withContext(Dispatchers.IO) {
         suspendCoroutine { continuation ->
-            val tokenRequest: TokenRequest = getTokenRequestBuilder()
-                .setAuthorizationCode(authorizationCode)
-                .setClientId(clientId)
-                .setRedirectUri(redirectUri)
-                .build()
+            val tokenRequest: TokenRequest =
+                AppAuthManagerImplRequestBuilder.getExchangeAuthorizationCodeRequestBuilder(
+                    serviceConfig,
+                    clientId,
+                    authorizationCode,
+                    redirectUri
+                )
 
             val authService: AuthorizationService = getAuthorizationService(context)
 
@@ -189,12 +177,13 @@ internal class AppAuthManagerImpl private constructor(
             }
 
             // Create the refresh token grant request
-            val tokenRequest: TokenRequest = getTokenRequestBuilder()
-                .setGrantType(GrantTypeValues.REFRESH_TOKEN)
-                .setRedirectUri(redirectUri)
-                .setRefreshToken(refreshToken)
-                .build()
-
+            val tokenRequest: TokenRequest =
+                AppAuthManagerImplRequestBuilder.getRefreshTokenRequestBuilder(
+                    serviceConfig,
+                    clientId,
+                    refreshToken!!,
+                    redirectUri
+                )
             val authService: AuthorizationService = getAuthorizationService(context)
 
             // Trigger the request

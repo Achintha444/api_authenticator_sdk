@@ -98,21 +98,23 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
     }
 
     /**
-     * Authenticate the user with the selected authenticator . This method is used to
-     * get the full details of the selected authenticator , then perform the passed
-     * authentication process.
+     * Select the authenticator for the authentication process. This method is used to
+     * get the full details of the selected authenticator, then can pass a function
+     * to be executed after getting the authenticator, like authenticating with the selected
+     * authenticator.
+     *
+     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      *
      * @param authenticatorId The authenticator ID string
      * @param authenticatorTypeString The authenticator type string
-     * @param afterGetAuthenticator The function to be executed after getting the authenticator
-     *
-     * emit: [AuthenticationState.Loading] - The application is in the process of loading the authentication state
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     * @param afterSelectingAuthenticator The function to be executed after selecting the authenticator
      */
-    override suspend fun authenticateWithAuthenticator(
+    override suspend fun selectAuthenticator(
         authenticatorId: String,
         authenticatorTypeString: String,
-        afterGetAuthenticator: suspend (Authenticator) -> Unit
+        afterSelectingAuthenticator: suspend (Authenticator) -> Unit
     ): Authenticator? {
         authenticationStateProviderManager.emitAuthenticationState(AuthenticationState.Loading)
 
@@ -129,7 +131,7 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
             }.onSuccess {
                 selectedAuthenticator = it
                 if (it != null) {
-                    afterGetAuthenticator(it)
+                    afterSelectingAuthenticator(it)
                 } else {
                     authenticationStateProviderManager.emitAuthenticationState(
                         AuthenticationState.Error(
@@ -162,15 +164,17 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
     /**
      * Common function in all authenticate methods
      *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
      * @param context The context of the application
      * @param userSelectedAuthenticator The selected authenticator
      * @param authParams The authentication parameters of the selected authenticator
      * @param authParamsAsMap The authentication parameters of the selected authenticator as a LinkedHashMap<String, String>
      * with the key as the parameter name and the value as the parameter value
-     *
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     override suspend fun commonAuthenticate(
         context: Context,
@@ -221,11 +225,12 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
     /**
      * Redirect the user to the authenticator's authentication page.
      *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
      * @param context The context of the application
      * @param authenticator The authenticator to redirect the user
      *
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
-     */
+     **/
     override suspend fun redirectAuthenticate(
         context: Context,
         authenticator: Authenticator
@@ -259,12 +264,14 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
     /**
      * Authenticate the user with the Google authenticator using Credential Manager API.
      *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
      * @param context The context of the application
      * @param nonce The nonce value to authenticate the user, which is sent by the Identity Server
-     *
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override suspend fun googleAuthenticate(context: Context, nonce: String) {
@@ -295,10 +302,10 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
     /**
      * Authenticate the user with the Google authenticator using the legacy one tap method.
      *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
      * @param context The context of the application
      * @param googleAuthenticateResultLauncher The result launcher for the Google authentication process
-     *
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
      */
     override suspend fun googleLegacyAuthenticate(
         context: Context,
@@ -320,13 +327,15 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
     /**
      * Handle the Google authentication result.
      *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
      * @param context The context of the application
      * @param resultCode The result code of the Google authentication process
      * @param data The [Intent] object that contains the result of the Google authentication process
-     *
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      */
     override suspend fun handleGoogleNativeLegacyAuthenticateResult(
         context: Context,
@@ -364,15 +373,17 @@ class AuthenticateHandlerProviderManagerImpl private constructor(
     /**
      * Authenticate the user with the Passkey authenticator using Credential Manager API.
      *
+     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
+     *
+     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
+     *
+     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
+     *
      * @param context The context of the application
      * @param authenticator The authenticator to authenticate the user
      * @param allowCredentials The list of allowed credentials. Default is empty array.
      * @param timeout The timeout for the authentication. Default is 300000.
      * @param userVerification The user verification method. Default is "required"
-     *
-     * emit: [AuthenticationState.Error] - An error occurred during the authentication process
-     * emit: [AuthenticationState.Authenticated] - The user is authenticated to access the application
-     * emit: [AuthenticationState.Unauthenticated] - The user is not authenticated to access the application
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override suspend fun passkeyAuthenticate(

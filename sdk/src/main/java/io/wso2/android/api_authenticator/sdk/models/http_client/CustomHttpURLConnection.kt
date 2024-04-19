@@ -22,6 +22,7 @@ import javax.net.ssl.X509TrustManager
  * @property sslSocketFactory The [SSLSocketFactory] instance.
  *
  * Initializing the [CustomHttpURLConnection] class can throw the following exceptions:
+ *
  * @throws IllegalArgumentException If the protocol of the URI is not HTTPS.
  * @throws RuntimeException If the SSL context cannot be initialized.
  * @throws RuntimeException If the connection cannot be opened.

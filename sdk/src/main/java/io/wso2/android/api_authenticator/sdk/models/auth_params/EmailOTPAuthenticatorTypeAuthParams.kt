@@ -2,6 +2,9 @@ package io.wso2.android.api_authenticator.sdk.models.auth_params
 
 /**
  * Authenticator parameters class - For TOTP Authenticator
+ *
+ * Currently this class is not used for authentication with Email OTP as a first factor, only for the
+ * second factor and beyond. If in future Email OTP we should use this class for the first factor
  */
 data class EmailOTPAuthenticatorTypeAuthParams(
     /**
@@ -17,7 +20,9 @@ data class EmailOTPAuthenticatorTypeAuthParams(
      * Get the parameter body for the authenticator to be sent to the server
      *
      * @return LinkedHashMap<String, String> - Parameter body for the authenticator
+     * ```
      * ex: [<"OTPcode", otpCode>]
+     * ```
      */
     override fun getParameterBodyAuthenticator(requiredParams: List<String>)
             : LinkedHashMap<String, String> {

@@ -6,6 +6,12 @@ import io.wso2.android.api_authenticator.sdk.util.JsonUtil
 
 /**
  * Class to represent an Authenticator
+ *
+ * @param authenticatorId Id of the authenticator
+ * @param authenticator Type of the authenticator
+ * @param idp IDP of the authenticator
+ * @param metadata Metadata of the authenticator
+ * @param requiredParams Required params that should be sent to the server for authentication in this authenticator
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 open class Authenticator(

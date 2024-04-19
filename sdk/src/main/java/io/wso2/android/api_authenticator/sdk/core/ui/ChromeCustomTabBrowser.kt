@@ -15,6 +15,9 @@ import androidx.browser.customtabs.CustomTabsSession
  * TODO: As a future improvement, we can consider giving the user the ability to change the theme of the Chrome Custom Tab
  */
 internal object ChromeCustomTabBrowser {
+    /**
+     * The package name of the Chrome browser
+     */
     private const val CHROME_PACKAGE_NAME = "com.android.chrome"
 
     private var customTabsServiceConnection: CustomTabsServiceConnection? = null

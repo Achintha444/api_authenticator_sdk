@@ -17,7 +17,9 @@ data class GoogleNativeAuthenticatorTypeAuthParams(
      * Get the parameter body for the authenticator to be sent to the server
      *
      * @return LinkedHashMap<String, String> - Parameter body for the authenticator
+     * ```
      * ex: [<"accessToken", accessToken>, <"idToken", idToken>]
+     * ```
      */
     override fun getParameterBodyAuthenticator(requiredParams: List<String>)
             : LinkedHashMap<String, String> {

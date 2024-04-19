@@ -12,8 +12,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 
+/**
+ * The name of the data store.
+ */
 private const val DATA_STORE_NAME = "token_data_store"
 
+/**
+ * Initialize the data store.
+ */
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
     name = DATA_STORE_NAME
 )

@@ -3,14 +3,18 @@ package io.wso2.android.api_authenticator.sdk.models.state
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
 
 /**
- * Authentication state of the application
- * This sealed class is used to represent the different states of the authentication process
+ * Authentication state of the application. This sealed class is used to represent the different
+ * states of the authentication process
  *
  * States:
  * - [Initial]: The initial state of the application
+ *
  * - [Unauthenticated]: The user is not authenticated to access the application
+ *
  * - [Authenticated]: The user is authenticated to access the application
+ *
  * - [Loading]: The application is in the process of loading the authentication state
+ *
  * - [Error]: An error occurred during the authentication process
  */
 sealed class AuthenticationState {

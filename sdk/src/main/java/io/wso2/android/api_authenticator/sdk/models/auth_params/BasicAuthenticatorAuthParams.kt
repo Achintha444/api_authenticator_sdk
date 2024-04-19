@@ -17,7 +17,9 @@ data class BasicAuthenticatorAuthParams(
      * Get the parameter body for the authenticator to be sent to the server
      *
      * @return LinkedHashMap<String, String> - Parameter body for the authenticator
+     * ```
      * ex: [<"username", username>, <"password", password>]
+     * ```
      */
     override fun getParameterBodyAuthenticator(requiredParams: List<String>)
             : LinkedHashMap<String, String> {

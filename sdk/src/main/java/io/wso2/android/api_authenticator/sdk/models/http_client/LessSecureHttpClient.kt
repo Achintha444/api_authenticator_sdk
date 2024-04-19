@@ -11,7 +11,7 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 /**
- * Use to create the [LessSecureHttpClient] for API calls in the SDK
+ * Use to create the [LessSecureHttpClient] for API calls in the SDK.
  */
 internal class LessSecureHttpClient private constructor() {
     private val client: OkHttpClient
