@@ -33,7 +33,7 @@ Add the latest released SDK in the `build.gradle` file of your Android applicati
 
 ```groovy
 dependencies {
-  implementation 'io.asgardeo.android.core:1.0.0'
+    implementation 'io.asgardeo.android.core:1.0.0'
 }
 ```
 
@@ -45,7 +45,7 @@ For example, if you have configured the `callBackUrl` as `wso2sample://oauth2`, 
 
 ```groovy
 android.defaultConfig.manifestPlaceholders = [
-        'appAuthRedirectScheme': 'wso2sample'
+    'appAuthRedirectScheme': 'wso2sample'
 ]
 ```
 
@@ -55,16 +55,20 @@ android.defaultConfig.manifestPlaceholders = [
 
 ```kotlin
 private val asgardeoAuth: AsgardeoAuth = AsgardeoAuth.getInstance(
-  AuthenticationCoreConfig(
-    baseUrl = "https://localhost:9443",
-    redirectUri = "wso2sample://oauth2",
-    clientId = "<client_id>",
-    scope = "openid"
-  )
+    AuthenticationCoreConfig(
+        discoveryEndpoint = "https://localhost:9443//oauth2/token/.well-known/openid-configuration",
+        redirectUri = "wso2sample://oauth2",
+        clientId = "<client_id>",
+        scope = "openid"
+    )
 )
 ```
+
+
 > [!IMPORTANT]
-> If you are using an emulator to try with a locally hosted IS instance, make sure to replace localhost with 10.0.2.2 !
+> IAlso if you are using an emulator to test out your application with a locally hosted IS instance, make sure to replace localhost with 10.0.2.2.
+> Also if you are using an emulator with a locally hosted IS instance having only the discovery endpoint will not work, you need to have other endpoints setup as well, because from the discovery endpoint it will sent other endpoints with “localhost” which will not work with a locally hosted instance of IS.
+
 
 `AuthenticationCoreConfig` holds the configuration details that are required to set up the communication between the SDK and the WSO2 Identity Server/Asgardeo.
 
@@ -88,32 +92,32 @@ After that, you can call the `authenticationProvider.initializeAuthentication` t
 ```kotlin
 @Composable
 internal fun LandingScreen() {
-  val state = authenticationProvider.getAuthenticationStateFlow()
-  authenticationProvider.isLoggedInStateFlow(context)
-  handleAuthenticationState(state)
+    val state = authenticationProvider.getAuthenticationStateFlow()
+    authenticationProvider.isLoggedInStateFlow(context)
+    handleAuthenticationState(state)
 }
 
 private fun handleAuthenticationState(state: AuthenticationState) {
-  authStateJob = state.collect {
-    when (it) {
-      is AuthenticationState.Initial -> {
-        authenticationProvider.initializeAuthentication(context)
-      }
-      is AuthenticationState.Unauthorized -> {
-        // Display login form
-        LoginForm(it.authenticationFlow)
-      }
-      is AuthenticationState.Error -> {
-        // Display Error Toast
-      }
-      is AuthenticationState.Authorized -> {
-        onSuccessfulLogin()
-      }
-      is AuthenticationState.Loading -> {
-        // Show loading
-      }
+    authStateJob = state.collect {
+        when (it) {
+            is AuthenticationState.Initial -> {
+                authenticationProvider.initializeAuthentication(context)
+            }
+            is AuthenticationState.Unauthorized -> {
+                // Display login form
+                LoginForm(it.authenticationFlow)
+            }
+            is AuthenticationState.Error -> {
+                // Display Error Toast
+            }
+            is AuthenticationState.Authorized -> {
+                onSuccessfulLogin()
+            }
+            is AuthenticationState.Loading -> {
+                // Show loading
+            }
+        }
     }
-  }
 }
 ```
 
@@ -124,73 +128,73 @@ private fun handleAuthenticationState(state: AuthenticationState) {
  */
 @Composable
 internal fun LoginForm() {
-  authenticationFlow: AuthenticationFlowNotSuccess,
-  onSuccessfulLogin: (User) -> Unit
-  ) {
+    authenticationFlow: AuthenticationFlowNotSuccess,
+    onSuccessfulLogin: (User) -> Unit
+) {
     authenticationFlow.nextStep.authenticators.forEach {
-      when (it.authenticator) {
-        AuthenticatorTypes.BASIC_AUTHENTICATOR.authenticatorType -> {
-          BasicAuth(authenticatorType = it)
-        }
+        when (it.authenticator) {
+            AuthenticatorTypes.BASIC_AUTHENTICATOR.authenticatorType -> {
+                BasicAuth(authenticatorType = it)
+            }
 
-        AuthenticatorTypes.TOTP_AUTHENTICATOR.authenticatorType -> {
-          TotpAuth(authenticatorType = it)
+            AuthenticatorTypes.TOTP_AUTHENTICATOR.authenticatorType -> {
+                TotpAuth(authenticatorType = it)
+            }
         }
-      }
     }
-  }
+}
 
-  @Composable
-  internal fun BasicAuth(authenticator: Authenticator) {
+@Composable
+internal fun BasicAuth(authenticator: Authenticator) {
     BasicAuthComponent(
-      onLoginClick = { username, password ->
-        authenticationProvider.authenticateWithUsernameAndPassword(
-          username = username,
-          password = password
-        )
-      }
+        onLoginClick = { username, password ->
+            authenticationProvider.authenticateWithUsernameAndPassword(
+                username = username,
+                password = password
+            )
+        }
     )
-  }
+}
 
-  @Composable
-  fun BasicAuthComponent(
+@Composable
+fun BasicAuthComponent(
     onLoginClick: (username: String, password: String) -> Unit
-  ) {
+) {
     Column() {
-      var username by remember { mutableStateOf("") }
-      var password by remember { mutableStateOf("") }
-      OutlinedTextField(
-        value = username,
-        onValueChange = { username = it },
-        label = "Username"
-      )
-      OutlinedTextField(
-        value = password,
-        onValueChange = { password = it },
-        label = "Password"
-      )
-      Button(onClick = { onLoginClick(username, password) }) {
-        Text(text = "Login")
-      }
+        var username by remember { mutableStateOf("") }
+        var password by remember { mutableStateOf("") }
+        OutlinedTextField(
+            value = username,
+            onValueChange = { username = it },
+            label = "Username"
+        )
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = "Password"
+        )
+        Button(onClick = { onLoginClick(username, password) }) {
+            Text(text = "Login")
+        }
     }
-  }
+}
 ```
 
 You will not need to handle the authentication state in multiple places, you can do it at the start of the application, and it will handle the state accordingly.
 
 ### Get user details
 
-After the user is authenticated, to get user-related information, you can use the following function. This will return the user details in a `LinkedHashMap`.
+After the user is authenticated, to get user-related information, we can use the following function. This will return the user details in a `LinkedHashMap`.
 
 ```kotlin
 coroutineScope.launch {
-  runCatching {
-    authenticationProvider.getUserDetails(<context>)
-  }.onSuccess { userDetails ->
-    Profile(userDetails)
-  }.onFailure { e ->
-    // Display error message
-  }
+    runCatching {
+        authenticationProvider.getUserDetails(<context>)
+    }.onSuccess { userDetails ->
+        Profile(userDetails)
+    }.onFailure { e ->
+        // Display error message
+    }
 }
 ```
 
@@ -218,7 +222,7 @@ If you want to perform any action based on the tokens that are returned, you can
 
 ```kotlin
 tokenProvider.performAction(context) { accessToken, idToken, ->
-  action(accessToken, idToken)
+    action(accessToken, idToken)
 }
 ```
 
@@ -238,20 +242,20 @@ You can also use client attestation with the SDK as well.
 2. You need to subscribe to the "Google Play Integrity API" from your Google cloud project, you can do this from Enabled API's & Services in your Google cloud project.
 3. After that you need to create a new service account in the google project. You can create a Service Account for yourself with the following scopes.
 
-1. Go to IAM& Admin -> Service Accounts
-2. Click Create Service Account.
-3. Fill the name and click create and continue.
-4. You need to grant your service account the roles of Service Account User and Service Usage Consumer.
-5. Click continue and then Done
-6. You can see the service account added without keys, click : Actions -> Manage Keys for the service account.
-7. Click Add key and Select JSON.
-8. Save the JSON in secure place (You need this for Android Attestation Credentials for application metadata)
+    1. Go to IAM& Admin -> Service Accounts
+    2. Click Create Service Account.
+    3. Fill the name and click create and continue.
+    4. You need to grant your service account the roles of Service Account User and Service Usage Consumer.
+    5. Click continue and then Done
+    6. You can see the service account added without keys, click : Actions -> Manage Keys for the service account.
+    7. Click Add key and Select JSON.
+    8. Save the JSON in secure place (We need this for Android Attestation Credentials for application metadata)
 
 4. After that, Update Application Advanced properties. The application you created requires 2 properties to perform android attestation.
 
-1. Android package name
-2. androidAttestationServiceCredentials
-   The JSON secret of Service Account downloaded. Note that this attribute is defined as a JSON object hence use the JSON key as it is.
+    1. Android package name
+    2. androidAttestationServiceCredentials
+       The JSON secret of Service Account downloaded. Note that this attribute is defined as a JSON object hence use the JSON key as it is.
 
 5. Now you can call the "Google Play Integrity API" from your application and pass the integrity token that you will get from the API result to the integrityToken value of the AuthenticationCoreConfig
 
@@ -275,19 +279,47 @@ Before utilizing these authenticators, you need to integrate them into your appl
 
 ### Use any authentication mechanism
 
-You can use this general function `authenticate` to handle authentication with any authenticator. For this, you need to pass the authenticator object which can be retrieved from the `authenticationFlow` returned from the `Authentication.Unauthenticated` state.
+If you are using any other authentication mechanism like email OTP, you can use the `authenticate` function. For this, you need to pass the authenticator id or authenticator which can be retrieved from the `authenticationFlow` returned from the `Authentication.Unauthenticated` state.
 
-For this you need to be aware of the authenticator parameters required for the authenticator that you will be using (which can be found in the following link). Then you need to call the function that will select the authenticator `selectAuthenticator` this will start the authentication process for that specific authenticatator. After that you need call the `authenticate` function which will send the authenticator params for the authentication.
+This can be used in two ways:
+
+#### Authenticator parameters are known
+
+If you are aware of the authenticator parameters required for the authenticator (which can be found in the following link), you can directly call this function to authenticate the user with this authenticator.
 
 ```kotlin
-
-val detailedAuthenticator = authentiactionProvider.selectAuthenticator(
-    authenticator = authenticator
-)
-
 authenticationProvider.authenticate(
     context,
-    detailedAuthenticator = detailedAuthenticator, 
+    authenticatorId = authenticator.authenticatorId,
+    authenticatorTypeString = authenticator.authenticator,
+    authParams = < as a LinkedHashMap<String, String> >
+)
+```
+
+#### Authenticator parameters are not known
+
+If you are not aware of the authenticator parameters required for the authenticator, you first need to retrieve the parameters required to authenticate the user with this authenticator. For this, you can use the following function:
+
+```kotlin
+val detailedAuthenticator: Authenticator = authenticationProvider.authenticateWithAuthenticator(
+    authenticatorId = authenticator.authenticatorId,
+    authenticatorTypeString = authenticator.authenticator
+)
+```
+
+This will return a fully detailed authenticator object. In that object, you can get the required authentication parameters from:
+
+```kotlin
+val requiredParams: List<String>? = detailedAuthenticator.requiredParams
+```
+
+After that, you can manually set the relevant required authentication parameters and call the `authenticate` function:
+
+```kotlin
+authenticationProvider.authenticate(
+    context,
+    authenticatorId = authenticator.authenticatorId,
+    authenticatorTypeString = authenticator.authenticator,
     authParams = < as a LinkedHashMap<String, String> >
 )
 ```
@@ -417,7 +449,7 @@ authenticationProvider.authenticateWithMicrosoftRedirect(
 
 ```kotlin
 authenticationProvider.authenticateWithOpenIdConnect(
-    context,
+   context,
     authenticatorId = authenticator.authenticatorId
 )
 ```
