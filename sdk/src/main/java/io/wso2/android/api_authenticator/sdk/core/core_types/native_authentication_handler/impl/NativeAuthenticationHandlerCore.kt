@@ -5,20 +5,33 @@ import android.content.Intent
 import android.os.Build
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
-import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
+import io.wso2.android.api_authenticator.sdk.core_config.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.core_types.native_authentication_handler.NativeAuthenticationHandlerCoreDef
 import io.wso2.android.api_authenticator.sdk.core.di.NativeAuthenticationHandlerCoreContainer
 import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native.GoogleNativeAuthenticationHandlerManager
 import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native_legacy.GoogleNativeLegacyAuthenticationHandlerManager
 import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.passkey.PasskeyAuthenticationHandlerManager
 import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.redirect.RedirectAuthenticationHandlerManager
+import io.wso2.android.api_authenticator.sdk.core_config.providers.authentication_core_config_provider.AuthenticationCoreConfigProvider
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import java.lang.ref.WeakReference
 
+/**
+ * Implementation of the [NativeAuthenticationHandlerCoreDef]
+ *
+ * @property authenticationCoreConfigProvider Provider to update the [AuthenticationCoreConfig] based on the discovery response [AuthenticationCoreConfigProvider]
+ */
 class NativeAuthenticationHandlerCore private constructor(
-    private val authenticationCoreConfig: AuthenticationCoreConfig
+    private val authenticationCoreConfigProvider: AuthenticationCoreConfigProvider
 ) : NativeAuthenticationHandlerCoreDef {
+    /**
+     * Instance of the [AuthenticationCoreConfig] that will be used throughout the application
+     */
+    private val authenticationCoreConfig: AuthenticationCoreConfig by lazy {
+        authenticationCoreConfigProvider.getUpdatedAuthenticationCoreConfig()
+    }
+
     /**
      * Instance of the [GoogleNativeAuthenticationHandlerManager] that will be used throughout the application
      */
@@ -62,16 +75,18 @@ class NativeAuthenticationHandlerCore private constructor(
         /**
          * Initialize the AuthenticationCore instance and return the instance.
          *
-         * @param authenticationCoreConfig Configuration of the Authenticator [AuthenticationCoreConfig]
+         * @param authenticationCoreConfigProvider Provider to update the [AuthenticationCoreConfig] based on the discovery response [AuthenticationCoreConfigProvider]
          *
          * @return Initialized [NativeAuthenticationHandlerCore] instance
          */
-        fun getInstance(authenticationCoreConfig: AuthenticationCoreConfig): NativeAuthenticationHandlerCore {
+        fun getInstance(
+            authenticationCoreConfigProvider: AuthenticationCoreConfigProvider
+        ): NativeAuthenticationHandlerCore {
             var nativeAuthenticationCore = nativeAuthenticationCoreInstance.get()
             if (nativeAuthenticationCore == null ||
-                nativeAuthenticationCore.authenticationCoreConfig != authenticationCoreConfig
+                nativeAuthenticationCore.authenticationCoreConfigProvider != authenticationCoreConfigProvider
             ) {
-                nativeAuthenticationCore = NativeAuthenticationHandlerCore(authenticationCoreConfig)
+                nativeAuthenticationCore = NativeAuthenticationHandlerCore(authenticationCoreConfigProvider)
                 nativeAuthenticationCoreInstance = WeakReference(nativeAuthenticationCore)
             }
             return nativeAuthenticationCore

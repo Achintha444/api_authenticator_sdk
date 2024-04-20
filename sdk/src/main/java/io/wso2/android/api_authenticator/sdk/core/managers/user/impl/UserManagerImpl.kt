@@ -2,7 +2,7 @@ package io.wso2.android.api_authenticator.sdk.core.managers.user.impl
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.JsonNode
-import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
+import io.wso2.android.api_authenticator.sdk.core_config.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.managers.user.UserManager
 import io.wso2.android.api_authenticator.sdk.models.exceptions.UserManagerException
 import io.wso2.android.api_authenticator.sdk.util.JsonUtil

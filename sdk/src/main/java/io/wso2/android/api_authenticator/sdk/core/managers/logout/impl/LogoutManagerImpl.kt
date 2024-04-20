@@ -1,6 +1,6 @@
 package io.wso2.android.api_authenticator.sdk.core.managers.logout.impl
 
-import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
+import io.wso2.android.api_authenticator.sdk.core_config.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.impl.AuthnManagerImpl
 import io.wso2.android.api_authenticator.sdk.core.managers.logout.LogoutManager
 import io.wso2.android.api_authenticator.sdk.models.exceptions.LogoutException

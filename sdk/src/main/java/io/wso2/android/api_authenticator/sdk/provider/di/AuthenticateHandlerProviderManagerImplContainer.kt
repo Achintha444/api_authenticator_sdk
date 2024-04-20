@@ -17,9 +17,7 @@ internal object AuthenticateHandlerProviderManagerImplContainer {
      */
     internal fun getAuthenticateStateProviderManager(
         authenticationCore: AuthenticationCoreDef
-    ): AuthenticationStateProviderManager {
-        return AuthenticationStateProviderManagerImpl.getInstance(
-            authenticationCore
-        )
-    }
+    ): AuthenticationStateProviderManager = AuthenticationStateProviderManagerImpl.getInstance(
+        authenticationCore
+    )
 }

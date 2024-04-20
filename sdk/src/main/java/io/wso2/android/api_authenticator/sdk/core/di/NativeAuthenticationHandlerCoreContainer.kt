@@ -1,6 +1,6 @@
 package io.wso2.android.api_authenticator.sdk.core.di
 
-import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
+import io.wso2.android.api_authenticator.sdk.core_config.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.core_types.native_authentication_handler.impl.NativeAuthenticationHandlerCore
 import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native.GoogleNativeAuthenticationHandlerManager
 import io.wso2.android.api_authenticator.sdk.core.managers.native_authentication_handler.google_native.impl.GoogleNativeAuthenticationHandlerManagerImpl

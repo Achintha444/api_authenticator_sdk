@@ -1,7 +1,7 @@
 package io.wso2.android.api_authenticator.sdk.sample.data.impl.repository
 
 import io.wso2.android.api_authenticator.sdk.asgardeo_auth.AsgardeoAuth
-import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
+import io.wso2.android.api_authenticator.sdk.core_config.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.provider.providers.authentication.AuthenticationProvider
 import io.wso2.android.api_authenticator.sdk.provider.providers.token.TokenProvider
 import io.wso2.android.api_authenticator.sdk.sample.domain.repository.ProviderRepository

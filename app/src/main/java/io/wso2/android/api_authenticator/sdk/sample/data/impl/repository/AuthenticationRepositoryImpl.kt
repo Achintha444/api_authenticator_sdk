@@ -2,7 +2,7 @@ package io.wso2.android.api_authenticator.sdk.sample.data.impl.repository
 
 import android.content.Context
 import arrow.core.Either
-import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
+import io.wso2.android.api_authenticator.sdk.core_config.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.impl.AuthenticationCore
 import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow

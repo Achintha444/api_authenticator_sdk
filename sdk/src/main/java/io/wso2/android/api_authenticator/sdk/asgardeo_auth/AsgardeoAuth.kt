@@ -1,10 +1,11 @@
 package io.wso2.android.api_authenticator.sdk.asgardeo_auth
 
 import io.wso2.android.api_authenticator.sdk.asgardeo_auth.di.AsgardeoAuthContainer
-import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
+import io.wso2.android.api_authenticator.sdk.core_config.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.impl.AuthenticationCore
 import io.wso2.android.api_authenticator.sdk.core.core_types.native_authentication_handler.NativeAuthenticationHandlerCoreDef
+import io.wso2.android.api_authenticator.sdk.core_config.providers.authentication_core_config_provider.AuthenticationCoreConfigProvider
 import io.wso2.android.api_authenticator.sdk.provider.di.AuthenticationProviderImplContainer
 import io.wso2.android.api_authenticator.sdk.provider.di.TokenProviderImplContainer
 import io.wso2.android.api_authenticator.sdk.provider.providers.authentication.AuthenticationProvider
@@ -24,17 +25,24 @@ class AsgardeoAuth private constructor(
     private val authenticationCoreConfig: AuthenticationCoreConfig
 ) {
     /**
+     * Instance of the [AuthenticationCoreConfigProvider] that will be used throughout the application
+     */
+    private val authenticationCoreConfigProvider: AuthenticationCoreConfigProvider by lazy {
+        AsgardeoAuthContainer.getAuthenticationCoreConfigProvider(authenticationCoreConfig)
+    }
+
+    /**
      * Instance of the [AuthenticationCore] that will be used throughout the application
      */
     private val authenticationCore: AuthenticationCoreDef by lazy {
-        AsgardeoAuthContainer.getAuthenticationCoreDef(authenticationCoreConfig)
+        AsgardeoAuthContainer.getAuthenticationCoreDef(authenticationCoreConfigProvider)
     }
 
     /**
      * Instance of the [NativeAuthenticationHandlerCoreDef] that will be used throughout the application
      */
     private val nativeAuthenticationHandlerCore: NativeAuthenticationHandlerCoreDef by lazy {
-        AsgardeoAuthContainer.getNativeAuthenticationHandlerCoreDef(authenticationCoreConfig)
+        AsgardeoAuthContainer.getNativeAuthenticationHandlerCoreDef(authenticationCoreConfigProvider)
     }
 
     companion object {

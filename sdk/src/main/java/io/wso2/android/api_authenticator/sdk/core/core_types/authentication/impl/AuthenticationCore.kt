@@ -1,7 +1,6 @@
 package io.wso2.android.api_authenticator.sdk.core.core_types.authentication.impl
 
 import android.content.Context
-import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.core_types.authentication.AuthenticationCoreDef
 import io.wso2.android.api_authenticator.sdk.core.di.AuthenticationCoreContainer
 import io.wso2.android.api_authenticator.sdk.core.managers.app_auth.AppAuthManager
@@ -11,6 +10,8 @@ import io.wso2.android.api_authenticator.sdk.core.managers.flow.FlowManager
 import io.wso2.android.api_authenticator.sdk.core.managers.logout.LogoutManager
 import io.wso2.android.api_authenticator.sdk.core.managers.token.TokenManager
 import io.wso2.android.api_authenticator.sdk.core.managers.user.UserManager
+import io.wso2.android.api_authenticator.sdk.core_config.AuthenticationCoreConfig
+import io.wso2.android.api_authenticator.sdk.core_config.providers.authentication_core_config_provider.AuthenticationCoreConfigProvider
 import io.wso2.android.api_authenticator.sdk.models.auth_params.AuthParams
 import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
 import io.wso2.android.api_authenticator.sdk.models.authentication_flow.AuthenticationFlow
@@ -24,11 +25,18 @@ import java.lang.ref.WeakReference
 /**
  * Authentication core class which has the core functionality of the Authenticator SDK.
  *
- * @property authenticationCoreConfig Configuration of the [AuthenticationCore]. [AuthenticationCoreConfig]
+ * @property authenticationCoreConfigProvider Provider to get the updated [AuthenticationCoreConfig] based on the discovery response. [AuthenticationCoreConfigProvider]
  */
 class AuthenticationCore private constructor(
-    private val authenticationCoreConfig: AuthenticationCoreConfig
+    private val authenticationCoreConfigProvider: AuthenticationCoreConfigProvider
 ) : AuthenticationCoreDef {
+    /**
+     * Instance of the [AuthenticationCoreConfig] that will be used throughout the application
+     */
+    private val authenticationCoreConfig: AuthenticationCoreConfig by lazy {
+        authenticationCoreConfigProvider.getUpdatedAuthenticationCoreConfig()
+    }
+
     /**
      * Instance of the [AuthenticatorManager] that will be used throughout the application
      */
@@ -80,16 +88,18 @@ class AuthenticationCore private constructor(
         /**
          * Initialize the AuthenticationCore instance and return the instance.
          *
-         * @param authenticationCoreConfig Configuration of the Authenticator [AuthenticationCoreConfig]
+         * @param authenticationCoreConfigProvider Provider to get the updated [AuthenticationCoreConfig] based on the discovery response. [AuthenticationCoreConfigProvider]
          *
          * @return Initialized [AuthenticationCore] instance
          */
-        fun getInstance(authenticationCoreConfig: AuthenticationCoreConfig): AuthenticationCore {
+        fun getInstance(
+            authenticationCoreConfigProvider: AuthenticationCoreConfigProvider
+        ): AuthenticationCore {
             var authenticationCore = authenticationCoreInstance.get()
             if (authenticationCore == null ||
-                authenticationCore.authenticationCoreConfig != authenticationCoreConfig
+                authenticationCore.authenticationCoreConfigProvider != authenticationCoreConfigProvider
             ) {
-                authenticationCore = AuthenticationCore(authenticationCoreConfig)
+                authenticationCore = AuthenticationCore(authenticationCoreConfigProvider)
                 authenticationCoreInstance = WeakReference(authenticationCore)
             }
             return authenticationCore

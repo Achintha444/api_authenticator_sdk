@@ -1,7 +1,7 @@
 package io.wso2.android.api_authenticator.sdk.core.managers.authn.impl
 
 import com.fasterxml.jackson.databind.JsonNode
-import io.wso2.android.api_authenticator.sdk.core.AuthenticationCoreConfig
+import io.wso2.android.api_authenticator.sdk.core_config.AuthenticationCoreConfig
 import io.wso2.android.api_authenticator.sdk.core.managers.authn.AuthnManager
 import io.wso2.android.api_authenticator.sdk.core.managers.flow.FlowManager
 import io.wso2.android.api_authenticator.sdk.models.autheniticator.Authenticator
